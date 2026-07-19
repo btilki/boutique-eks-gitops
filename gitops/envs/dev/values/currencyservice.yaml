@@ -2,4 +2,4 @@
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
   repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/currencyservice"
-  digest: "sha256:3ecc41007b10624070f86608f8babb0004506ffe80732297d41dabf8b2fdef8c"
+  digest: "sha256:f8827fa3fe720748a3e90030d4d6146e89a1fe255b773758e5accec0d36751dd"
