@@ -76,6 +76,12 @@ variable "gitlab_project_path" {
   default = "REPLACE_ME/boutique-eks-gitops"
 }
 
+variable "gitlab_project_id" {
+  type        = string
+  description = "GitLab numeric project ID for OIDC sub claim (use when path-based ID tokens are burned)"
+  default     = null
+}
+
 variable "tags" {
   type        = map(string)
   description = "Additional resource tags"

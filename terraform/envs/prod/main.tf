@@ -79,6 +79,7 @@ module "iam_gitlab_oidc" {
   name                = local.name
   gitlab_url          = var.gitlab_url
   gitlab_project_path = var.gitlab_project_path
+  gitlab_project_id   = var.gitlab_project_id
   ecr_repository_arns = values(module.ecr.repository_arns)
   tags                = local.tags
 }

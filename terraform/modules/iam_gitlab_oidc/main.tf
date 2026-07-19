@@ -14,7 +14,13 @@ variable "gitlab_url" {
 
 variable "gitlab_project_path" {
   type        = string
-  description = "GitLab project path group/project used in sub claim matching"
+  description = "GitLab project path group/project used in sub claim matching (legacy path-based sub)"
+}
+
+variable "gitlab_project_id" {
+  type        = string
+  description = "GitLab numeric project ID for OIDC sub (required when path-based ID tokens are burned)"
+  default     = null
 }
 
 variable "gitlab_ref_pattern" {
@@ -45,9 +51,13 @@ resource "aws_iam_openid_connect_provider" "gitlab" {
 }
 
 locals {
-  # GitLab CI subject examples vary by version; condition uses StringLike on project path.
-  # Refine audience/subject in Topic 10 with a live OIDC hop test.
-  oidc_sub_like = "project_path:${var.gitlab_project_path}:*"
+  # Prefer project_id-based sub when set (GitLab burned-path / rename-safe).
+  # Format: project_id:<id>:ref_type:<type>:ref:<branch>
+  oidc_sub_like = var.gitlab_project_id != null && var.gitlab_project_id != "" ? (
+    "project_id:${var.gitlab_project_id}:*"
+    ) : (
+    "project_path:${var.gitlab_project_path}:*"
+  )
 }
 
 data "aws_iam_policy_document" "assume" {

@@ -29,3 +29,6 @@ gitlab_project_path = "REPLACE_ME/boutique-eks-gitops"
 tags = {
   Owner = "platform"
 }
+
+# Prefer project_id when GitLab burns path-based OIDC tokens
+# gitlab_project_id = "84601482"
