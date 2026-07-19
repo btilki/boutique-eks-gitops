@@ -15,7 +15,7 @@ spec:
     - name: boutique.email-test
       rules:
         - alert: AlertmanagerEmailTest
-          expr: vector(1)
+          expr: vector(0)
           for: 0m
           labels:
             severity: critical
