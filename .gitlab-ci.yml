@@ -216,8 +216,21 @@ gitops_digest_mr:
   stage: gitops
   image: alpine:3.20
   services: []
+  # Explicit matrix needs so all digest-*.env artifacts are downloaded.
   needs:
     - job: sign
+      parallel:
+        matrix:
+          - SERVICE:
+              [
+                frontend,
+                productcatalogservice,
+                cartservice,
+                checkoutservice,
+                currencyservice,
+                paymentservice,
+                shippingservice,
+              ]
   before_script:
     - apk add --no-cache git curl bash yq
   script:
@@ -227,15 +240,23 @@ gitops_digest_mr:
       command -v kubectl >/dev/null 2>&1 && { echo "FORBIDDEN: kubectl present"; exit 1; }
       command -v argocd >/dev/null 2>&1 && { echo "FORBIDDEN: argocd present"; exit 1; }
 
+      echo "=== digest artifacts ==="
+      ls -la digest-*.env 2>/dev/null || true
+
       git config user.email "ci@gitlab.local"
       git config user.name "GitLab CI boutique-eks-gitops"
+      git remote set-url origin "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
       git fetch origin "${CI_DEFAULT_BRANCH}"
       BRANCH="ci/digests-${CI_COMMIT_SHORT_SHA}"
       git checkout -B "${BRANCH}" "origin/${CI_DEFAULT_BRANCH}"
 
       shopt -s nullglob
       files=(digest-*.env)
-      test "${#files[@]}" -gt 0
+      if [ "${#files[@]}" -eq 0 ]; then
+        echo "ERROR: no digest-*.env artifacts from sign matrix"
+        exit 1
+      fi
+      echo "found ${#files[@]} digest files"
 
       for f in "${files[@]}"; do
         set -a
@@ -244,6 +265,8 @@ gitops_digest_mr:
         set +a
         values="gitops/envs/dev/values/${SERVICE}.yaml"
         test -f "${values}"
+        test -n "${DIGEST:-}"
+        echo "set ${SERVICE} digest=${DIGEST}"
         yq -i ".image.digest = \"${DIGEST}\"" "${values}"
         git add -- "${values}"
       done
@@ -260,12 +283,11 @@ gitops_digest_mr:
       done
 
       if git diff --cached --quiet; then
-        echo "No digest changes"
+        echo "No digest changes (already current on ${CI_DEFAULT_BRANCH})"
         exit 0
       fi
 
       git commit -m "ci: update image digests for dev (${CI_COMMIT_SHORT_SHA})"
-      git remote set-url origin "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
       git push -u origin "HEAD:${BRANCH}" -o ci.skip
 
       curl --fail --silent --show-error \
