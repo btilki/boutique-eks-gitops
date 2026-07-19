@@ -1,6 +1,6 @@
 # AWS Load Balancer Controller
 
-**Setup:** Topic 05 · **Pin:** controller **v2.11.x** · Helm chart **1.11.4** (verify with `helm show chart`)
+**Setup:** Topic 05 · **Pin:** controller **v2.11.0** · Helm chart **1.11.0** (verify with `helm show chart`)
 
 ## Purpose
 
@@ -22,7 +22,7 @@ helm repo update
 # Edit values.yaml placeholders first (Step 5.1–5.2)
 helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --namespace kube-system \
-  --version 1.11.4 \
+  --version 1.11.0 \
   --values gitops/platform/aws-load-balancer-controller/values.yaml \
   --wait
 ```

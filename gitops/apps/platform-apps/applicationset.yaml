@@ -15,7 +15,7 @@ spec:
             namespace: kube-system
             chart: aws-load-balancer-controller
             chartRepo: https://aws.github.io/eks-charts
-            chartVersion: "1.11.4"
+            chartVersion: "1.11.0"
             valuesPath: gitops/platform/aws-load-balancer-controller/values.yaml
             wave: "10"
           - name: external-dns
@@ -84,7 +84,7 @@ spec:
           helm:
             valueFiles:
               - "$values/{{.valuesPath}}"
-        - repoURL: <GITLAB_REPO_URL>
+        - repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
           targetRevision: main
           ref: values
       destination:

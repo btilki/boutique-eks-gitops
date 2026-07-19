@@ -116,7 +116,7 @@ IRSA roles are scoped; do not annotate app pods with the LB controller role.
 
 ### Goal
 
-Install controller **v2.11.x** via Helm chart **1.11.4** into `kube-system`.
+Install controller **v2.11.x** via Helm chart **1.11.0** into `kube-system`.
 
 ### Why this step is required
 
@@ -132,7 +132,7 @@ helm repo update
 
 helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --namespace kube-system \
-  --version 1.11.4 \
+  --version 1.11.0 \
   --values gitops/platform/aws-load-balancer-controller/values.yaml \
   --wait
 
@@ -162,7 +162,7 @@ kubectl get ingressclass alb
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | Pods `Unauthorized` / AWS errors | Bad IRSA annotation / trust | Re-check role ARN and SA name `aws-load-balancer-controller` in `kube-system` |
-| Chart version missing | Repo outdated | `helm repo update`; confirm chart 1.11.4 exists |
+| Chart version missing | Stale pin / repo outdated | `helm repo update`; use chart **1.11.0** (app **v2.11.0**) — `1.11.4` is not published |
 
 ### Recovery
 

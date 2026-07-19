@@ -1,6 +1,6 @@
 # Namespace-only ApplicationSet — keeps env namespaces defined in Git
 # Service Helm apps: boutique-applicationset.yaml (Topic 09)
-# REPLACE <GITLAB_REPO_URL>
+# REPLACE https://gitlab.com/btilki/boutique-eks-gitops.git
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -32,7 +32,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: <GITLAB_REPO_URL>
+        repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
         targetRevision: main
         path: "{{.path}}"
         directory:

@@ -2,9 +2,9 @@
 # Setup Topic 05 · pin target 0.15.x (docs/versions.md)
 #
 # REPLACE before install:
-#   <IRSA_ROLE_ARN> <- terraform output -raw irsa_external_dns_role_arn
-#   <ZONE_ID>       <- terraform output -raw route53_zone_id
-#   <DOMAIN_FILTER> <- biroltilki.art
+#   arn:aws:iam::868480224481:role/boutique-eks-gitops-external-dns <- terraform output -raw irsa_external_dns_role_arn
+#   Z0450359HEFSZWRHZ73V       <- terraform output -raw route53_zone_id
+#   biroltilki.art <- biroltilki.art
 
 provider: aws
 policy: sync
@@ -12,11 +12,11 @@ registry: txt
 txtOwnerId: boutique-eks-gitops
 
 domainFilters:
-  - "<DOMAIN_FILTER>"
+  - "biroltilki.art"
 
 # Restrict to our hosted zone (recommended)
 zoneIdFilters:
-  - "<ZONE_ID>"
+  - "Z0450359HEFSZWRHZ73V"
 
 sources:
   - ingress
@@ -30,7 +30,7 @@ serviceAccount:
   create: true
   name: external-dns
   annotations:
-    eks.amazonaws.com/role-arn: "<IRSA_ROLE_ARN>"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::868480224481:role/boutique-eks-gitops-external-dns"
 
 # Pin image to 0.15.x line
 image:

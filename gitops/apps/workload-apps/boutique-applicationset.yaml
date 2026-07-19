@@ -1,6 +1,6 @@
 # Boutique workload ApplicationSet — one Helm app per service × env
 # Setup Topic 09
-# REPLACE <GITLAB_REPO_URL>
+# REPLACE https://gitlab.com/btilki/boutique-eks-gitops.git
 #
 # Charts live in repo path charts/<service> (ref: chart).
 # Env digests/ingress: gitops/envs/<env>/values/<service>.yaml
@@ -49,13 +49,13 @@ spec:
     spec:
       project: default
       sources:
-        - repoURL: <GITLAB_REPO_URL>
+        - repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
           targetRevision: main
           path: "charts/{{.service}}"
           helm:
             valueFiles:
               - "$values/gitops/envs/{{.env}}/values/{{.service}}.yaml"
-        - repoURL: <GITLAB_REPO_URL>
+        - repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
           targetRevision: main
           ref: values
       destination:

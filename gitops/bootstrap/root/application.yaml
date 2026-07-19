@@ -2,7 +2,7 @@
 # Setup Topic 06 Step 6.4
 #
 # REPLACE:
-#   <GITLAB_REPO_URL> <- HTTPS clone URL of this repository (e.g. https://gitlab.com/group/boutique-eks-gitops.git)
+#   https://gitlab.com/btilki/boutique-eks-gitops.git <- HTTPS clone URL of this repository (e.g. https://gitlab.com/group/boutique-eks-gitops.git)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -15,7 +15,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: <GITLAB_REPO_URL>
+    repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
     targetRevision: main
     path: gitops/apps
   destination:

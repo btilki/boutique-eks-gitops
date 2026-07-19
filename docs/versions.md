@@ -57,7 +57,7 @@ Exact chart versions are confirmed when each platform topic is authored. Treat t
 
 | Component | Target pin | First setup topic |
 |-----------|------------|-------------------|
-| AWS Load Balancer Controller | **v2.11.1** (Helm chart **1.11.4**) | 05 |
+| AWS Load Balancer Controller | **v2.11.0** (Helm chart **1.11.0**) | 05 |
 | external-dns | **v0.15.1** (Helm chart **1.15.0**) | 05 |
 | cert-manager | **v1.16.2** (Helm chart **v1.16.2**) | 05 |
 | Argo CD | **v2.14.x** (Helm chart **7.8.14**) | 06 |

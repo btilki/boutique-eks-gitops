@@ -3,26 +3,26 @@
 # Install via Helm until Argo CD adopts this path (Topic 06).
 #
 # REPLACE before install:
-#   <IRSA_ROLE_ARN>  <- terraform output -raw irsa_aws_lb_controller_role_arn
-#   <CLUSTER_NAME>   <- terraform output -raw cluster_name
-#   <VPC_ID>         <- terraform output -raw vpc_id
+#   arn:aws:iam::868480224481:role/boutique-eks-gitops-aws-lb-controller  <- terraform output -raw irsa_aws_lb_controller_role_arn
+#   boutique-eks-gitops   <- terraform output -raw cluster_name
+#   vpc-0e62f0ba117cc7846         <- terraform output -raw vpc_id
 #   <AWS_REGION>     <- eu-central-1
 
-clusterName: "<CLUSTER_NAME>"
+clusterName: "boutique-eks-gitops"
 region: "eu-central-1"
-vpcId: "<VPC_ID>"
+vpcId: "vpc-0e62f0ba117cc7846"
 
 serviceAccount:
   create: true
   name: aws-load-balancer-controller
   annotations:
-    eks.amazonaws.com/role-arn: "<IRSA_ROLE_ARN>"
+    eks.amazonaws.com/role-arn: "arn:aws:iam::868480224481:role/boutique-eks-gitops-aws-lb-controller"
 
 replicaCount: 2
 
-# Chart appVersion should resolve to 2.11.x — confirm with: helm show chart eks/aws-load-balancer-controller --version 1.11.4
+# Chart appVersion should resolve to 2.11.x — confirm with: helm show chart eks/aws-load-balancer-controller --version 1.11.0
 image:
-  tag: v2.11.1
+  tag: v2.11.0
 
 resources:
   requests:

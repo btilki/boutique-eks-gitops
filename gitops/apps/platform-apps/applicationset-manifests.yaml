@@ -1,6 +1,6 @@
 # Directory-synced platform manifests (policies, secret stores, NetworkPolicies)
 # Setup Topic 07 · wave 21 (after operators on wave 20)
-# REPLACE <GITLAB_REPO_URL>
+# REPLACE https://gitlab.com/btilki/boutique-eks-gitops.git
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -39,7 +39,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: <GITLAB_REPO_URL>
+        repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
         targetRevision: main
         path: "{{.path}}"
         directory:
