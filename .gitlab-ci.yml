@@ -319,39 +319,21 @@ gitops_digest_mr:
 
       git commit -m "ci: update image digests for dev (${CI_COMMIT_SHORT_SHA}) [skip ci]"
 
-      echo "=== git push ${BRANCH} ==="
-      if ! git push -u origin "HEAD:${BRANCH}"; then
-        echo "ERROR: git push failed."
-        echo "Enable: Settings → CI/CD → Job token permissions → allow this project to push branches / write repo."
+      echo "=== git push ${BRANCH} + create MR via push options ==="
+      # CI_JOB_TOKEN often cannot call POST /merge_requests (401). Push options use the
+      # same git auth that already works when "Allow Git push requests" is enabled.
+      if ! git push -u origin "HEAD:${BRANCH}" \
+        -o merge_request.create \
+        -o "merge_request.target=${CI_DEFAULT_BRANCH}" \
+        -o "merge_request.title=ci: digest updates for dev (${CI_COMMIT_SHORT_SHA})" \
+        -o "merge_request.description=Automated digest-only MR for gitops/envs/dev/values. Does not deploy to the cluster (see docs/ci.md)." \
+        -o merge_request.remove_source_branch; then
+        echo "ERROR: git push / MR create via push options failed."
+        echo "Confirm Settings → CI/CD → Job token permissions → Allow Git push requests."
+        echo "If the branch already exists without an MR, open one manually from ${BRANCH} → ${CI_DEFAULT_BRANCH}."
         exit 1
       fi
-
-      echo "=== create merge request ==="
-      HTTP_BODY="$(mktemp)"
-      HTTP_CODE="$(curl --silent --show-error \
-        --output "${HTTP_BODY}" --write-out '%{http_code}' \
-        --request POST \
-        --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-        --data-urlencode "source_branch=${BRANCH}" \
-        --data-urlencode "target_branch=${CI_DEFAULT_BRANCH}" \
-        --data-urlencode "title=ci: digest updates for dev (${CI_COMMIT_SHORT_SHA})" \
-        --data-urlencode "description=Automated **digest-only** MR for \`gitops/envs/dev/values\`. Does **not** deploy to the cluster (see docs/ci.md)." \
-        --data-urlencode "remove_source_branch=true" \
-        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests")"
-      echo "MR API HTTP ${HTTP_CODE}"
-      cat "${HTTP_BODY}"
-      echo
-      case "${HTTP_CODE}" in
-        200|201) echo "MR created" ;;
-        409)
-          echo "MR already exists — OK"
-          ;;
-        *)
-          echo "ERROR: MR create failed (HTTP ${HTTP_CODE})."
-          echo "Enable job token permission to create merge requests for this project."
-          exit 1
-          ;;
-      esac
+      echo "Push + MR create requested for branch ${BRANCH}"
       EOS
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
