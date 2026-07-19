@@ -20,10 +20,9 @@ variables:
   DOCKER_HOST: "tcp://docker:2375"
 
 default:
-  # Debian-based images: official AWS CLI v2 (glibc) works; Alpine aws-cli is broken here.
-  image: docker:27.1.1-bookworm
+  image: docker:27.1.1
   services:
-    - name: docker:27.1.1-dind-bookworm
+    - name: docker:27.1.1-dind
       alias: docker
       command: ["--tls=false"]
 
@@ -58,13 +57,12 @@ helm_lint:
     GITLAB_OIDC_TOKEN:
       aud: https://gitlab.com
   before_script:
-    - apt-get update -qq && apt-get install -y -qq curl jq unzip ca-certificates >/dev/null
+    # Alpine: official AWS CLI v2 zip is glibc-only; apk aws-cli hits musl/expat issues.
+    # pip awscli works on this runner image.
+    - apk add --no-cache bash curl jq git python3 py3-pip
+    - pip3 install --no-cache-dir --break-system-packages "awscli==1.34.23"
     - |
       set -euo pipefail
-      curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
-      unzip -q /tmp/awscliv2.zip -d /tmp
-      /tmp/aws/install -i /tmp/aws-cli -b /tmp/bin
-      export PATH="/tmp/bin:${PATH}"
       echo "${GITLAB_OIDC_TOKEN}" > /tmp/web-identity-token
       export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/web-identity-token
       test -n "${AWS_ROLE_ARN}"
