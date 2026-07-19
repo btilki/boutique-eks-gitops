@@ -13,6 +13,7 @@
 | Successful build opens an MR that changes **only** `image.digest` under `gitops/envs/dev/values/` | Digest-only promotion path |
 | Trivy **CRITICAL** findings fail the pipeline | Supply-chain gate (pin **0.71.0**) |
 | Images are signed with cosign **Sigstore keyless** | ADR-0006 |
+| Re-sign of an already-signed digest is OK | ECR tags are **immutable**; CI treats existing signatures as success |
 
 Node services (`currencyservice`, `paymentservice`) apply `ci/docker/patch-protobufjs.Dockerfile` to bump `protobufjs` to **7.5.5** (CVE-2026-41242) before scan.
 

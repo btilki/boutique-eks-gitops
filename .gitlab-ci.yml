@@ -204,7 +204,36 @@ sign:
       chmod +x /tmp/cosign
       export COSIGN_YES=true
       docker pull "${IMAGE}"
-      /tmp/cosign sign --yes --identity-token="${SIGSTORE_ID_TOKEN}" "${IMAGE}"
+      # ECR repos are IMMUTABLE: re-signing the same digest cannot overwrite *.sig tags.
+      # Use OCI 1.1 referrers when possible; if a prior signature exists, treat as success.
+      set +e
+      SIGN_OUT="$(/tmp/cosign sign --yes --identity-token="${SIGSTORE_ID_TOKEN}" \
+        --registry-referrers-mode=oci-1-1 \
+        "${IMAGE}" 2>&1)"
+      SIGN_RC=$?
+      set -e
+      printf '%s\n' "${SIGN_OUT}"
+      if [ "${SIGN_RC}" -eq 0 ]; then
+        exit 0
+      fi
+      if printf '%s\n' "${SIGN_OUT}" | grep -qiE 'already exists|TagAlreadyExists|IMAGE_TAG_ALREADY_EXISTS|entity already exists'; then
+        echo "cosign: signature already present for ${IMAGE} — OK"
+        exit 0
+      fi
+      # Fallback without referrers (first-time tag-based), still tolerate immutable collision
+      set +e
+      SIGN_OUT="$(/tmp/cosign sign --yes --identity-token="${SIGSTORE_ID_TOKEN}" "${IMAGE}" 2>&1)"
+      SIGN_RC=$?
+      set -e
+      printf '%s\n' "${SIGN_OUT}"
+      if [ "${SIGN_RC}" -eq 0 ]; then
+        exit 0
+      fi
+      if printf '%s\n' "${SIGN_OUT}" | grep -qiE 'already exists|TagAlreadyExists|IMAGE_TAG_ALREADY_EXISTS|entity already exists'; then
+        echo "cosign: signature already present for ${IMAGE} — OK"
+        exit 0
+      fi
+      exit "${SIGN_RC}"
   artifacts:
     paths:
       - "digest-${SERVICE}.env"
