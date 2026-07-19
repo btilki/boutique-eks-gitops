@@ -23,7 +23,7 @@ test → build → scan → sign → gitops
 | Stage | What | Fail means |
 |-------|------|------------|
 | test | Helm lint / chart sanity | Broken charts |
-| build | Build Boutique **v0.10.6** from GitHub → push ECR (OIDC) | No artifact |
+| build | Publish Boutique **v0.10.6** to ECR (OIDC): default retag `:bootstrap`; optional `BOUTIQUE_BUILD_MODE=git` | No artifact |
 | scan | Trivy image scan | CRITICAL CVE |
 | sign | cosign keyless | Unsigned image |
 | gitops | Branch + MR updating digest in **dev** only | No GitOps change |
@@ -34,7 +34,8 @@ test → build → scan → sign → gitops
 |----------|---------|
 | `AWS_ROLE_ARN` | GitLab OIDC IAM role from Terraform `gitlab_ci_role_arn` |
 | `AWS_DEFAULT_REGION` | `eu-central-1` |
-| (optional) `BOUTIQUE_GIT_REF` | Override Git tag (default `v0.10.6`) |
+| (optional) `BOUTIQUE_BUILD_MODE` | `ecr-bootstrap` (default) or `git` |
+| (optional) `BOUTIQUE_GIT_REF` | Git tag when mode=`git` (default `v0.10.6`) |
 
 Protected/masked as appropriate. **No** `AWS_SECRET_ACCESS_KEY`.
 

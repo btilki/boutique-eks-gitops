@@ -109,6 +109,7 @@ data "aws_iam_policy_document" "ecr_push" {
       "ecr:BatchGetImage",
       "ecr:GetDownloadUrlForLayer",
       "ecr:DescribeRepositories",
+      "ecr:DescribeImages",
       "ecr:ListImages",
     ]
     resources = var.ecr_repository_arns

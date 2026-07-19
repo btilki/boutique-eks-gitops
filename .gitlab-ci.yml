@@ -14,7 +14,10 @@ variables:
   AWS_DEFAULT_REGION: "eu-central-1"
   TRIVY_VERSION: "0.71.0"
   COSIGN_VERSION: "2.4.3"
-  # Public Artifact Registry tags after v0.10.1 are not pullable; build from GitHub.
+  # v0.10.6 lives in ECR from Topic 09 bootstrap (Artifact Registry is not publicly pullable).
+  # Default: retag ECR :bootstrap. Set BOUTIQUE_BUILD_MODE=git to rebuild from GitHub.
+  BOUTIQUE_BUILD_MODE: "ecr-bootstrap"
+  BOUTIQUE_SOURCE_TAG: "bootstrap"
   BOUTIQUE_GIT_URL: "https://github.com/GoogleCloudPlatform/microservices-demo.git"
   BOUTIQUE_GIT_REF: "v0.10.6"
   DOCKER_TLS_CERTDIR: ""
@@ -100,24 +103,38 @@ build:
       set -euo pipefail
       DST="${REGISTRY}/boutique-eks-gitops/${SERVICE}"
       TAG="ci-${CI_COMMIT_SHORT_SHA}"
-      WORKDIR="$(pwd)/.boutique-src"
-      rm -rf "${WORKDIR}"
-      git clone --depth 1 --branch "${BOUTIQUE_GIT_REF}" "${BOUTIQUE_GIT_URL}" "${WORKDIR}"
-      case "${SERVICE}" in
-        cartservice) CTX="src/cartservice/src" ;;
-        *) CTX="src/${SERVICE}" ;;
-      esac
-      docker build --platform linux/amd64 -t "${DST}:${TAG}" "${WORKDIR}/${CTX}"
+      MODE="${BOUTIQUE_BUILD_MODE:-ecr-bootstrap}"
+      if [ "${MODE}" = "git" ]; then
+        WORKDIR="$(pwd)/.boutique-src"
+        rm -rf "${WORKDIR}"
+        git clone --depth 1 --branch "${BOUTIQUE_GIT_REF}" "${BOUTIQUE_GIT_URL}" "${WORKDIR}"
+        case "${SERVICE}" in
+          cartservice) CTX="src/cartservice/src" ;;
+          *) CTX="src/${SERVICE}" ;;
+        esac
+        docker build --platform linux/amd64 -t "${DST}:${TAG}" "${WORKDIR}/${CTX}"
+        SOURCE="${BOUTIQUE_GIT_URL}@${BOUTIQUE_GIT_REF}"
+      else
+        SRC="${DST}:${BOUTIQUE_SOURCE_TAG}"
+        docker pull "${SRC}"
+        docker tag "${SRC}" "${DST}:${TAG}"
+        SOURCE="ecr:${BOUTIQUE_SOURCE_TAG}"
+      fi
       docker push "${DST}:${TAG}"
-      DIGEST="$(aws ecr describe-images --repository-name "boutique-eks-gitops/${SERVICE}" \
-        --image-ids imageTag="${TAG}" --region "${AWS_DEFAULT_REGION}" \
-        --query 'imageDetails[0].imageDigest' --output text)"
+      # Prefer local digest (avoids needing ecr:DescribeImages); fall back to API if present.
+      DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "${DST}:${TAG}" | awk -F@ '{print $2}')"
+      if [ -z "${DIGEST}" ] || [ "${DIGEST}" = "<no value>" ]; then
+        DIGEST="$(aws ecr describe-images --repository-name "boutique-eks-gitops/${SERVICE}" \
+          --image-ids imageTag="${TAG}" --region "${AWS_DEFAULT_REGION}" \
+          --query 'imageDetails[0].imageDigest' --output text)"
+      fi
+      test -n "${DIGEST}" && [[ "${DIGEST}" == sha256:* ]]
       {
         echo "SERVICE=${SERVICE}"
         echo "DIGEST=${DIGEST}"
         echo "IMAGE=${DST}@${DIGEST}"
         echo "TAG=${TAG}"
-        echo "SOURCE=${BOUTIQUE_GIT_URL}@${BOUTIQUE_GIT_REF}"
+        echo "SOURCE=${SOURCE}"
       } | tee "digest-${SERVICE}.env"
   artifacts:
     paths:
