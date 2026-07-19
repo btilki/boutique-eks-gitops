@@ -38,6 +38,8 @@ singleBinary:
     # Chart 6.24 needs a writable /var/loki (RO root FS otherwise → CrashLoop)
     enabled: true
     size: 10Gi
+    # Cluster has gp2 but it is not annotated as default — must set explicitly
+    storageClass: gp2
 
 gateway:
   enabled: true
