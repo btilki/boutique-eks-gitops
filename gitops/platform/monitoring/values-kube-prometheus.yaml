@@ -27,7 +27,8 @@ alertmanager:
       smtp_auth_username: "btilkidata@gmail.com"
       smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-smtp/password
     route:
-      receiver: email-critical
+      # Default null so EKS noise/warnings do not hammer Gmail SMTP
+      receiver: "null"
       group_by: ["alertname", "severity"]
       group_wait: 30s
       group_interval: 5m
