@@ -35,7 +35,9 @@ singleBinary:
       cpu: 500m
       memory: 1Gi
   persistence:
-    enabled: false # Pilot cost — logs ephemeral across restart
+    # Chart 6.24 needs a writable /var/loki (RO root FS otherwise → CrashLoop)
+    enabled: true
+    size: 10Gi
 
 gateway:
   enabled: true
@@ -43,6 +45,15 @@ gateway:
     requests:
       cpu: 25m
       memory: 32Mi
+
+# Memcached caches default on — too heavy for 3× m6i.large with kube-prometheus
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
+lokiCanary:
+  enabled: false
 
 backend:
   replicas: 0
@@ -53,8 +64,6 @@ write:
 
 monitoring:
   selfMonitoring:
-    enabled: false
-  lokiCanary:
     enabled: false
 
 test:
