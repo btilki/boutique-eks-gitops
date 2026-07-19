@@ -2,11 +2,11 @@
 # Pin: Helm chart 69.8.0 · namespace monitoring
 #
 # REPLACE before sync (non-secret):
-#   <ACM_CERTIFICATE_ARN>
-#   <SMTP_SMARTHOST>   e.g. email-smtp.eu-central-1.amazonaws.com:587
-#   <SMTP_FROM>        e.g. alertmanager@biroltilki.art
-#   <SMTP_TO>          e.g. you@example.com
-#   <SMTP_USERNAME>    SMTP AUTH user
+#   arn:aws:acm:eu-central-1:868480224481:certificate/9363fd9a-7ed5-41da-aea5-f37f53a94269
+#   smtp.gmail.com:587   e.g. email-smtp.eu-central-1.amazonaws.com:587
+#   btilkidata@gmail.com        e.g. alertmanager@biroltilki.art
+#   btilkidata@gmail.com          e.g. you@example.com
+#   btilkidata@gmail.com    SMTP AUTH user
 #
 # SECRET (via ESO → Secret alertmanager-smtp key "password"):
 #   smtp_auth_password_file mounts /etc/alertmanager/secrets/alertmanager-smtp/password
@@ -21,10 +21,10 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-      smtp_smarthost: "<SMTP_SMARTHOST>"
-      smtp_from: "<SMTP_FROM>"
+      smtp_smarthost: "smtp.gmail.com:587"
+      smtp_from: "btilkidata@gmail.com"
       smtp_require_tls: true
-      smtp_auth_username: "<SMTP_USERNAME>"
+      smtp_auth_username: "btilkidata@gmail.com"
       smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-smtp/password
     route:
       receiver: email-critical
@@ -46,7 +46,7 @@ alertmanager:
       - name: "null"
       - name: email-critical
         email_configs:
-          - to: "<SMTP_TO>"
+          - to: "btilkidata@gmail.com"
             send_resolved: true
             require_tls: true
   alertmanagerSpec:
@@ -89,7 +89,7 @@ grafana:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-      alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-central-1:868480224481:certificate/9363fd9a-7ed5-41da-aea5-f37f53a94269"
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/backend-protocol: HTTP
       external-dns.alpha.kubernetes.io/hostname: grafana.boutique.biroltilki.art
