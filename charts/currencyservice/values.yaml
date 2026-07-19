@@ -25,6 +25,9 @@ resources:
 
 env:
   PORT: "7000"
+  DISABLE_PROFILER: "1"
+  DISABLE_TRACING: "1"
+  DISABLE_DEBUGGER: "1"
 
 nameOverride: ""
 fullnameOverride: "currencyservice"

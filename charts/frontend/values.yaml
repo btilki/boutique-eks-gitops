@@ -32,6 +32,11 @@ env:
   SHIPPING_SERVICE_ADDR: "shippingservice:50051"
   CHECKOUT_SERVICE_ADDR: "checkoutservice:5050"
   AD_SERVICE_ADDR: "productcatalogservice:3550"
+  # Required by Boutique >= v0.10.x even if assistant is out of scope
+  SHOPPING_ASSISTANT_SERVICE_ADDR: "shoppingassistantservice:80"
+  ENABLE_PROFILER: "0"
+  DISABLE_PROFILER: "1"
+  DISABLE_TRACING: "1"
 
 nameOverride: ""
 fullnameOverride: "frontend"
