@@ -129,10 +129,13 @@ build:
           ci/docker
         SOURCE="${SOURCE}+protobufjs-7.5.5"
       fi
-      docker push "${DST}:${TAG}"
-      # Prefer local digest (avoids needing ecr:DescribeImages); fall back to API if present.
-      DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "${DST}:${TAG}" | awk -F@ '{print $2}')"
-      if [ -z "${DIGEST}" ] || [ "${DIGEST}" = "<no value>" ]; then
+      PUSH_LOG="$(docker push "${DST}:${TAG}" 2>&1 | tee /dev/stderr)"
+      # Prefer digest from push output (RepoDigests can still point at the pre-patch image).
+      DIGEST="$(printf '%s\n' "${PUSH_LOG}" | awk '/digest:/{print $NF; exit}')"
+      if [ -z "${DIGEST}" ] || [[ "${DIGEST}" != sha256:* ]]; then
+        DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "${DST}:${TAG}" | awk -F@ '{print $2}')"
+      fi
+      if [ -z "${DIGEST}" ] || [ "${DIGEST}" = "<no value>" ] || [[ "${DIGEST}" != sha256:* ]]; then
         DIGEST="$(aws ecr describe-images --repository-name "boutique-eks-gitops/${SERVICE}" \
           --image-ids imageTag="${TAG}" --region "${AWS_DEFAULT_REGION}" \
           --query 'imageDetails[0].imageDigest' --output text)"
