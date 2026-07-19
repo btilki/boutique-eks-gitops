@@ -93,7 +93,7 @@ Never add `:latest` to chart templates.
 
 ### Goal
 
-Pull upstream Online Boutique (and Redis) images, push to project ECR, record digests into env values.
+Pull is not available for v0.10.6 — **build** Online Boutique from GitHub (and Redis from public ECR), push to project ECR, record digests into env values.
 
 ### Why this step is required
 
@@ -113,36 +113,47 @@ aws ecr get-login-password --region "$AWS_REGION" \
 aws ecr describe-repositories --repository-names boutique-eks-gitops/redis --region "$AWS_REGION" \
   || terraform -chdir=terraform/envs/prod apply -target=module.ecr -auto-approve
 
-# Upstream pins (Google microservices-demo). Adjust tag if upstream moves.
-UPSTREAM_TAG="v0.10.2"
-BASE="us-docker.pkg.dev/google-samples/microservices-demo"
+# Boutique v0.10.6 is not publicly pullable from Artifact Registry / gcr.
+# Build from the GitHub release tag (same approach as Topic 10 CI).
+TAG="v0.10.6"
+WORKDIR="/tmp/microservices-demo-${TAG}"
+PLATFORM="linux/amd64"
 
-declare -A MAP=(
-  [frontend]="${BASE}/frontend:${UPSTREAM_TAG}"
-  [productcatalogservice]="${BASE}/productcatalogservice:${UPSTREAM_TAG}"
-  [cartservice]="${BASE}/cartservice:${UPSTREAM_TAG}"
-  [checkoutservice]="${BASE}/checkoutservice:${UPSTREAM_TAG}"
-  [currencyservice]="${BASE}/currencyservice:${UPSTREAM_TAG}"
-  [paymentservice]="${BASE}/paymentservice:${UPSTREAM_TAG}"
-  [shippingservice]="${BASE}/shippingservice:${UPSTREAM_TAG}"
-  [redis]="public.ecr.aws/docker/library/redis:7.2-alpine"
-)
+if [ ! -d "$WORKDIR/.git" ]; then
+  rm -rf "$WORKDIR"
+  git clone --depth 1 --branch "$TAG" \
+    https://github.com/GoogleCloudPlatform/microservices-demo.git "$WORKDIR"
+fi
 
 mkdir -p /tmp/boutique-digests
-for svc in "${!MAP[@]}"; do
-  src="${MAP[$svc]}"
+: > /tmp/boutique-digests/digests.txt
+
+while IFS='|' read -r svc ctx; do
+  [ -z "$svc" ] && continue
   dst="${REGISTRY}/boutique-eks-gitops/${svc}"
-  docker pull "$src"
-  dig=$(docker inspect --format='{{index .RepoDigests 0}}' "$src" | awk -F@ '{print $2}')
-  # Retag by digest source and push
-  docker tag "$src" "${dst}:bootstrap"
+  docker build --platform "$PLATFORM" -t "${dst}:bootstrap" "${WORKDIR}/${ctx}"
   docker push "${dst}:bootstrap"
-  # Resolve ECR digest after push
   ecr_dig=$(aws ecr describe-images --repository-name "boutique-eks-gitops/${svc}" \
     --image-ids imageTag=bootstrap --region "$AWS_REGION" \
     --query 'imageDetails[0].imageDigest' --output text)
   echo "${svc}=${ecr_dig}" | tee -a /tmp/boutique-digests/digests.txt
-done
+done <<'SERVICES'
+frontend|src/frontend
+productcatalogservice|src/productcatalogservice
+cartservice|src/cartservice/src
+checkoutservice|src/checkoutservice
+currencyservice|src/currencyservice
+paymentservice|src/paymentservice
+shippingservice|src/shippingservice
+SERVICES
+
+docker pull --platform "$PLATFORM" public.ecr.aws/docker/library/redis:7.2-alpine
+docker tag public.ecr.aws/docker/library/redis:7.2-alpine "${REGISTRY}/boutique-eks-gitops/redis:bootstrap"
+docker push "${REGISTRY}/boutique-eks-gitops/redis:bootstrap"
+ecr_dig=$(aws ecr describe-images --repository-name "boutique-eks-gitops/redis" \
+  --image-ids imageTag=bootstrap --region "$AWS_REGION" \
+  --query 'imageDetails[0].imageDigest' --output text)
+echo "redis=${ecr_dig}" | tee -a /tmp/boutique-digests/digests.txt
 
 cat /tmp/boutique-digests/digests.txt
 ```
@@ -173,7 +184,7 @@ wc -l /tmp/boutique-digests/digests.txt
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | `TagAlreadyExistsException` | Immutable tag reused | Use new tag name; update describe-images |
-| Upstream pull fail | Network / tag renamed | Pick current demo tag from Google repo |
+| Upstream build fail | Dockerfile / network | Fix context path; retry; use `bootstrap2` if tag immutable |
 | Redis repo missing | TF not applied | Apply `module.ecr` |
 
 ### Recovery

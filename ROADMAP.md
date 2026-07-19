@@ -18,7 +18,7 @@
 | 4 | Argo CD GitOps bootstrap | M | ⬜ | `06-argocd-bootstrap` |
 | 5 | Security baseline | M | ⬜ | `07-security-baseline` |
 | 6 | Observability baseline | M | ⬜ | `08-observability` |
-| 7 | Boutique Helm + GitOps envs | L | ⬜ | `09-boutique-charts` |
+| 7 | Boutique Helm + GitOps envs | L | ✅ | `09-boutique-charts` |
 | 8 | GitLab CI digest pipeline | L | ⬜ | `10-gitlab-ci-digest` |
 | 9 | Promotion + frontend canary | L | ⬜ | `11-promotion`, `12-canary-rollouts` |
 | 10 | Production readiness | M | ⬜ | `13-production-readiness` |

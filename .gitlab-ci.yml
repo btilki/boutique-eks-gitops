@@ -14,8 +14,9 @@ variables:
   AWS_DEFAULT_REGION: "eu-central-1"
   TRIVY_VERSION: "0.71.0"
   COSIGN_VERSION: "2.4.3"
-  BOUTIQUE_UPSTREAM_TAG: "v0.10.2"
-  BOUTIQUE_UPSTREAM_BASE: "us-docker.pkg.dev/google-samples/microservices-demo"
+  # Public Artifact Registry tags after v0.10.1 are not pullable; build from GitHub.
+  BOUTIQUE_GIT_URL: "https://github.com/GoogleCloudPlatform/microservices-demo.git"
+  BOUTIQUE_GIT_REF: "v0.10.6"
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: "tcp://docker:2375"
 
@@ -97,11 +98,16 @@ build:
   script:
     - |
       set -euo pipefail
-      SRC="${BOUTIQUE_UPSTREAM_BASE}/${SERVICE}:${BOUTIQUE_UPSTREAM_TAG}"
       DST="${REGISTRY}/boutique-eks-gitops/${SERVICE}"
       TAG="ci-${CI_COMMIT_SHORT_SHA}"
-      docker pull "${SRC}"
-      docker tag "${SRC}" "${DST}:${TAG}"
+      WORKDIR="$(pwd)/.boutique-src"
+      rm -rf "${WORKDIR}"
+      git clone --depth 1 --branch "${BOUTIQUE_GIT_REF}" "${BOUTIQUE_GIT_URL}" "${WORKDIR}"
+      case "${SERVICE}" in
+        cartservice) CTX="src/cartservice/src" ;;
+        *) CTX="src/${SERVICE}" ;;
+      esac
+      docker build --platform linux/amd64 -t "${DST}:${TAG}" "${WORKDIR}/${CTX}"
       docker push "${DST}:${TAG}"
       DIGEST="$(aws ecr describe-images --repository-name "boutique-eks-gitops/${SERVICE}" \
         --image-ids imageTag="${TAG}" --region "${AWS_DEFAULT_REGION}" \
@@ -111,6 +117,7 @@ build:
         echo "DIGEST=${DIGEST}"
         echo "IMAGE=${DST}@${DIGEST}"
         echo "TAG=${TAG}"
+        echo "SOURCE=${BOUTIQUE_GIT_URL}@${BOUTIQUE_GIT_REF}"
       } | tee "digest-${SERVICE}.env"
   artifacts:
     paths:
