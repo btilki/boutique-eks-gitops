@@ -16,12 +16,13 @@ lint:
 	@if find terraform -name '*.tf' 2>/dev/null | grep -q .; then \
 		terraform fmt -check -recursive terraform; \
 	else \
-		echo "No .tf files yet — skip fmt (expected until Topic 03/04)"; \
+		echo "No .tf files — skip fmt"; \
 	fi
 	@echo "lint: OK"
 
 docs-check:
 	@test -f docs/setup/README.md
+	@test -f CONTRIBUTING.md
 	@test -f docs/setup/01-prerequisites.md
 	@test -f docs/setup/02-repo-foundation.md
 	@test -f docs/setup/03-remote-state.md
@@ -40,6 +41,9 @@ docs-check:
 	@test -f docs/setup/13-production-readiness.md
 	@test -f docs/setup/14-teardown.md
 	@test -f docs/runbooks/teardown.md
+	@test -f LICENSE
+	@test -f docs/operations/README.md
+	@test -f docs/operations/17-common-incidents.md
 	@test -f docs/PRODUCTION_CHECKLIST.md
 	@test -f docs/runbooks/ingress.md
 	@test -f docs/runbooks/argo-sync.md

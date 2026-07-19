@@ -2,7 +2,7 @@
 
 **Vision:** Production-grade GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI builds, scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
 
-**Status:** Planning complete — implementation not started  
+**Status:** M3 PASS — production path proven; Phase 11 teardown next  
 **Detailed plan:** [docs/implementation/plan.md](docs/implementation/plan.md)  
 **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/architecture/](docs/architecture/)
 
@@ -12,16 +12,16 @@
 
 | Phase | Title | Complexity | Status | Setup topics |
 |-------|--------|------------|--------|--------------|
-| 1 | Foundation | S | ⬜ | `01-prerequisites`, `02-repo-foundation` |
-| 2 | AWS foundation (Terraform) | L | ⬜ | `03-remote-state`, `04-network-eks-ecr-iam` |
-| 3 | Ingress, DNS, TLS | M | ⬜ | `05-ingress-dns-tls` |
-| 4 | Argo CD GitOps bootstrap | M | ⬜ | `06-argocd-bootstrap` |
-| 5 | Security baseline | M | ⬜ | `07-security-baseline` |
-| 6 | Observability baseline | M | ⬜ | `08-observability` |
+| 1 | Foundation | S | ✅ | `01-prerequisites`, `02-repo-foundation` |
+| 2 | AWS foundation (Terraform) | L | ✅ | `03-remote-state`, `04-network-eks-ecr-iam` |
+| 3 | Ingress, DNS, TLS | M | ✅ | `05-ingress-dns-tls` |
+| 4 | Argo CD GitOps bootstrap | M | ✅ | `06-argocd-bootstrap` |
+| 5 | Security baseline | M | ✅ | `07-security-baseline` |
+| 6 | Observability baseline | M | ✅ | `08-observability` |
 | 7 | Boutique Helm + GitOps envs | L | ✅ | `09-boutique-charts` |
-| 8 | GitLab CI digest pipeline | L | ⬜ | `10-gitlab-ci-digest` |
-| 9 | Promotion + frontend canary | L | ⬜ | `11-promotion`, `12-canary-rollouts` |
-| 10 | Production readiness | M | ⬜ | `13-production-readiness` |
+| 8 | GitLab CI digest pipeline | L | ✅ | `10-gitlab-ci-digest` |
+| 9 | Promotion + frontend canary | L | ✅ | `11-promotion`, `12-canary-rollouts` |
+| 10 | Production readiness | M | ✅ | `13-production-readiness` |
 | 11 | Teardown | M | ⬜ | `14-teardown` |
 
 Status: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Skipped
@@ -61,7 +61,6 @@ FC review prompts run at **M1, M2, M3** (phases 3, 6, 10). **Phase 11 teardown r
 
 ## Current focus
 
-**Next:** Phase C live bootstrap — Topic 01 Step **1.1** (`docs/setup/` is SoT).
+**Next:** Topic **14 — Teardown** (`docs/setup/14-teardown.md`) immediately — do not leave the cluster running (FR-11 / M4).
 
-Phase A ✅. Topics 01–14 authored (Topic 01 updated: GitLab create + local Git init).  
-Live: mark ROADMAP phases ✅ only during Phase C/D execution (M3/M4 sign-off).
+Phases 1–10 ✅ · M3 PASS 2026-07-19.

@@ -2,9 +2,9 @@
 
 **Maturity:** Production pilot (single AWS account, single EKS cluster)  
 **Region:** `eu-central-1`  
-**Status:** Accepted — implementation-ready (Setup Topic 02)  
+**Status:** Accepted — M3 PASS (2026-07-19); next Topic 14 teardown (M4)  
 **Deep docs:** [docs/architecture/](architecture/README.md)  
-**Plan:** [implementation/plan.md](implementation/plan.md) · **Roadmap:** [../ROADMAP.md](../ROADMAP.md)
+**Plan:** [implementation/plan.md](implementation/plan.md) · **Roadmap:** [../ROADMAP.md](../ROADMAP.md) · **Ops:** [operations/README.md](operations/README.md)
 
 ---
 

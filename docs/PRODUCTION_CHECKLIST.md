@@ -5,16 +5,16 @@
 **Authority:** Must FRs from [`docs/architecture/01-requirements.md`](architecture/01-requirements.md)  
 **Related:** [Setup 13](setup/13-production-readiness.md) · [promotion](promotion.md) · [rollback](rollback.md) · [runbooks](runbooks/)
 
-Fill **Evidence** with MR URLs, command output snippets, screenshots, or timestamps. Leave unchecked until proven live (Phase C).
+Filled **2026-07-19** during Phase C Topic 13.1 evidence walk.
 
 **Sign-off**
 
 | Field | Value |
 |-------|--------|
-| Operator | |
-| Date (UTC) | |
-| M3 result | ⬜ PASS · ⬜ FAIL |
-| Notes | |
+| Operator | Birol Tilki (`@btilki`) |
+| Date (UTC) | 2026-07-19 |
+| M3 result | ✅ **PASS** · ⬜ FAIL |
+| Notes | Path proven end-to-end. Stage realigned via !13 (`365c59d`); stage=prod `563ebf12…`; canary Healthy; HTTPS 200. C6=!12. Ignore red CI on digest MRs. |
 
 ---
 
@@ -32,18 +32,18 @@ Fill **Evidence** with MR URLs, command output snippets, screenshots, or timesta
 
 | ID | Must check | Evidence | Done |
 |----|------------|----------|------|
-| A1 | EKS **1.31** Ready in `eu-central-1`; nodes Ready | `kubectl get nodes` | ⬜ |
-| A2 | Remote state S3 + lock table in use | `terraform -chdir=terraform/envs/prod init` backend | ⬜ |
-| A3 | ECR repos exist (7 services + redis); digests pulled | `aws ecr describe-repositories` / Argo Healthy | ⬜ |
-| A4 | GitLab OIDC IAM role works (no static AWS keys in CI) | Pipeline job logs show OIDC assume-role | ⬜ |
-| A5 | Hostnames HTTPS via ACM+ALB: Argo, Grafana, boutique envs | curl `-I` each host | ⬜ |
-| A6 | cert-manager installed (ACM remains public TLS) | `kubectl -n cert-manager get pods` | ⬜ |
-| A7 | Argo CD app-of-apps; **prod sync = manual** | App syncPolicy; no auto on `*-prod` | ⬜ |
-| A8 | Kyverno denies `:latest` / requires digest / ECR allowlist | Policy test or deny event | ⬜ |
-| A9 | ESO ClusterSecretStore Ready; SMTP secret for AM | `kubectl get clustersecretstore` | ⬜ |
-| A10 | NetworkPolicies present for `dev`/`stage`/`prod` | `kubectl get netpol -A` | ⬜ |
-| A11 | Grafana reachable; Alertmanager **email** proven (then test rule disabled) | Inbox + [`runbooks/alerting.md`](runbooks/alerting.md) | ⬜ |
-| A12 | Prometheus + Loki running with resource caps | `kubectl -n monitoring get pods` | ⬜ |
+| A1 | EKS **1.31** Ready in `eu-central-1`; nodes Ready | 3 nodes Ready, `v1.31.14-eks-8f14419` (2026-07-19) | ✅ |
+| A2 | Remote state S3 + lock table in use | `terraform/envs/prod/backend.tf` S3 backend + `backend.hcl` (Topic 03) | ✅ |
+| A3 | ECR repos exist (7 services + redis); digests pulled | 8 repos `boutique-eks-gitops/*`; prod pods `@sha256:` | ✅ |
+| A4 | GitLab OIDC IAM role works (no static AWS keys in CI) | Pipelines assume `boutique-eks-gitops-gitlab-ci` via OIDC (`AWS_ROLE_ARN`); e.g. build jobs on `main` | ✅ |
+| A5 | Hostnames HTTPS via ACM+ALB: Argo, Grafana, boutique envs | `boutique`/`stage`/`dev` HTTPS **200**; `grafana.boutique…` **302** (2026-07-19) | ✅ |
+| A6 | cert-manager installed (ACM remains public TLS) | `cert-manager` ns: controller/cainjector/webhook Running | ✅ |
+| A7 | Argo CD app-of-apps; **prod sync = manual** | ~40 apps; `frontend-prod` `syncPolicy.automated` empty | ✅ |
+| A8 | Kyverno denies `:latest` / requires digest / ECR allowlist | ClusterPolicies Ready: `deny-latest-tag`, `require-image-digest`, `ecr-registry-allowlist` | ✅ |
+| A9 | ESO ClusterSecretStore Ready; SMTP secret for AM | `aws-cluster-secret-store` Valid/Ready; `alertmanager-smtp` SecretSynced | ✅ |
+| A10 | NetworkPolicies present for `dev`/`stage`/`prod` | 5 netpol each in `dev`/`stage`/`prod` | ✅ |
+| A11 | Grafana reachable; Alertmanager **email** proven (then test rule disabled) | Grafana 302; Topic 08 email received then rule set to `vector(0)` (`840c9f6`) | ✅ |
+| A12 | Prometheus + Loki running with resource caps | `monitoring` ns: 10 pods Running (kube-prom + Loki) | ✅ |
 
 ---
 
@@ -51,12 +51,12 @@ Fill **Evidence** with MR URLs, command output snippets, screenshots, or timesta
 
 | ID | Must check | Evidence | Done |
 |----|------------|----------|------|
-| B1 | 7 Boutique services + Redis synced from Git digests | Argo apps Healthy; pods use `@sha256:` | ⬜ |
-| B2 | Storefronts: `dev-boutique` / `stage-boutique` / `boutique` | HTTPS 200/302 | ⬜ |
-| B3 | Image contract = `repository` + `digest` only (no `:latest` in Git) | `grep -R ':latest' gitops/envs \|\| true` empty | ⬜ |
-| B4 | GitLab CI: test→build→scan(Trivy **0.71.0**)→sign→**digest MR only** | Pipeline URL; no kubectl/argocd deploy jobs | ⬜ |
-| B5 | Cosign **keyless** sign (Sigstore); ADR-0006 followed | Job log / signature in ECR or Rekor | ⬜ |
-| B6 | CI does **not** call cluster API | `.gitlab-ci.yml` review | ⬜ |
+| B1 | 7 Boutique services + Redis synced from Git digests | `prod` 8 pods Running, all images `…@sha256:…` | ✅ |
+| B2 | Storefronts: `dev-boutique` / `stage-boutique` / `boutique` | All three HTTPS **200** (2026-07-19) | ✅ |
+| B3 | Image contract = `repository` + `digest` only (no `:latest` in Git) | `grep -R ':latest' gitops/envs` → empty | ✅ |
+| B4 | GitLab CI: test→build→scan(Trivy **0.71.0**)→sign→**digest MR only** | `.gitlab-ci.yml` stages; digest MR e.g. merge `8551a31` / `2adaea8`; Trivy pin `0.71.0` | ✅ |
+| B5 | Cosign **keyless** sign (Sigstore); ADR-0006 followed | Sign jobs green on `main`; ECR `.sig` / keyless via `SIGSTORE_ID_TOKEN` | ✅ |
+| B6 | CI does **not** call cluster API | `.gitlab-ci.yml`: no deploy kubectl/argocd; FORBIDDEN guards in gitops job | ✅ |
 
 ---
 
@@ -64,13 +64,13 @@ Fill **Evidence** with MR URLs, command output snippets, screenshots, or timesta
 
 | ID | Must check | Evidence | Done |
 |----|------------|----------|------|
-| C1 | Promote digests `dev → stage` via MR (digest-only) | MR URL | ⬜ |
-| C2 | Promote `stage → prod` requires **`@btilki` CODEOWNERS** | Protected branch + approval | ⬜ |
-| C3 | Prod Application synced **manually** after merge | Argo sync timestamp | ⬜ |
-| C4 | Frontend canary on **stage** (ALB weights observed) | Rollout status / describe | ⬜ |
-| C5 | Frontend canary on **prod** after manual sync | Rollout status / describe | ⬜ |
-| C6 | Rollback via **`git revert`** documented and rehearsed once | Revert MR URL + [`rollback.md`](rollback.md) | ⬜ |
-| C7 | Canary abort path known (Rollout abort + Git revert) | [`runbooks/canary.md`](runbooks/canary.md) | ⬜ |
+| C1 | Promote digests `dev → stage` via MR (digest-only) | `80e1fa7` / merge `d1a4ad3` `promote/stage-20260719` | ✅ |
+| C2 | Promote `stage → prod` requires **`@btilki` CODEOWNERS** | CODEOWNERS + protected branch code-owner approval; merges `ccd3f8f`, `108f0bf` (!11) | ✅ |
+| C3 | Prod Application synced **manually** after merge | Manual sync `frontend-prod` after !11 (2026-07-19 ~21:08Z) | ✅ |
+| C4 | Frontend canary on **stage** (ALB weights observed) | Rollout Progressing→Paused→Healthy; 2 pods then promote (`1b75586` / `7c83613`) | ✅ |
+| C5 | Frontend canary on **prod** after manual sync | Progressing/Paused dual-pod then Healthy on `563ebf12…` (`108f0bf`) | ✅ |
+| C6 | Rollback via **`git revert`** documented and rehearsed once | [`rollback.md`](rollback.md); live digest restore MR **!12** (`a2bbfa2`, 2026-07-19) | ✅ |
+| C7 | Canary abort path known (Rollout abort + Git revert) | Topic 12.5 + [`runbooks/canary.md`](runbooks/canary.md) / Step 12.5 | ✅ |
 
 ---
 
@@ -78,12 +78,12 @@ Fill **Evidence** with MR URLs, command output snippets, screenshots, or timesta
 
 | ID | Must check | Evidence | Done |
 |----|------------|----------|------|
-| D1 | Architecture docs Accepted + Mermaid readable | [`ARCHITECTURE.md`](ARCHITECTURE.md) | ⬜ |
-| D2 | ADRs 0001–0006 present | `docs/adr/` | ⬜ |
-| D3 | Runbooks present: alerting, ingress, argo-sync, kyverno, canary | [`runbooks/README.md`](runbooks/README.md) | ⬜ |
-| D4 | Promotion + rollback docs linked from README | Links resolve | ⬜ |
-| D5 | Versions pin matrix matches live (EKS, Trivy, Rollouts, …) | [`versions.md`](versions.md) | ⬜ |
-| D6 | This checklist completed with evidence (this file) | Sign-off table above | ⬜ |
+| D1 | Architecture docs Accepted + Mermaid readable | [`ARCHITECTURE.md`](ARCHITECTURE.md) | ✅ |
+| D2 | ADRs 0001–0006 present | `docs/adr/0001`…`0006` listed | ✅ |
+| D3 | Runbooks present: alerting, ingress, argo-sync, kyverno, canary | All five + README (+ teardown stub) | ✅ |
+| D4 | Promotion + rollback docs linked from README | README + this checklist Related links | ✅ |
+| D5 | Versions pin matrix matches live (EKS, Trivy, Rollouts, …) | EKS 1.31 live; Trivy/cosign/Rollouts pins in CI/AppSet (`docs/versions.md`) | ✅ |
+| D6 | This checklist completed with evidence (this file) | Evidence filled 2026-07-19; C6 closed via !12 | ✅ |
 
 ---
 
@@ -93,14 +93,14 @@ Record one end-to-end pass:
 
 | Step | Action | Evidence |
 |------|--------|----------|
-| E1 | CI opens digest MR → `gitops/envs/dev/**` | Pipeline + MR URL |
-| E2 | Merge → Argo syncs **dev** | App Healthy |
-| E3 | Promote MR → **stage**; canary progresses | MR + Rollout |
-| E4 | Promote MR → **prod** + `@btilki`; **manual** sync | MR + sync |
-| E5 | Prod canary → stable; `https://boutique.biroltilki.art` OK | curl + Rollout |
-| E6 | Optional: abort or revert once to prove recovery | MR / abort log |
+| E1 | CI opens digest MR → `gitops/envs/dev/**` | e.g. MR merged as `8551a31` / later `e746f51` digest MRs |
+| E2 | Merge → Argo syncs **dev** | `*-dev` apps Synced/Healthy |
+| E3 | Promote MR → **stage**; canary progresses | `d1a4ad3` + stage canary `7c83613` |
+| E4 | Promote MR → **prod** + `@btilki`; **manual** sync | `108f0bf` (!11) + manual `frontend-prod` sync |
+| E5 | Prod canary → stable; `https://boutique.biroltilki.art` OK | Healthy + HTTPS 200 on `563ebf12…` |
+| E6 | Optional: abort or revert once to prove recovery | MR **!12** rollback; cleanup **!13** realign stage→prod (`365c59d`, canary Healthy) |
 
-Demo owner: _______________ Date: _______________
+Demo owner: Birol Tilki Date: 2026-07-19
 
 ---
 
@@ -136,4 +136,4 @@ Complete during [`docs/setup/14-teardown.md`](setup/14-teardown.md) / [`docs/run
 
 **PASS** only if sections A–E are checked with evidence and no Must FR (except FR-11) is open.
 
-Next: **Topic 14 — Teardown** immediately.
+**Current:** **M3 PASS** (A–E complete). Next: **Topic 14 — Teardown** immediately (FR-11).

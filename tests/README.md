@@ -1,22 +1,24 @@
 # Tests — boutique-eks-gitops
 
-Validation helpers for charts, policies, and smoke checks. **Not** a substitute for Setup Guide validation.
+Validation helpers and fixtures. **Not** a substitute for Setup Guide validation or `docs/PRODUCTION_CHECKLIST.md`.
 
-| Path | Purpose | First populated |
-|------|---------|-----------------|
-| `tests/helm/` | `helm lint` / template fixtures | Topic 09 |
-| `tests/policy/` | Kyverno policy fixtures | Topic 07 |
-| `tests/smoke/` | HTTP / kubectl smoke scripts referenced by setup | Topics 05, 09, 13 |
+| Path | Purpose | Status |
+|------|---------|--------|
+| `tests/policy/` | Sample Kyverno deny fixtures (e.g. `:latest`) | Partial — live policies in `gitops/platform/kyverno/` |
+| `tests/helm/` | Reserved for chart fixtures | Empty — use CI `helm_lint` / `helm lint charts/*` |
+| `tests/smoke/` | Reserved for scripted smokes | Empty — use Setup Guide Validation + checklist |
+
+## Local / CI entry points
 
 ```bash
-make lint
-make docs-check
+make lint          # terraform fmt -check + docs/versions.md presence
+make docs-check    # required setup/runbook/CI files exist
+
+# Helm (matches GitLab test stage)
+helm lint charts/frontend charts/cartservice charts/redis charts/checkoutservice \
+  charts/productcatalogservice charts/currencyservice charts/paymentservice charts/shippingservice
 ```
 
-Do not add install-all or cluster-apply scripts here.
+GitLab CI also runs Trivy CRITICAL, cosign keyless sign, and digest-MR path guards (see [`docs/ci.md`](../docs/ci.md)).
 
-## TODO
-
-- `TODO(setup:7.3)` — policy deny fixtures  
-- `TODO(setup:9.1)` — helm lint samples  
-- `TODO(setup:13.1)` — smoke checklist pointers  
+Do not add install-all or cluster-apply scripts here — Setup Guide remains authoritative.

@@ -2,7 +2,7 @@
 
 **Audience:** L2 — Implementer  
 **Authority:** This directory is the **single source of truth** for bootstrap. If README, chat, or scripts conflict with `docs/setup/`, **this guide wins**.  
-**Last reviewed:** 2026-07-18  
+**Last reviewed:** 2026-07-19  
 **Related:** [Architecture](../ARCHITECTURE.md) · [Implementation plan](../implementation/plan.md) · [Roadmap](../../ROADMAP.md) · [Topic outlines](OUTLINES.md) · [Required files](REQUIRED-FILES.md)
 
 ---
@@ -16,7 +16,7 @@
 | **Estimated calendar time** | ~4–8 working sessions (plan-dependent); teardown is mandatory after tests |
 | **Estimated cost** | ~**$35–45** for a ~2-day pilot with teardown; ~**$350–500/mo** if left running — see [cost model](../architecture/10-cost-model.md) |
 | **Who executes** | You run every CLI/GUI step; partner designs and authors guides/files |
-| **Phase status** | A ✅ · B: Topics 01–14 authored (14 awaiting approval) → then **Phase C** |
+| **Phase status** | A ✅ · B ✅ · **C:** Topics **01–13** complete (M3 PASS) · **Next: Topic 14 teardown** · D after teardown |
 
 **Do not** skip topics after an error. **Do not** replace documented steps with install-all scripts unless explicitly requested.
 
@@ -28,29 +28,29 @@ Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Ski
 
 | # | Topic | Guide | Prerequisites | Est. time | Cost impact | Status |
 |---|--------|-------|---------------|-----------|-------------|--------|
-| 01 | Prerequisites | [01-prerequisites.md](01-prerequisites.md) | None | 45–60 min | None | ⬜ Guide ✅ |
-| 02 | Repo foundation | [02-repo-foundation.md](02-repo-foundation.md) | 01 | 2–3 h | None | ⬜ Guide ✅ |
-| 03 | Terraform remote state | [03-remote-state.md](03-remote-state.md) | 02 | 45–60 min | S3 + DynamoDB (low) | ⬜ Guide ✅ |
-| 04 | Network, EKS, ECR, IAM | [04-network-eks-ecr-iam.md](04-network-eks-ecr-iam.md) | 03 | 2–4 h | **High** (EKS, NAT, nodes) | ⬜ Guide ✅ |
-| 05 | Ingress, DNS, TLS | [05-ingress-dns-tls.md](05-ingress-dns-tls.md) | 04 | 1.5–2.5 h | ALB hours | ⬜ Guide ✅ |
-| 06 | Argo CD bootstrap | [06-argocd-bootstrap.md](06-argocd-bootstrap.md) | 05 | 1.5–2 h | Cluster compute | ⬜ Guide ✅ |
-| 07 | Security baseline | [07-security-baseline.md](07-security-baseline.md) | 06 | 1.5–2 h | Cluster compute | ⬜ Guide ✅ |
-| 08 | Observability | [08-observability.md](08-observability.md) | 07 | 2–3 h | Cluster memory/CPU | ⬜ Guide ✅ |
-| 09 | Boutique charts | [09-boutique-charts.md](09-boutique-charts.md) | 08 | 3–4 h | ECR storage + ALB | ⬜ Guide ✅ |
-| 10 | GitLab CI digests | [10-gitlab-ci-digest.md](10-gitlab-ci-digest.md) | 09 (+ OIDC from 04) | 2–3 h | CI runners + ECR | ⬜ Guide ✅ |
-| 11 | Promotion | [11-promotion.md](11-promotion.md) | 10 | 1–1.5 h | None beyond envs | ⬜ Guide ✅ |
-| 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ⬜ Guide ✅ |
-| 13 | Production readiness | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ⬜ Guide ✅ |
-| 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | **Stops billables** | ⬜ Guide ✅ |
+| 01 | Prerequisites | [01-prerequisites.md](01-prerequisites.md) | None | 45–60 min | None | ✅ |
+| 02 | Repo foundation | [02-repo-foundation.md](02-repo-foundation.md) | 01 | 2–3 h | None | ✅ |
+| 03 | Terraform remote state | [03-remote-state.md](03-remote-state.md) | 02 | 45–60 min | S3 + DynamoDB (low) | ✅ |
+| 04 | Network, EKS, ECR, IAM | [04-network-eks-ecr-iam.md](04-network-eks-ecr-iam.md) | 03 | 2–4 h | **High** (EKS, NAT, nodes) | ✅ |
+| 05 | Ingress, DNS, TLS | [05-ingress-dns-tls.md](05-ingress-dns-tls.md) | 04 | 1.5–2.5 h | ALB hours | ✅ |
+| 06 | Argo CD bootstrap | [06-argocd-bootstrap.md](06-argocd-bootstrap.md) | 05 | 1.5–2 h | Cluster compute | ✅ |
+| 07 | Security baseline | [07-security-baseline.md](07-security-baseline.md) | 06 | 1.5–2 h | Cluster compute | ✅ |
+| 08 | Observability | [08-observability.md](08-observability.md) | 07 | 2–3 h | Cluster memory/CPU | ✅ |
+| 09 | Boutique charts | [09-boutique-charts.md](09-boutique-charts.md) | 08 | 3–4 h | ECR storage + ALB | ✅ |
+| 10 | GitLab CI digests | [10-gitlab-ci-digest.md](10-gitlab-ci-digest.md) | 09 (+ OIDC from 04) | 2–3 h | CI runners + ECR | ✅ |
+| 11 | Promotion | [11-promotion.md](11-promotion.md) | 10 | 1–1.5 h | None beyond envs | ✅ |
+| 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ✅ |
+| 13 | Production readiness | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
+| 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | **Stops billables** | ⬜ |
 
 **Dependency rule:** complete topics in numeric order. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the pilot — still follow ordered destroy.
 
 **Planning artifacts (Phase A):**
 
-- [OUTLINES.md](OUTLINES.md) — step sketches for topics 01–14 (not executable yet)
-- [REQUIRED-FILES.md](REQUIRED-FILES.md) — file inventory per topic (`SETUP_REQUIRED` / later tags)
+- [OUTLINES.md](OUTLINES.md) — step sketches for topics 01–14
+- [REQUIRED-FILES.md](REQUIRED-FILES.md) — file inventory per topic
 
-Topic guide files (`01`–`14`) are **authored in Phase B**, one topic at a time.
+Topic guides `01`–`14` are authored; live execution through Topic **13** is complete for this pilot.
 
 ---
 
@@ -62,7 +62,7 @@ Topic guide files (`01`–`14`) are **authored in Phase B**, one topic at a time
 | **AWS region** | `eu-central-1` (locked) |
 | **Cluster** | Single EKS **1.31**; nodes **3× `m6i.large`** (ASG 2–5) |
 | **DNS zone** | `biroltilki.art` (Route53) |
-| **Placeholders** | `<ACCOUNT_ID>`, `<GITLAB_PROJECT_PATH>`, `<SMOKE_HOST>` — replace locally; **never commit real account IDs, tokens, or SMTP passwords** |
+| **Placeholders** | Guides use `<ACCOUNT_ID>`, `<GITLAB_PROJECT_PATH>`, `<SMOKE_HOST>` — **never commit tokens or SMTP passwords**. Env overlays may pin this pilot’s ECR/ACM account IDs so Argo can sync; redact for a public fork (see [CONTRIBUTING.md](../../CONTRIBUTING.md)). |
 | **Local state** | Terraform state in remote S3/DynamoDB after topic 03; kubeconfig via `aws eks update-kubeconfig`; no secrets in Git |
 | **Version pins** | Authoritative matrix in `docs/versions.md` (materialized in topic 02 / used from 01) |
 | **CODEOWNERS** | `@btilki` on `gitops/envs/prod/**` |
@@ -130,15 +130,11 @@ Partner response pattern: symptom → likely cause → fix (guide and/or files) 
 
 ## Next step
 
-**Phase B complete** (Topics 01–14). **Phase C** starts at Topic 01 Step 1.1.
+**Phase C Topics 01–13 complete (M3 PASS).** Start **Topic 14 — Teardown** immediately so EKS/NAT/ALB charges stop.
 
 ```text
-Run fc-implementation-prompt in Bootstrap mode.
-Project: boutique-eks-gitops
-Scope: docs/setup/Topic 01 only
-Start at: Topic 01 Step 1.1
-Authority: docs/setup/ is source of truth
-One step per turn. Wait for confirmation before the next step.
+Follow docs/setup/14-teardown.md (and docs/runbooks/teardown.md).
+Do not leave the cluster running overnight.
 ```
 
-**Note:** If you have no GitLab project and no local `.git/` yet, Steps **1.8** (create project) and **1.10** (`git init` + first push) cover that before Topic 02.
+Rebuild later = Topics 03–04 apply, then resume from the Setup Guide for the furthest topic you need.

@@ -35,3 +35,4 @@ spec:
           annotations:
             summary: "Boutique ingress missing/down (prod)"
             description: "Replace expression with blackbox/ALB probe when storefront is live (Topic 09+)."
+            runbook_url: "docs/operations/17-common-incidents.md"

@@ -8,7 +8,7 @@
 [![Argo CD](https://img.shields.io/badge/GitOps-Argo%20CD-EF7B4D.svg)](https://argo-cd.readthedocs.io/)
 [![Maturity](https://img.shields.io/badge/maturity-production%20pilot-blue.svg)](docs/ARCHITECTURE.md)
 
-> CI and license badges are omitted until workflows and `LICENSE` are published. Version badges above reflect the locked pin matrix in [`docs/versions.md`](docs/versions.md).
+> Version badges above reflect the locked pin matrix in [`docs/versions.md`](docs/versions.md). CI status badges are omitted (use GitLab pipelines).
 
 ```mermaid
 flowchart LR
@@ -31,7 +31,7 @@ This repository is the **operational control plane** for running a scoped Online
 
 **Audience:** platform engineers, SRE/GitOps practitioners, and operators reviewing a production-oriented AWS reference.
 
-**Maturity:** production **pilot** — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability; **not** multi-account or multi-region HA. After validation, teardown is **mandatory** (Phase 11).
+**Maturity:** production **pilot** — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability; **not** multi-account or multi-region HA. **M3 PASS** (2026-07-19). Teardown is **mandatory** next (Phase 11 / Topic 14).
 
 **Outcomes**
 
@@ -63,18 +63,18 @@ Details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`
 
 | Domain | Capability | Status |
 |--------|------------|--------|
-| **Infrastructure** | Terraform VPC / EKS / ECR / OIDC / remote state | 🚧 Planned |
-| **Platform** | Ingress (ACM+ALB), external-dns, cert-manager | 🚧 Planned |
-| **GitOps** | Argo CD app-of-apps + ApplicationSet; prod manual sync | 🚧 Planned |
-| **Security** | Kyverno digest/ECR rules, ESO, NetworkPolicy | 🚧 Planned |
-| **Observability** | Prom / Loki / Grafana / AM email | 🚧 Planned |
-| **Applications** | 7 Boutique Helm charts + Redis; boutique hostnames | 🚧 Planned |
-| **CI/CD** | Digest-only MRs; Sigstore keyless cosign; Trivy CRITICAL gate | 🚧 Planned |
-| **Delivery** | Promotion governance; frontend canary stage+prod | 🚧 Planned |
-| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md); teardown immediately after tests | Topic 13–14 |
+| **Infrastructure** | Terraform VPC / EKS / ECR / OIDC / remote state | ✅ Implemented |
+| **Platform** | Ingress (ACM+ALB), external-dns, cert-manager | ✅ Implemented |
+| **GitOps** | Argo CD app-of-apps + ApplicationSet; prod manual sync | ✅ Implemented |
+| **Security** | Kyverno digest/ECR rules, ESO, NetworkPolicy | ✅ Implemented |
+| **Observability** | Prom / Loki / Grafana / AM email | ✅ Implemented |
+| **Applications** | 7 Boutique Helm charts + Redis; boutique hostnames | ✅ Implemented |
+| **CI/CD** | Digest-only MRs; Sigstore keyless cosign; Trivy CRITICAL gate | ✅ Implemented |
+| **Delivery** | Promotion governance; frontend canary stage+prod | ✅ Implemented |
+| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 PASS; teardown **mandatory next** | Topic 14 ⬜ |
 
 
-Legend: ✅ Implemented · 🚧 Planned · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
+Legend: ✅ Implemented · 🚧 Planned · ⬜ Not started · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
 
 ---
 
@@ -112,7 +112,7 @@ boutique-eks-gitops/
 │   ├── platform/        # ingress, policy, monitoring, rollouts
 │   └── envs/{dev,stage,prod}/  # digest pins + env values
 ├── charts/              # Boutique Helm charts (7 services)
-├── docs/                # architecture, plan, setup, runbooks
+├── docs/                # architecture, plan, setup, operations, runbooks
 ├── examples/            # smoke samples (not prod config)
 ├── tests/               # helm / policy / smoke checks
 └── .gitlab-ci.yml       # digest pipeline
@@ -209,7 +209,7 @@ Plan: [`docs/implementation/plan.md`](docs/implementation/plan.md) · Flow: [`do
 
 **Hard rule:** no `kubectl` / `argocd sync` in CI for routine deploys.
 
-Entry: [`.gitlab-ci.yml`](.gitlab-ci.yml) *(Phase 8)* · Contract: [`docs/ci.md`](docs/ci.md) *(planned)*.
+Entry: [`.gitlab-ci.yml`](.gitlab-ci.yml) · Contract: [`docs/ci.md`](docs/ci.md)
 
 ---
 
@@ -263,13 +263,14 @@ Policy doc: [`SECURITY.md`](SECURITY.md) · Architecture: security section above
 
 | Type | Where / how |
 |------|-------------|
-| Terraform fmt/validate | `terraform/` + Makefile targets *(foundation)* |
-| Helm lint / template | `tests/helm/`, `charts/` |
-| Policy fixtures | `tests/policy/` (Kyverno) |
-| Smoke | `tests/smoke/` + Setup Guide validation per phase |
-| CI gates | Trivy + pipeline stages |
+| Terraform fmt | `make lint` → `terraform fmt -check -recursive terraform` |
+| Docs presence | `make docs-check` |
+| Helm lint | GitLab CI `helm_lint` job · locally: `helm lint charts/*` |
+| Policy fixtures | `tests/policy/` (sample deny fixtures; Kyverno live policies under `gitops/platform/kyverno/`) |
+| Smoke / e2e | Setup Guide **Validation** sections + [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) |
+| CI gates | Trivy CRITICAL + cosign keyless + digest MR path guards |
 
-Local entry once Makefile exists: `make lint` (no install bypass).  
+Local entry: `make lint` && `make docs-check` (no install/apply bypass).  
 [`tests/README.md`](tests/README.md)
 
 ---
@@ -287,8 +288,9 @@ Local entry once Makefile exists: `make lint` (no install bypass).
 | [Versions](docs/versions.md) | Pin matrix |
 | [Promotion](docs/promotion.md) / [Rollback](docs/rollback.md) | Digest governance |
 | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) | Readiness (M3) |
+| [Operations index](docs/operations/README.md) | Day-2 deploy, DR, incidents, health |
 | [Teardown runbook](docs/runbooks/teardown.md) | Immediate destroy after tests (Topic 14 / M4) |
-| [Runbooks index](docs/runbooks/README.md) | Ingress, Argo, Kyverno, canary, alerting |
+| [Runbooks index](docs/runbooks/README.md) | Symptom playbooks: ingress, Argo, Kyverno, canary, alerting |
 | [Cost model](docs/architecture/10-cost-model.md) | 2-day vs monthly estimates |
 
 ---
@@ -297,19 +299,19 @@ Local entry once Makefile exists: `make lint` (no install bypass).
 
 | Phase | Title | Status |
 |-------|--------|--------|
-| 1 | Foundation | ⬜ |
-| 2 | AWS foundation (Terraform) | ⬜ |
-| 3 | Ingress, DNS, TLS | ⬜ |
-| 4 | Argo CD bootstrap | ⬜ |
-| 5 | Security baseline | ⬜ |
-| 6 | Observability | ⬜ |
-| 7 | Boutique charts + ECR digest bootstrap | ⬜ |
-| 8 | GitLab CI digest pipeline | ⬜ |
-| 9 | Promotion + frontend canary | ⬜ |
-| 10 | Production readiness | ⬜ |
+| 1 | Foundation | ✅ |
+| 2 | AWS foundation (Terraform) | ✅ |
+| 3 | Ingress, DNS, TLS | ✅ |
+| 4 | Argo CD bootstrap | ✅ |
+| 5 | Security baseline | ✅ |
+| 6 | Observability | ✅ |
+| 7 | Boutique charts + ECR digest bootstrap | ✅ |
+| 8 | GitLab CI digest pipeline | ✅ |
+| 9 | Promotion + frontend canary | ✅ |
+| 10 | Production readiness (M3) | ✅ |
 | 11 | Teardown (immediate after tests) | ⬜ |
 
-Milestones: **M1** @3 · **M2** @6 · **M3** @10 · **M4** teardown @11 — details in [`ROADMAP.md`](ROADMAP.md).
+Milestones: **M1–M3** complete · **M4** = Topic 14 teardown — details in [`ROADMAP.md`](ROADMAP.md).
 
 ---
 
@@ -320,13 +322,19 @@ Milestones: **M1** @3 · **M2** @6 · **M3** @10 · **M4** teardown @11 — deta
 3. Prod path changes require `@btilki` (CODEOWNERS).  
 4. Never commit secrets or long-lived AWS keys.
 
-Full guide: [`CONTRIBUTING.md`](CONTRIBUTING.md) *(planned)*.
+Full guide: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
 ## 19. License
 
-License file not yet added. Add `LICENSE` before public release and update this section.
+Licensed under the **Apache License, Version 2.0**. See [`LICENSE`](LICENSE).
+
+```text
+Copyright 2026 Birol Tilki
+```
+
+Upstream Online Boutique is a separate Google project; this repository’s control-plane configs and docs are covered by the license above.
 
 ---
 

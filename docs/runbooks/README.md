@@ -1,7 +1,8 @@
 # Runbooks — boutique-eks-gitops
 
 **Audience:** L2 — Operator  
-**Setup:** Topics 08, 13, 14 · Checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md)
+**Setup:** Topics 08, 13, 14 · Checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md)  
+**Day-2 index:** [`../operations/README.md`](../operations/README.md) (deploy, DR, incidents, health)
 
 | Runbook | Symptom | Setup topic |
 |---------|---------|-------------|
@@ -12,4 +13,4 @@
 | [canary.md](canary.md) | Canary stuck / abort / bad weight | 12 |
 | [teardown.md](teardown.md) | Decommission pilot *(Topic 14)* | 14 |
 
-**Related:** [promotion](../promotion.md) · [rollback](../rollback.md) · [dns-and-tls](../dns-and-tls.md)
+**Related:** [promotion](../promotion.md) · [rollback](../rollback.md) · [dns-and-tls](../dns-and-tls.md) · [operations](../operations/README.md)
