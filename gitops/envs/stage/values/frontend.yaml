@@ -2,7 +2,7 @@
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
   repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
-  digest: "sha256:563ebf12a5b98ae558c340ea70d9c56c2c57ad9880e8a6b7416ac54b0b7e1335"
+  digest: "sha256:be8651bb65c21cac85ba282d4fd33a47b4bcac0541234c82dbfdb30d0acdfb7a"
 ingress:
   enabled: true
   className: alb
