@@ -171,6 +171,10 @@ scan:
         "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
       tar -xzf /tmp/trivy.tgz -C /tmp trivy
       /tmp/trivy image --severity CRITICAL --exit-code 1 --ignore-unfixed "${IMAGE}"
+  artifacts:
+    paths:
+      - "digest-${SERVICE}.env"
+    expire_in: 1 day
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
@@ -185,17 +189,22 @@ sign:
     SIGSTORE_ID_TOKEN:
       aud: sigstore
   needs:
+    - job: build
     - job: scan
   script:
     - |
       set -euo pipefail
       # shellcheck disable=SC1090
       source "digest-${SERVICE}.env"
+      test -n "${SIGSTORE_ID_TOKEN:-}"
+      test -n "${IMAGE:-}"
+      apk add --no-cache ca-certificates
       curl -fsSL -o /tmp/cosign \
         "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64"
       chmod +x /tmp/cosign
       export COSIGN_YES=true
-      /tmp/cosign sign --yes "${IMAGE}"
+      docker pull "${IMAGE}"
+      /tmp/cosign sign --yes --identity-token="${SIGSTORE_ID_TOKEN}" "${IMAGE}"
   artifacts:
     paths:
       - "digest-${SERVICE}.env"
