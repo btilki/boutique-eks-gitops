@@ -3,7 +3,6 @@
 image:
   repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
   digest: "sha256:be8651bb65c21cac85ba282d4fd33a47b4bcac0541234c82dbfdb30d0acdfb7a"
-
 ingress:
   enabled: true
   className: alb
@@ -15,7 +14,6 @@ ingress:
     alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-central-1:868480224481:certificate/9363fd9a-7ed5-41da-aea5-f37f53a94269"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     external-dns.alpha.kubernetes.io/hostname: "boutique.biroltilki.art"
-
 # Topic 12 — frontend canary (ALB traffic split); starts only after manual Argo sync
 canary:
   enabled: true
