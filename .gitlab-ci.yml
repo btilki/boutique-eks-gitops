@@ -61,19 +61,21 @@ helm_lint:
     - |
       set -euo pipefail
       echo "${GITLAB_OIDC_TOKEN}" > /tmp/web-identity-token
-      # Alpine job image cannot run glibc AWS CLI or broken apk/pip python stacks.
-      # Use amazon/aws-cli via the DinD daemon (DOCKER_HOST).
+      # Alpine job image cannot run glibc AWS CLI. Use amazon/aws-cli via DinD.
+      # Do NOT bind-mount the token file: with DOCKER_HOST=tcp://docker:2375 the
+      # daemon cannot see the job container FS (mount becomes a directory).
       cat > /usr/local/bin/aws <<'AWSEOF'
       #!/bin/sh
+      TOKEN="$(cat /tmp/web-identity-token)"
       exec docker run --rm \
         -e AWS_DEFAULT_REGION \
         -e AWS_ROLE_ARN \
-        -e AWS_WEB_IDENTITY_TOKEN_FILE=/token \
         -e AWS_ROLE_SESSION_NAME=gitlab-ci \
-        -v /tmp/web-identity-token:/token:ro \
-        amazon/aws-cli:2.15.57 "$@"
+        -e AWS_WEB_IDENTITY_TOKEN="${TOKEN}" \
+        --entrypoint /bin/bash \
+        amazon/aws-cli:2.15.57 \
+        -lc 'echo "$AWS_WEB_IDENTITY_TOKEN" > /tmp/oidc; export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/oidc; unset AWS_WEB_IDENTITY_TOKEN; exec aws "$@"' -- "$@"
       AWSEOF
-      # Strip leading spaces YAML may leave in the wrapper
       sed -i 's/^[[:space:]]*//' /usr/local/bin/aws
       chmod +x /usr/local/bin/aws
       for i in $(seq 1 30); do docker info >/dev/null 2>&1 && break; sleep 2; done
