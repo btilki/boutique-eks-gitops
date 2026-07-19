@@ -1,6 +1,9 @@
 # Grafana Loki — Topic 08
 # Pin: Helm chart grafana/loki 6.24.0 (Loki 3.x) — verify with helm show chart
 # SingleBinary mode for pilot cost/simplicity on 3× m6i.large
+#
+# Storage: emptyDir (no PVC). Cluster has no EBS CSI; legacy gp2 provisioner
+# does not work on EKS 1.31. Pilot accepts log loss on pod restart (guide 8.2).
 
 deploymentMode: SingleBinary
 
@@ -35,11 +38,14 @@ singleBinary:
       cpu: 500m
       memory: 1Gi
   persistence:
-    # Chart 6.24 needs a writable /var/loki (RO root FS otherwise → CrashLoop)
-    enabled: true
-    size: 10Gi
-    # Cluster has gp2 but it is not annotated as default — must set explicitly
-    storageClass: gp2
+    enabled: false
+  # Writable /var/loki under readOnlyRootFilesystem (chart does not add this when PVC off)
+  extraVolumes:
+    - name: storage
+      emptyDir: {}
+  extraVolumeMounts:
+    - name: storage
+      mountPath: /var/loki
 
 gateway:
   enabled: true
