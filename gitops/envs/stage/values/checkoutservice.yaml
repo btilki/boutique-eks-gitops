@@ -1,5 +1,5 @@
 # Env overlay — stage / checkoutservice
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
-  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/checkoutservice"
-  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/checkoutservice"
+  digest: "sha256:93b8c71a63fe972f69eaae914fc7e5b145d9cf2451ba61b8849b64913aac7a65"

@@ -1,5 +1,5 @@
 # Env overlay — dev / shippingservice
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
-  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/shippingservice"
-  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/shippingservice"
+  digest: "sha256:4841ac63c831f5e4325d96ff859983a9fd2165883aeb2a1322d04f37d516e170"

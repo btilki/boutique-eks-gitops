@@ -1,5 +1,5 @@
 # Env overlay — dev / productcatalogservice
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
-  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/productcatalogservice"
-  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/productcatalogservice"
+  digest: "sha256:75753ea832bed5745c513ff5e861a26cb2b6d3851020ac3663285045f01a7830"

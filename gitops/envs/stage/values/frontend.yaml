@@ -1,8 +1,8 @@
 # Env overlay — stage / frontend
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
-  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
-  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
+  digest: "sha256:be8651bb65c21cac85ba282d4fd33a47b4bcac0541234c82dbfdb30d0acdfb7a"
 
 ingress:
   enabled: true
@@ -12,7 +12,7 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-central-1:868480224481:certificate/9363fd9a-7ed5-41da-aea5-f37f53a94269"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     external-dns.alpha.kubernetes.io/hostname: "stage-boutique.biroltilki.art"
 

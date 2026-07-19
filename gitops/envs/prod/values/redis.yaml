@@ -1,5 +1,5 @@
 # Env overlay — prod / redis
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
-  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/redis"
-  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/redis"
+  digest: "sha256:18e7e254e2fe1fa185f9434450649b33c1efb9a7dcda9daaf1ce0dfb133bc16b"

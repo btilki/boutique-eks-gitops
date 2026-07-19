@@ -1,5 +1,5 @@
 # Env overlay — stage / currencyservice
 # REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
 image:
-  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/currencyservice"
-  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  repository: "868480224481.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/currencyservice"
+  digest: "sha256:1c0a2abf39e9f8ef92350d9b06a654c8304159de98bd84174978fe5b438c6d5a"
