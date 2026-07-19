@@ -120,6 +120,15 @@ build:
         docker tag "${SRC}" "${DST}:${TAG}"
         SOURCE="ecr:${BOUTIQUE_SOURCE_TAG}"
       fi
+      # CRITICAL: protobufjs CVE-2026-41242 in Boutique Node services
+      if [ "${SERVICE}" = "currencyservice" ] || [ "${SERVICE}" = "paymentservice" ]; then
+        docker build --platform linux/amd64 \
+          --build-arg "BASE_IMAGE=${DST}:${TAG}" \
+          -f ci/docker/patch-protobufjs.Dockerfile \
+          -t "${DST}:${TAG}" \
+          ci/docker
+        SOURCE="${SOURCE}+protobufjs-7.5.5"
+      fi
       docker push "${DST}:${TAG}"
       # Prefer local digest (avoids needing ecr:DescribeImages); fall back to API if present.
       DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "${DST}:${TAG}" | awk -F@ '{print $2}')"

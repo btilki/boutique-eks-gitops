@@ -14,6 +14,8 @@
 | Trivy **CRITICAL** findings fail the pipeline | Supply-chain gate (pin **0.71.0**) |
 | Images are signed with cosign **Sigstore keyless** | ADR-0006 |
 
+Node services (`currencyservice`, `paymentservice`) apply `ci/docker/patch-protobufjs.Dockerfile` to bump `protobufjs` to **7.5.5** (CVE-2026-41242) before scan.
+
 ## Stages
 
 ```text
