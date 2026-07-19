@@ -274,9 +274,10 @@ gitops_digest_mr:
 
       git config user.email "ci@gitlab.local"
       git config user.name "GitLab CI boutique-eks-gitops"
+      git config --global --add safe.directory "${CI_PROJECT_DIR}"
       git remote set-url origin "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
-      git fetch origin "${CI_DEFAULT_BRANCH}"
-      BRANCH="ci/digests-${CI_COMMIT_SHORT_SHA}"
+      git fetch --prune origin "${CI_DEFAULT_BRANCH}"
+      BRANCH="ci/digests-${CI_PIPELINE_ID}"
       git checkout -B "${BRANCH}" "origin/${CI_DEFAULT_BRANCH}"
 
       shopt -s nullglob
@@ -316,10 +317,19 @@ gitops_digest_mr:
         exit 0
       fi
 
-      git commit -m "ci: update image digests for dev (${CI_COMMIT_SHORT_SHA})"
-      git push -u origin "HEAD:${BRANCH}" -o ci.skip
+      git commit -m "ci: update image digests for dev (${CI_COMMIT_SHORT_SHA}) [skip ci]"
 
-      curl --fail --silent --show-error \
+      echo "=== git push ${BRANCH} ==="
+      if ! git push -u origin "HEAD:${BRANCH}"; then
+        echo "ERROR: git push failed."
+        echo "Enable: Settings → CI/CD → Job token permissions → allow this project to push branches / write repo."
+        exit 1
+      fi
+
+      echo "=== create merge request ==="
+      HTTP_BODY="$(mktemp)"
+      HTTP_CODE="$(curl --silent --show-error \
+        --output "${HTTP_BODY}" --write-out '%{http_code}' \
         --request POST \
         --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
         --data-urlencode "source_branch=${BRANCH}" \
@@ -327,7 +337,21 @@ gitops_digest_mr:
         --data-urlencode "title=ci: digest updates for dev (${CI_COMMIT_SHORT_SHA})" \
         --data-urlencode "description=Automated **digest-only** MR for \`gitops/envs/dev/values\`. Does **not** deploy to the cluster (see docs/ci.md)." \
         --data-urlencode "remove_source_branch=true" \
-        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests"
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests")"
+      echo "MR API HTTP ${HTTP_CODE}"
+      cat "${HTTP_BODY}"
+      echo
+      case "${HTTP_CODE}" in
+        200|201) echo "MR created" ;;
+        409)
+          echo "MR already exists — OK"
+          ;;
+        *)
+          echo "ERROR: MR create failed (HTTP ${HTTP_CODE})."
+          echo "Enable job token permission to create merge requests for this project."
+          exit 1
+          ;;
+      esac
       EOS
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
