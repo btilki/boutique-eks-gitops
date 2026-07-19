@@ -305,7 +305,14 @@ kubectl apply -f /tmp/root-app.yaml
 argocd app get root --grpc-web || kubectl -n argocd get app root
 ```
 
-Ensure `<GITLAB_REPO_URL>` is replaced **in the Git revision Argo tracks** for ApplicationSets (push to `main`).
+**Required:** set `directory.recurse: true` on the root Application so nested ApplicationSets under `gitops/apps/*/ ` are discovered (Argo directory apps do not recurse by default).
+
+Ensure `<GITLAB_REPO_URL>` is replaced **in the Git revision Argo tracks** for ApplicationSets (push to `main`). Then hard-refresh root so it is not stuck on an old commit:
+
+```bash
+kubectl -n argocd annotate app root argocd.argoproj.io/refresh=hard --overwrite
+kubectl -n argocd get app root -o jsonpath='{.status.sync.revision}{"\n"}'
+```
 
 ### GUI instructions (if applicable)
 
@@ -332,6 +339,7 @@ kubectl -n argocd get applicationset
 |---------|--------------|-----|
 | ComparisonError / repo | Credential missing | Step 6.3 |
 | Placeholder URL left | Forgot sed/commit | Replace `<GITLAB_REPO_URL>` in Git |
+| Root Synced but no ApplicationSets | Directory not recursive / stale revision | Add `directory.recurse: true`; push; `kubectl annotate app root … refresh=hard`; confirm revision is latest `main` |
 
 ### Recovery
 
