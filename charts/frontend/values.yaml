@@ -1,0 +1,55 @@
+# Image contract: repository + digest (ADR-0001). Never use :latest.
+# REPLACE digest after Topic 09 bootstrap ECR push.
+image:
+  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
+  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8080
+
+serviceAccount:
+  create: true
+  name: ""
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+env:
+  PORT: "8080"
+  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+  CURRENCY_SERVICE_ADDR: "currencyservice:7000"
+  CART_SERVICE_ADDR: "cartservice:7070"
+  RECOMMENDATION_SERVICE_ADDR: "productcatalogservice:3550"
+  SHIPPING_SERVICE_ADDR: "shippingservice:50051"
+  CHECKOUT_SERVICE_ADDR: "checkoutservice:5050"
+  AD_SERVICE_ADDR: "productcatalogservice:3550"
+
+nameOverride: ""
+fullnameOverride: "frontend"
+
+ingress:
+  enabled: false
+  className: alb
+  host: "dev-boutique.biroltilki.art"
+  annotations: {}
+
+# Progressive delivery (Topic 12). Off in chart defaults / dev; on for stage+prod overlays.
+canary:
+  enabled: false
+  steps:
+    - setWeight: 20
+    - pause:
+        duration: 60
+    - setWeight: 50
+    - pause:
+        duration: 60
+    - setWeight: 100

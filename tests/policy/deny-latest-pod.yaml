@@ -1,0 +1,24 @@
+# Negative test fixture — MUST be denied by Kyverno deny-latest-tag / require-image-digest
+# Setup Topic 07 Step 7.3
+# Apply and expect admission error:
+#   kubectl apply -f tests/policy/deny-latest-pod.yaml
+#   # expect: blocked by deny-latest-tag or require-image-digest
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-deny-latest-test
+  namespace: dev
+  labels:
+    test: kyverno-negative
+spec:
+  containers:
+    - name: pause
+      image: public.ecr.aws/nginx/nginx:latest
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
+  restartPolicy: Never

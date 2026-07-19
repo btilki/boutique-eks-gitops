@@ -1,0 +1,99 @@
+# Extend platform-apps with Kyverno + External Secrets (Helm)
+# Merged into the same ApplicationSet resource — replace the Topic 06 file contents.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform-apps
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - name: aws-load-balancer-controller
+            namespace: kube-system
+            chart: aws-load-balancer-controller
+            chartRepo: https://aws.github.io/eks-charts
+            chartVersion: "1.11.4"
+            valuesPath: gitops/platform/aws-load-balancer-controller/values.yaml
+            wave: "10"
+          - name: external-dns
+            namespace: external-dns
+            chart: external-dns
+            chartRepo: https://kubernetes-sigs.github.io/external-dns/
+            chartVersion: "1.15.0"
+            valuesPath: gitops/platform/external-dns/values.yaml
+            wave: "10"
+          - name: cert-manager
+            namespace: cert-manager
+            chart: cert-manager
+            chartRepo: https://charts.jetstack.io
+            chartVersion: "v1.16.2"
+            valuesPath: gitops/platform/cert-manager/values.yaml
+            wave: "10"
+          - name: kyverno
+            namespace: kyverno
+            chart: kyverno
+            chartRepo: https://kyverno.github.io/kyverno/
+            chartVersion: "3.3.7"
+            valuesPath: gitops/platform/kyverno/values.yaml
+            wave: "20"
+          - name: external-secrets
+            namespace: external-secrets
+            chart: external-secrets
+            chartRepo: https://charts.external-secrets.io
+            chartVersion: "0.14.4"
+            valuesPath: gitops/platform/external-secrets/values.yaml
+            wave: "20"
+          - name: kube-prometheus-stack
+            namespace: monitoring
+            chart: kube-prometheus-stack
+            chartRepo: https://prometheus-community.github.io/helm-charts
+            chartVersion: "69.8.0"
+            valuesPath: gitops/platform/monitoring/values-kube-prometheus.yaml
+            wave: "30"
+          - name: loki
+            namespace: monitoring
+            chart: loki
+            chartRepo: https://grafana.github.io/helm-charts
+            chartVersion: "6.24.0"
+            valuesPath: gitops/platform/monitoring/loki/values.yaml
+            wave: "30"
+          - name: argo-rollouts
+            namespace: argo-rollouts
+            chart: argo-rollouts
+            chartRepo: https://argoproj.github.io/argo-helm
+            chartVersion: "2.39.5"
+            valuesPath: gitops/platform/argo-rollouts/values.yaml
+            wave: "25"
+  template:
+    metadata:
+      name: "{{.name}}"
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{.wave}}"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        - repoURL: "{{.chartRepo}}"
+          chart: "{{.chart}}"
+          targetRevision: "{{.chartVersion}}"
+          helm:
+            valueFiles:
+              - "$values/{{.valuesPath}}"
+        - repoURL: <GITLAB_REPO_URL>
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

@@ -1,0 +1,48 @@
+# Namespace-only ApplicationSet — keeps env namespaces defined in Git
+# Service Helm apps: boutique-applicationset.yaml (Topic 09)
+# REPLACE <GITLAB_REPO_URL>
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workload-namespaces
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - name: boutique-dev-ns
+            path: gitops/envs/dev
+            namespace: dev
+          - name: boutique-stage-ns
+            path: gitops/envs/stage
+            namespace: stage
+          - name: boutique-prod-ns
+            path: gitops/envs/prod
+            namespace: prod
+  template:
+    metadata:
+      name: "{{.name}}"
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "35"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: <GITLAB_REPO_URL>
+        targetRevision: main
+        path: "{{.path}}"
+        directory:
+          include: "namespace.yaml"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

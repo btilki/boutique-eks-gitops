@@ -1,0 +1,29 @@
+# External Secrets Operator — Helm values
+# Setup Topic 07 · pin chart 0.14.x (docs/versions.md)
+#
+# REPLACE before sync:
+#   <IRSA_ROLE_ARN> <- terraform -chdir=terraform/envs/prod output -raw irsa_external_secrets_role_arn
+
+installCRDs: true
+
+replicaCount: 2
+
+serviceAccount:
+  create: true
+  name: external-secrets
+  annotations:
+    eks.amazonaws.com/role-arn: "<IRSA_ROLE_ARN>"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+webhook:
+  replicaCount: 2
+
+certController:
+  replicaCount: 1

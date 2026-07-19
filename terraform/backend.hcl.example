@@ -1,0 +1,14 @@
+# Terraform remote state — backend partial configuration
+#
+# SETUP: Topic 03 Step 3.4
+# Copy to a LOCAL file (gitignored):
+#   cp terraform/backend.hcl.example terraform/backend.hcl
+# Then replace every <PLACEHOLDER> below. Never commit terraform/backend.hcl.
+#
+# Cost: S3 + DynamoDB are low ongoing charges; destroy in Topic 14 after workloads.
+
+bucket         = "<TF_STATE_BUCKET>"           # e.g. boutique-eks-gitops-tfstate-<ACCOUNT_ID>
+key            = "envs/prod/terraform.tfstate" # state object key within the bucket
+region         = "eu-central-1"                # locked project region
+dynamodb_table = "<TF_LOCK_TABLE>"             # e.g. boutique-eks-gitops-tf-locks
+encrypt        = true

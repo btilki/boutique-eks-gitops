@@ -1,0 +1,22 @@
+# Argo Rollouts — Helm values
+# Setup Topic 12 · pin chart 2.39.5 / app v1.8.2 (docs/versions.md)
+# Chart repo: https://argoproj.github.io/argo-helm
+
+installCRDs: true
+
+dashboard:
+  enabled: false
+
+controller:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# Keep cluster footprint small for the pilot (no dashboard Ingress).
+notifications:
+  enabled: false

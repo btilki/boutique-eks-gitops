@@ -1,0 +1,31 @@
+# Example tfvars — copy to terraform.tfvars (gitignored) and edit.
+# Setup Topic 04 Step 4.1
+# NEVER commit terraform.tfvars if it contains account-specific secrets.
+# This file has no secrets; gitlab_project_path is a required placeholder.
+
+project_name  = "boutique-eks-gitops"
+cluster_name  = "boutique-eks-gitops"
+cluster_version = "1.31"
+
+# Region is set in versions.tf provider block: eu-central-1
+
+vpc_cidr = "10.0.0.0/16"
+az_count = 3
+
+node_instance_types = ["m6i.large"]
+node_desired_size   = 3
+node_min_size       = 2
+node_max_size       = 5
+
+# PLACEHOLDER: replace with your public IP/CIDR before leaving the cluster up long-term
+endpoint_public_access_cidrs = ["0.0.0.0/0"]
+
+dns_zone_name = "biroltilki.art"
+
+gitlab_url = "https://gitlab.com"
+# PLACEHOLDER: set to your GitLab path_with_namespace (e.g. mygroup/boutique-eks-gitops)
+gitlab_project_path = "REPLACE_ME/boutique-eks-gitops"
+
+tags = {
+  Owner = "platform"
+}

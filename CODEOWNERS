@@ -1,0 +1,11 @@
+# CODEOWNERS — boutique-eks-gitops
+# Prod digest and env overlays require explicit ownership (@btilki).
+# Setup Topic 11: enable “Code owner approval” on the protected default branch in GitLab.
+# Without that GitLab setting, this file is documentation-only.
+
+# Default reviewers for control-plane changes
+* @btilki
+
+# Production environment — digest promotion path (locked)
+/gitops/envs/prod/ @btilki
+/gitops/envs/prod/** @btilki

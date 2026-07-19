@@ -1,0 +1,36 @@
+# Deny container images tagged :latest (and untagged floating tags ending in latest)
+# Setup Topic 07 · enforce after audit validation (Step 7.2)
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: deny-latest-tag
+  annotations:
+    policies.kyverno.io/title: Deny latest image tag
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: high
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: deny-latest
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - dev
+                - stage
+                - prod
+                - smoke-m1
+      validate:
+        message: "Using the :latest tag is forbidden. Pin an image digest (ADR-0001)."
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"
+            =(initContainers):
+              - image: "!*:latest"
+            =(ephemeralContainers):
+              - image: "!*:latest"

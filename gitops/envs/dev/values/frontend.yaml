@@ -1,0 +1,21 @@
+# Env overlay — dev / frontend
+# REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
+image:
+  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
+  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+ingress:
+  enabled: true
+  className: alb
+  host: "dev-boutique.biroltilki.art"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    external-dns.alpha.kubernetes.io/hostname: "dev-boutique.biroltilki.art"
+
+# Topic 12 — canary is stage+prod only (FR-09). Dev stays Deployment.
+canary:
+  enabled: false

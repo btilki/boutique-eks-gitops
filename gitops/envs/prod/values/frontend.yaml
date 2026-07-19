@@ -1,0 +1,32 @@
+# Env overlay — prod / frontend
+# REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
+image:
+  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend"
+  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+ingress:
+  enabled: true
+  className: alb
+  host: "boutique.biroltilki.art"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    external-dns.alpha.kubernetes.io/hostname: "boutique.biroltilki.art"
+
+# Topic 12 — frontend canary (ALB traffic split); starts only after manual Argo sync
+canary:
+  enabled: true
+  steps:
+    - setWeight: 10
+    - pause:
+        duration: 120
+    - setWeight: 30
+    - pause:
+        duration: 120
+    - setWeight: 50
+    - pause:
+        duration: 120
+    - setWeight: 100

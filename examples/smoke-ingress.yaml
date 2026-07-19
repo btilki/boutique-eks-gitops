@@ -1,0 +1,86 @@
+# Temporary smoke stack for Milestone M1 (Topic 05)
+# Proves: Ingress → AWS LB Controller → ALB + ACM + external-dns
+#
+# REPLACE before apply:
+#   <ACM_CERTIFICATE_ARN> <- terraform -chdir=terraform/envs/prod output -raw acm_certificate_arn
+#
+# Hostname (covered by *.boutique.biroltilki.art):
+#   smoke.boutique.biroltilki.art
+#
+# Cleanup after validation:
+#   kubectl delete -f examples/smoke-ingress.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: smoke-m1
+  labels:
+    purpose: setup-topic-05
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smoke-echo
+  namespace: smoke-m1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smoke-echo
+  template:
+    metadata:
+      labels:
+        app: smoke-echo
+    spec:
+      containers:
+        - name: echo
+          # Pinned tag (Kyverno digest rules not enforced yet)
+          image: registry.k8s.io/e2e-test-images/echoserver:2.5
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smoke-echo
+  namespace: smoke-m1
+spec:
+  selector:
+    app: smoke-echo
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: smoke-echo
+  namespace: smoke-m1
+  annotations:
+    kubernetes.amazonaws.com/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    external-dns.alpha.kubernetes.io/hostname: smoke.boutique.biroltilki.art
+spec:
+  ingressClassName: alb
+  rules:
+    - host: smoke.boutique.biroltilki.art
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: smoke-echo
+                port:
+                  number: 80

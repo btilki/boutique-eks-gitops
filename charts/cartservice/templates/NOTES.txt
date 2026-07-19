@@ -1,0 +1,1 @@
+cartservice installed. Image must use digest pin.\n

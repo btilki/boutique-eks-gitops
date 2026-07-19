@@ -1,0 +1,107 @@
+# NetworkPolicy baseline — default-deny + DNS + same-namespace + ingress from VPC
+# Setup Topic 07 Step 7.6
+# Applied per app namespace (dev/stage/prod). ALB target-type ip sends traffic from node/VPC CIDR.
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.amazonaws.com/service-name: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # CoreDNS often in kube-system without that label on all installs — also allow kube-system DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-same-namespace
+  namespace: dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {}
+  egress:
+    - to:
+        - podSelector: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-vpc-ingress
+  namespace: dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    # PLACEHOLDER: tighten to ALB SG if desired — VPC CIDR from Topic 04 (default 10.0.0.0/16)
+    - from:
+        - ipBlock:
+            cidr: 10.0.0.0/16
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-https-aws
+  namespace: dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 169.254.169.254/32
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80

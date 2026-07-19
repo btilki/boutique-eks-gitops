@@ -1,0 +1,11 @@
+# Namespace scaffolding for GitOps env (Topic 06)
+# Boutique workloads added in Topic 09.
+# Sync: MANUAL only via Argo Application boutique-prod (no automated sync).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod
+  labels:
+    app.kubernetes.io/part-of: boutique-eks-gitops
+    env: prod
+    pod-security.kubernetes.io/enforce: baseline

@@ -1,0 +1,5 @@
+# Env overlay — stage / cartservice
+# REPLACE repository account + digest after Topic 09 bootstrap (Steps 9.2–9.3)
+image:
+  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/cartservice"
+  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

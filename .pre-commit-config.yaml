@@ -1,0 +1,28 @@
+# Pre-commit hooks — lint/format only (no cloud apply).
+# Install: pip install pre-commit && pre-commit install
+# Run: pre-commit run --all-files
+# TODO(setup:2.5): adjust rev pins if org mirror differs.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.3
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+        files: \.tf$
+        exclude: |
+          (?x)^(
+            terraform/modules/.*/examples/.*
+          )$

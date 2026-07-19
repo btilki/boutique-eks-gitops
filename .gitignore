@@ -1,0 +1,44 @@
+# Local / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Secrets & credentials — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials
+credentials.json
+secrets/
+backend.hcl
+**/terraform.tfvars
+!**/terraform.tfvars.example
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Helm / kube
+charts/**/charts/
+*.tgz
+
+# Python / node accidental local tooling
+__pycache__/
+node_modules/
+.venv/
+
+# Test / coverage noise
+coverage/
+*.log

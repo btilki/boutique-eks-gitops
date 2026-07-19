@@ -1,0 +1,120 @@
+# kube-prometheus-stack — Topic 08 (Milestone M2)
+# Pin: Helm chart 69.8.0 · namespace monitoring
+#
+# REPLACE before sync (non-secret):
+#   <ACM_CERTIFICATE_ARN>
+#   <SMTP_SMARTHOST>   e.g. email-smtp.eu-central-1.amazonaws.com:587
+#   <SMTP_FROM>        e.g. alertmanager@biroltilki.art
+#   <SMTP_TO>          e.g. you@example.com
+#   <SMTP_USERNAME>    SMTP AUTH user
+#
+# SECRET (via ESO → Secret alertmanager-smtp key "password"):
+#   smtp_auth_password_file mounts /etc/alertmanager/secrets/alertmanager-smtp/password
+
+fullname: monitoring
+
+defaultRules:
+  create: true
+
+alertmanager:
+  enabled: true
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: "<SMTP_SMARTHOST>"
+      smtp_from: "<SMTP_FROM>"
+      smtp_require_tls: true
+      smtp_auth_username: "<SMTP_USERNAME>"
+      smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-smtp/password
+    route:
+      receiver: email-critical
+      group_by: ["alertname", "severity"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      routes:
+        - matchers:
+            - severity="critical"
+          receiver: email-critical
+        - matchers:
+            - alertname="Watchdog"
+          receiver: "null"
+        - matchers:
+            - alertname="AlertmanagerEmailTest"
+          receiver: email-critical
+    receivers:
+      - name: "null"
+      - name: email-critical
+        email_configs:
+          - to: "<SMTP_TO>"
+            send_resolved: true
+            require_tls: true
+  alertmanagerSpec:
+    replicas: 1
+    secrets:
+      - alertmanager-smtp
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    retention: 120h
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: 7d
+    retentionSize: 8GB
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1Gi
+      limits:
+        cpu: "1"
+        memory: 2Gi
+    # Pilot: no PVC (cost). TODO(setup:8.1): add volumeClaimTemplate if needed.
+
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    hosts:
+      - grafana.boutique.biroltilki.art
+    path: /
+    pathType: Prefix
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/backend-protocol: HTTP
+      external-dns.alpha.kubernetes.io/hostname: grafana.boutique.biroltilki.art
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki.monitoring.svc.cluster.local:3100
+      isDefault: false
+
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi

@@ -1,0 +1,24 @@
+# Kyverno Helm values — Topic 07
+# Pin: Kyverno 1.16.x · chart 3.3.7 (verify: helm show chart kyverno/kyverno --version 3.3.7)
+
+admissionController:
+  replicas: 3
+  resourceFilters:
+    # Skip kube-system noise where needed; policies still target app namespaces primarily
+    - '["Event","*/Node","*/APIService","*/TokenReview","*/SubjectAccessReview"]'
+
+backgroundController:
+  replicas: 1
+
+reportsController:
+  replicas: 1
+
+cleanupController:
+  enabled: true
+
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

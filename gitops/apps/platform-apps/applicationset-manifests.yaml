@@ -1,0 +1,58 @@
+# Directory-synced platform manifests (policies, secret stores, NetworkPolicies)
+# Setup Topic 07 · wave 21 (after operators on wave 20)
+# REPLACE <GITLAB_REPO_URL>
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform-manifests
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - name: kyverno-policies
+            path: gitops/platform/kyverno/policies
+            namespace: kyverno
+            wave: "21"
+          - name: external-secrets-config
+            path: gitops/platform/external-secrets
+            namespace: external-secrets
+            wave: "21"
+          - name: network-policies
+            path: gitops/platform/network-policies
+            namespace: default
+            wave: "21"
+          - name: monitoring-config
+            path: gitops/platform/monitoring/manifests
+            namespace: monitoring
+            wave: "31"
+  template:
+    metadata:
+      name: "{{.name}}"
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{.wave}}"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: <GITLAB_REPO_URL>
+        targetRevision: main
+        path: "{{.path}}"
+        directory:
+          recurse: true
+          include: "*.yaml"
+          exclude: "{README.md,values.yaml}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

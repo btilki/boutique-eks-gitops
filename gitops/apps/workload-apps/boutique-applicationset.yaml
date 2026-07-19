@@ -1,0 +1,78 @@
+# Boutique workload ApplicationSet — one Helm app per service × env
+# Setup Topic 09
+# REPLACE <GITLAB_REPO_URL>
+#
+# Charts live in repo path charts/<service> (ref: chart).
+# Env digests/ingress: gitops/envs/<env>/values/<service>.yaml
+#
+# CRITICAL: prod apps must NOT enable automated sync.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: boutique-workloads
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - env: dev
+                  autoSync: true
+                - env: stage
+                  autoSync: true
+                - env: prod
+                  autoSync: false
+          - list:
+              elements:
+                - service: redis
+                - service: productcatalogservice
+                - service: currencyservice
+                - service: cartservice
+                - service: paymentservice
+                - service: shippingservice
+                - service: checkoutservice
+                - service: frontend
+  template:
+    metadata:
+      name: "{{.service}}-{{.env}}"
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "40"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        boutique-env: "{{.env}}"
+        boutique-service: "{{.service}}"
+    spec:
+      project: default
+      sources:
+        - repoURL: <GITLAB_REPO_URL>
+          targetRevision: main
+          path: "charts/{{.service}}"
+          helm:
+            valueFiles:
+              - "$values/gitops/envs/{{.env}}/values/{{.service}}.yaml"
+        - repoURL: <GITLAB_REPO_URL>
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.env}}"
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+  templatePatch: |
+    {{- if .autoSync }}
+    spec:
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+    {{- end }}

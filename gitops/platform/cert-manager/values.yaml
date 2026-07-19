@@ -1,0 +1,32 @@
+# cert-manager — GitOps values
+# Setup Topic 05 · pin v1.16.x (docs/versions.md)
+# Public TLS for Boutique/platform uses ACM on ALB (ADR-0003).
+# cert-manager is installed for platform readiness / future issuers — not primary public TLS.
+
+crds:
+  enabled: true
+
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+webhook:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+
+# No ClusterIssuer for public boutique hosts in v1 (ACM primary).
+# TODO(setup:5.4): optional self-signed ClusterIssuer for in-cluster only experiments

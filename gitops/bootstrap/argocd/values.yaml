@@ -1,0 +1,59 @@
+# Argo CD Helm values — bootstrap (Topic 06)
+# Pin: Argo CD v2.14.x · Helm chart 7.8.14 (verify: helm show chart argo/argo-cd --version 7.8.14)
+#
+# REPLACE before install:
+#   <ACM_CERTIFICATE_ARN> <- terraform -chdir=terraform/envs/prod output -raw acm_certificate_arn
+#
+# TLS terminates at ALB (ACM). Server runs insecure HTTP behind the load balancer.
+
+global:
+  domain: argocd.boutique.biroltilki.art
+
+configs:
+  params:
+    server.insecure: true
+  cm:
+    # Restrictive defaults; widen only if needed
+    timeout.reconciliation: 180s
+    application.instanceLabelKey: argocd.argoproj.io/instance
+
+server:
+  replicas: 2
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/certificate-arn: "<ACM_CERTIFICATE_ARN>"
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/backend-protocol: HTTP
+      external-dns.alpha.kubernetes.io/hostname: argocd.boutique.biroltilki.art
+    hosts:
+      - argocd.boutique.biroltilki.art
+    paths:
+      - /
+    pathType: Prefix
+    tls: false # TLS at ALB, not Ingress secret
+
+controller:
+  replicas: 1
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  replicas: 1
+
+notifications:
+  enabled: false
+
+dex:
+  enabled: false
+
+redis-ha:
+  enabled: false
+
+# Initial admin password: retrieve from Secret after install (never commit)
+# kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d

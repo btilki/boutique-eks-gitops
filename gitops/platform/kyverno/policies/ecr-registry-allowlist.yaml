@@ -1,0 +1,35 @@
+# Allow only Amazon ECR images for Boutique app namespaces
+# Setup Topic 07
+# REPLACE or keep account-wildcard — pods must pull from *.dkr.ecr.eu-central-1.amazonaws.com
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: ecr-registry-allowlist
+  annotations:
+    policies.kyverno.io/title: ECR registry allowlist
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: high
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: ecr-only
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - dev
+                - stage
+                - prod
+      validate:
+        message: "Only Amazon ECR images in eu-central-1 are allowed for Boutique workloads."
+        foreach:
+          - list: "request.object.spec.containers"
+            pattern:
+              image: "*.dkr.ecr.eu-central-1.amazonaws.com/*"
+          - list: "request.object.spec.initContainers"
+            pattern:
+              image: "*.dkr.ecr.eu-central-1.amazonaws.com/*"

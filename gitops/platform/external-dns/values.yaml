@@ -1,0 +1,46 @@
+# external-dns — GitOps values
+# Setup Topic 05 · pin target 0.15.x (docs/versions.md)
+#
+# REPLACE before install:
+#   <IRSA_ROLE_ARN> <- terraform output -raw irsa_external_dns_role_arn
+#   <ZONE_ID>       <- terraform output -raw route53_zone_id
+#   <DOMAIN_FILTER> <- biroltilki.art
+
+provider: aws
+policy: sync
+registry: txt
+txtOwnerId: boutique-eks-gitops
+
+domainFilters:
+  - "<DOMAIN_FILTER>"
+
+# Restrict to our hosted zone (recommended)
+zoneIdFilters:
+  - "<ZONE_ID>"
+
+sources:
+  - ingress
+  - service
+
+aws:
+  region: eu-central-1
+  zoneType: public
+
+serviceAccount:
+  create: true
+  name: external-dns
+  annotations:
+    eks.amazonaws.com/role-arn: "<IRSA_ROLE_ARN>"
+
+# Pin image to 0.15.x line
+image:
+  repository: registry.k8s.io/external-dns/external-dns
+  tag: v0.15.1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi

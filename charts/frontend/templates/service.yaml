@@ -1,0 +1,72 @@
+{{- if .Values.canary.enabled }}
+---
+# Stable service — selector managed by Argo Rollouts during canary
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "frontend.fullname" . }}
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+    rollouts.argoproj.io/service: stable
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "frontend.selectorLabels" . | nindent 4 }}
+---
+# Canary service — selector managed by Argo Rollouts
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "frontend.fullname" . }}-canary
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+    rollouts.argoproj.io/service: canary
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "frontend.selectorLabels" . | nindent 4 }}
+---
+# Root service — Ingress backend; ALB action annotation managed by Rollouts
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "frontend.fullname" . }}-root
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+    rollouts.argoproj.io/service: root
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "frontend.selectorLabels" . | nindent 4 }}
+{{- else }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "frontend.fullname" . }}
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "frontend.selectorLabels" . | nindent 4 }}
+{{- end }}

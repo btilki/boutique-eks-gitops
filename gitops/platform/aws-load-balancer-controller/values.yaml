@@ -1,0 +1,33 @@
+# AWS Load Balancer Controller — GitOps values
+# Setup Topic 05 · pin target app v2.11.x (docs/versions.md)
+# Install via Helm until Argo CD adopts this path (Topic 06).
+#
+# REPLACE before install:
+#   <IRSA_ROLE_ARN>  <- terraform output -raw irsa_aws_lb_controller_role_arn
+#   <CLUSTER_NAME>   <- terraform output -raw cluster_name
+#   <VPC_ID>         <- terraform output -raw vpc_id
+#   <AWS_REGION>     <- eu-central-1
+
+clusterName: "<CLUSTER_NAME>"
+region: "eu-central-1"
+vpcId: "<VPC_ID>"
+
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller
+  annotations:
+    eks.amazonaws.com/role-arn: "<IRSA_ROLE_ARN>"
+
+replicaCount: 2
+
+# Chart appVersion should resolve to 2.11.x — confirm with: helm show chart eks/aws-load-balancer-controller --version 1.11.4
+image:
+  tag: v2.11.1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi

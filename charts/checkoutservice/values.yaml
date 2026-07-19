@@ -1,0 +1,36 @@
+# Image contract: repository + digest (ADR-0001). Never use :latest.
+# REPLACE digest after Topic 09 bootstrap ECR push.
+image:
+  repository: "REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/checkoutservice"
+  digest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 5050
+
+serviceAccount:
+  create: true
+  name: ""
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+env:
+  PRODUCT_CATALOG_SERVICE_ADDR: "productcatalogservice:3550"
+  SHIPPING_SERVICE_ADDR: "shippingservice:50051"
+  PAYMENT_SERVICE_ADDR: "paymentservice:50051"
+  EMAIL_SERVICE_ADDR: "currencyservice:7000"
+  CURRENCY_SERVICE_ADDR: "currencyservice:7000"
+  CART_SERVICE_ADDR: "cartservice:7070"
+  PORT: "5050"
+
+nameOverride: ""
+fullnameOverride: "checkoutservice"
