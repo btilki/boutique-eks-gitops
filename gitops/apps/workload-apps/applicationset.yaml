@@ -1,6 +1,6 @@
 # Namespace-only ApplicationSet — keeps env namespaces defined in Git
 # Service Helm apps: boutique-applicationset.yaml (Topic 09)
-# REPLACE https://gitlab.com/btilki/boutique-eks-gitops.git
+# CRITICAL: prod namespace app must NOT enable automated sync (same as workloads).
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -15,12 +15,15 @@ spec:
           - name: boutique-dev-ns
             path: gitops/envs/dev
             namespace: dev
+            autoSync: true
           - name: boutique-stage-ns
             path: gitops/envs/stage
             namespace: stage
+            autoSync: true
           - name: boutique-prod-ns
             path: gitops/envs/prod
             namespace: prod
+            autoSync: false
   template:
     metadata:
       name: "{{.name}}"
@@ -41,8 +44,15 @@ spec:
         server: https://kubernetes.default.svc
         namespace: "{{.namespace}}"
       syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+  templatePatch: |
+    {{- if .autoSync }}
+    spec:
+      syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
+    {{- end }}

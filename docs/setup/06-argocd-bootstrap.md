@@ -433,7 +433,11 @@ Do not add `automated` sync to prod via UI — next step verifies absence.
 
 ### Goal
 
-Prove `boutique-prod` lacks `syncPolicy.automated` while `boutique-dev` and `boutique-stage` have it.
+Prove prod apps lack `syncPolicy.automated` while dev/stage have it.
+
+For this repo’s ApplicationSets that means:
+- Workloads: `frontend-prod` (and other `*-prod`) have no automated sync
+- Namespace apps: `boutique-prod-ns` has no automated sync (dev/stage ns apps may automate)
 
 ### Why this step is required
 
