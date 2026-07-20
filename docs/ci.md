@@ -4,6 +4,18 @@
 **Setup:** Topic 10 · **ADR:** [0001](adr/0001-digest-only-gitops.md) · [0006](adr/0006-cosign-signing-mode.md)  
 **Pipeline:** [`.gitlab-ci.yml`](../.gitlab-ci.yml)
 
+## Post-teardown status (current)
+
+**Pipelines are dormant.** After M4 / AWS destroy, CI must not auto-run: build/scan/sign need ECR + OIDC roles that no longer exist (that is why docs commits on `main` showed **Failed**).
+
+To run CI again after a rebuild:
+
+1. Restore Topic 03–04 AWS (ECR + GitLab OIDC role)
+2. Set GitLab CI/CD variable `ENABLE_PILOT_CI=true`
+3. Confirm `AWS_ROLE_ARN` is set
+
+Without `ENABLE_PILOT_CI=true`, workflow rules use `when: never` — no pipeline is created (no red Failed badge).
+
 ## Hard rules
 
 | Rule | Rationale |
@@ -35,6 +47,7 @@ test → build → scan → sign → gitops
 
 | Variable | Purpose |
 |----------|---------|
+| `ENABLE_PILOT_CI` | Must be `true` to create any pipeline (off by default after teardown) |
 | `AWS_ROLE_ARN` | GitLab OIDC IAM role from Terraform `gitlab_ci_role_arn` |
 | `AWS_DEFAULT_REGION` | `eu-central-1` |
 | (optional) `BOUTIQUE_BUILD_MODE` | `ecr-bootstrap` (default) or `git` |

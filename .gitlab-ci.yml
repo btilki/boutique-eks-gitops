@@ -3,12 +3,17 @@
 #
 # Stages: test → build → scan → sign → gitops (digest MR to envs/dev only)
 # HARD RULES: no kubectl / no argocd CLI / no static AWS keys / no prod path writes
+#
+# Post-teardown (M4): pipelines are DORMANT by default. AWS/ECR/OIDC are gone;
+# auto-runs on main would fail and look like a broken project. Re-enable only
+# when rebuilding: set CI/CD variable ENABLE_PILOT_CI=true (and restore AWS).
 
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH =~ /^ci\/.*/
+    - if: $ENABLE_PILOT_CI == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $ENABLE_PILOT_CI == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $ENABLE_PILOT_CI == "true" && $CI_COMMIT_BRANCH =~ /^ci\/.*/
+    - when: never
 
 variables:
   AWS_DEFAULT_REGION: "eu-central-1"
