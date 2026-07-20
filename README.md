@@ -31,7 +31,7 @@ This repository is the **operational control plane** for running a scoped Online
 
 **Audience:** platform engineers, SRE/GitOps practitioners, and operators reviewing a production-oriented AWS reference.
 
-**Maturity:** production **pilot** — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability; **not** multi-account or multi-region HA. **M3 PASS** (2026-07-19). Teardown is **mandatory** next (Phase 11 / Topic 14).
+**Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven; **not** multi-account or multi-region HA. **M3 + M4 PASS** (2026-07-19/20): production path proven; **AWS cloud resources fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
 
 **Outcomes**
 
@@ -71,7 +71,7 @@ Details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`
 | **Applications** | 7 Boutique Helm charts + Redis; boutique hostnames | ✅ Implemented |
 | **CI/CD** | Digest-only MRs; Sigstore keyless cosign; Trivy CRITICAL gate | ✅ Implemented |
 | **Delivery** | Promotion governance; frontend canary stage+prod | ✅ Implemented |
-| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 PASS; teardown **mandatory next** | Topic 14 ⬜ |
+| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 + M4 PASS (Appendix T) | Topic 14 ✅ |
 
 
 Legend: ✅ Implemented · 🚧 Planned · ⬜ Not started · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
@@ -309,9 +309,9 @@ Local entry: `make lint` && `make docs-check` (no install/apply bypass).
 | 8 | GitLab CI digest pipeline | ✅ |
 | 9 | Promotion + frontend canary | ✅ |
 | 10 | Production readiness (M3) | ✅ |
-| 11 | Teardown (immediate after tests) | ⬜ |
+| 11 | Teardown (immediate after tests) | ✅ |
 
-Milestones: **M1–M3** complete · **M4** = Topic 14 teardown — details in [`ROADMAP.md`](ROADMAP.md).
+Milestones: **M1–M4** complete — details in [`ROADMAP.md`](ROADMAP.md).
 
 ---
 

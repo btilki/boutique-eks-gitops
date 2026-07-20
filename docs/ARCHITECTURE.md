@@ -1,8 +1,8 @@
 # Architecture — boutique-eks-gitops
 
-**Maturity:** Production pilot (single AWS account, single EKS cluster)  
-**Region:** `eu-central-1`  
-**Status:** Accepted — M3 PASS (2026-07-19); next Topic 14 teardown (M4)  
+**Status:** Accepted — M3 + M4 PASS (2026-07-19/20); pilot closed — **AWS cloud deleted** (EKS/VPC/NAT/ALB/ECR, TF backend, SM, ACM, Route53)  
+**Maturity:** Production pilot (single AWS account, single EKS cluster) — **decommissioned**  
+**Region:** `eu-central-1` (when provisioned)  
 **Deep docs:** [docs/architecture/](architecture/README.md)  
 **Plan:** [implementation/plan.md](implementation/plan.md) · **Roadmap:** [../ROADMAP.md](../ROADMAP.md) · **Ops:** [operations/README.md](operations/README.md)
 
@@ -12,7 +12,7 @@
 
 This repository is the **operational control plane** for Online Boutique on Amazon EKS. **Git is the only authority** for what runs on the cluster. GitLab CI builds, scans (Trivy), signs (cosign), and opens merge requests that change **only image digests**. Argo CD reconciles desired state; it never receives deploy commands from CI.
 
-Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces, isolated by NetworkPolicy, sync policy, CODEOWNERS, and manual prod sync. Public HTTPS uses **ACM on ALB**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive).
+Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces, isolated by NetworkPolicy, sync policy, CODEOWNERS, and manual prod sync. Public HTTPS uses **ACM on ALB**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive). **This pilot’s AWS resources were destroyed 2026-07-19/20** (Appendix T); the live cluster is gone.
 
 ---
 

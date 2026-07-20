@@ -2,7 +2,7 @@
 
 **Vision:** Production-grade GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI builds, scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
 
-**Status:** M3 PASS — production path proven; Phase 11 teardown next  
+**Status:** M4 PASS — pilot closed; **AWS cloud deleted** (teardown complete 2026-07-19/20)  
 **Detailed plan:** [docs/implementation/plan.md](docs/implementation/plan.md)  
 **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/architecture/](docs/architecture/)
 
@@ -22,7 +22,7 @@
 | 8 | GitLab CI digest pipeline | L | ✅ | `10-gitlab-ci-digest` |
 | 9 | Promotion + frontend canary | L | ✅ | `11-promotion`, `12-canary-rollouts` |
 | 10 | Production readiness | M | ✅ | `13-production-readiness` |
-| 11 | Teardown | M | ⬜ | `14-teardown` |
+| 11 | Teardown | M | ✅ | `14-teardown` |
 
 Status: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Skipped
 
@@ -61,6 +61,4 @@ FC review prompts run at **M1, M2, M3** (phases 3, 6, 10). **Phase 11 teardown r
 
 ## Current focus
 
-**Next:** Topic **14 — Teardown** (`docs/setup/14-teardown.md`) immediately — do not leave the cluster running (FR-11 / M4).
-
-Phases 1–10 ✅ · M3 PASS 2026-07-19.
+**Pilot closed.** Phases **1–11 ✅** · M3 PASS 2026-07-19 · **M4 PASS** 2026-07-19/20. **No live AWS pilot resources remain** (Appendix T). Rebuild = Topic 01 (zone) → 03 → 04+.

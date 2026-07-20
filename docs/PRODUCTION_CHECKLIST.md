@@ -108,7 +108,7 @@ Demo owner: Birol Tilki Date: 2026-07-19
 
 | Item | Status |
 |------|--------|
-| FR-11 Teardown executed | **Topic 14** — mandatory immediately after M3 |
+| FR-11 Teardown executed | ✅ Topic 14 / M4 PASS 2026-07-19 (Appendix T) |
 | CloudWatch / PagerDuty / OTel | Out of scope (ADR-0005) |
 | Multi-cluster / service mesh | Out of scope |
 
@@ -120,15 +120,17 @@ Complete during [`docs/setup/14-teardown.md`](setup/14-teardown.md) / [`docs/run
 
 | Field | Value |
 |-------|--------|
-| Teardown start (UTC) | |
-| GitOps prune complete | ⬜ |
-| ALBs / TGs gone (or listed leftovers) | ⬜ |
-| `terraform destroy` exit 0 | ⬜ |
-| State backend retained or deleted (note which) | |
-| Orphan audit clean / documented | ⬜ |
-| ROADMAP Phase 11 ✅ | ⬜ |
-| Destroy evidence links | |
-| M4 result | ⬜ PASS · ⬜ FAIL |
+| Teardown start (UTC) | 2026-07-19 ~22:46 (approve → Step 14.1) |
+| GitOps prune complete | ✅ Controllers scaled to 0; AppSets/apps deleted; Ingress finalizers cleared |
+| ALBs / TGs gone (or listed leftovers) | ✅ ELBv2 count **0**; orphan `k8s-*` SGs deleted before VPC destroy |
+| `terraform destroy` exit 0 | ✅ EKS+VPC destroyed; ECR force-deleted; second apply `Destroy complete! Resources: 0` (exit 0, ~23:13Z) |
+| State backend retained or deleted (note which) | **Deleted (Option B)** 2026-07-20: S3 `boutique-eks-gitops-tfstate-868480224481` + DDB `boutique-eks-gitops-tf-locks` |
+| Orphan audit clean / documented | ✅ Full wipe 2026-07-20: EKS/ELB/NAT/ECR/S3/DDB/SM/ACM/R53 = 0. Also deleted leftover launch templates, `/aws/eks/boutique-eks-gitops/cluster` log group, IAM `microservice-policy`. No boutique IAM roles. Account scaffolding left (default VPC, IAM login/`admin-user`, AWS service-linked roles) |
+| ROADMAP Phase 11 ✅ | ✅ |
+| Destroy evidence links | Local `terraform/envs/prod/destroy.tfplan`; CLI orphan audit 2026-07-19/20 |
+| M4 result | ✅ **PASS** · ⬜ FAIL |
+
+**Friction notes (for future rebuilds):** stop Argo controllers (or delete `root`) before AppSet delete or they recreate; strip `ingress.k8s.aws/resources` finalizers if LB controller already gone; delete leftover `k8s-*` SGs before VPC; ECR needs force delete when images present.
 
 ---
 
@@ -136,4 +138,4 @@ Complete during [`docs/setup/14-teardown.md`](setup/14-teardown.md) / [`docs/run
 
 **PASS** only if sections A–E are checked with evidence and no Must FR (except FR-11) is open.
 
-**Current:** **M3 PASS** (A–E complete). Next: **Topic 14 — Teardown** immediately (FR-11).
+**Current:** **M3 PASS** + **M4 PASS** (Topic 14 / Phase 11). Pilot **closed** — billable stack, TF backend, SM secrets, ACM, and Route53 zone removed. Rebuild = Topic 01 zone + Topic 03 remote-state first.
