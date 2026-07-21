@@ -203,6 +203,8 @@ kubectl -n monitoring get secret kube-prometheus-stack-grafana \
 
 HTTPS UI loads; Prometheus datasource default works.
 
+![Grafana Dashboards — kube-prometheus-stack mixins available](../../assets/images/setup/08-grafana-dashboards.png)
+
 ### Validation
 
 ```bash

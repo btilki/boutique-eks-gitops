@@ -369,6 +369,8 @@ Expected duration: image pulls 2–10 minutes first time.
 
 Pods Running in `dev`; HTTPS 200/302 on `dev-boutique.biroltilki.art`.
 
+![Online Boutique storefront — `dev-boutique.biroltilki.art`](../../assets/images/setup/09-boutique-dev-homepage.png)
+
 ### Validation
 
 ```bash

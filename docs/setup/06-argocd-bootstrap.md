@@ -400,6 +400,8 @@ kubectl -n argocd describe applicationset workload-apps
 
 Three platform apps + three boutique env apps listed.
 
+![Argo CD Applications dashboard — Healthy/Synced platform and boutique apps](../../assets/images/setup/06-argocd-applications-dashboard.png)
+
 ### Validation
 
 ```bash

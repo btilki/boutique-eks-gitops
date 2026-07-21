@@ -234,6 +234,8 @@ curl -I --max-time 60 https://stage-boutique.biroltilki.art
 
 Stage apps healthy; storefront HTTPS success.
 
+![Online Boutique storefront — `stage-boutique.biroltilki.art`](../../assets/images/setup/11-boutique-stage-homepage.png)
+
 ### Validation
 
 ```bash

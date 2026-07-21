@@ -483,6 +483,8 @@ Pipeline green on `main`; digest MR merged; Argo `frontend-dev` (etc.) Healthy o
 
 All checklist items pass.
 
+![GitLab CI pipeline passed — test → build → scan → sign → gitops_digest_mr](../../assets/images/setup/10-gitlab-ci-pipeline-passed.png)
+
 ### Validation
 
 - [ ] OIDC role + `AWS_ROLE_ARN` configured (10.1)

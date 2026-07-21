@@ -204,6 +204,8 @@ Optional recovery proof: one `git revert` or canary abort + revert ([rollback.md
 
 Section **E** fully filled; demo owner + date set.
 
+![Online Boutique storefront — `boutique.biroltilki.art` (prod)](../../assets/images/setup/13-boutique-prod-homepage.png)
+
 ### Validation
 
 ```bash

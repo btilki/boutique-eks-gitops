@@ -512,7 +512,7 @@ Note the hosted zone ID (right-hand `/hostedzone/Z…` form) in private notes fo
 | Navigation | Services → **Route 53** → **Hosted zones** → select `biroltilki.art` |
 | Permissions | `route53:ListHostedZones`, eventually change records (or IRSA for external-dns later) |
 | Verification | Zone name shows `biroltilki.art.`; type Public (expected for this pilot) |
-| Screenshot (optional) | `assets/images/setup/01-route53-zone.png` — not required for Phase B |
+| Screenshot (optional) | Capture Route53 hosted zone in AWS Console if useful; no committed screenshot required for Phase B |
 
 | Field | Expected | Why |
 |-------|----------|-----|
