@@ -11,7 +11,7 @@ Related ADRs: [0005](../adr/0005-observability-on-cluster.md) · Runbook: [alert
 
 ## Topic goal
 
-Operate on-cluster metrics, logs, dashboards, and **email** alerts — proving Alertmanager can reach your inbox — without CloudWatch, PagerDuty, or OTel.
+Operate on-cluster metrics, logs, dashboards, and **email** alerts — proving Alertmanager can reach your inbox — without CloudWatch, PagerDuty, or OTel. This topic installs Prometheus, Loki, Grafana, and Alertmanager as the observability stack.
 
 ## Why this topic is required
 

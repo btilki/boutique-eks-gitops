@@ -11,7 +11,7 @@ Pins: [docs/versions.md](../versions.md)
 
 ## Topic goal
 
-Provision the AWS foundation so later topics have a Ready EKS cluster, registries, DNS/TLS inputs, and least-privilege identities for GitLab CI and platform controllers.
+Provision the AWS foundation so later topics have a Ready **EKS (Elastic Kubernetes Service)** cluster, registries, DNS/TLS inputs, and least-privilege identities for GitLab CI and platform controllers. This topic creates the **VPC (Virtual Private Cloud)** (with one **NAT (Network Address Translation)** gateway), **ECR (Elastic Container Registry)** repositories, **IAM (Identity and Access Management)** roles including **OIDC (OpenID Connect)** for GitLab CI and **IRSA (IAM Roles for Service Accounts)** for controllers, and an **ASG (Auto Scaling Group)** node group.
 
 ## Why this topic is required
 

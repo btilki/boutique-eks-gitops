@@ -11,7 +11,7 @@ Pins: Kyverno chart **3.3.7** · ESO chart **0.14.4** ([docs/versions.md](../ver
 
 ## Topic goal
 
-Enforce digest-only / ECR-only admission for Boutique namespaces, enable secrets sync from AWS via ESO, and apply default-deny NetworkPolicies — before observability secrets (SMTP) and app images land.
+Enforce digest-only / ECR-only admission for Boutique namespaces, enable secrets sync from AWS via **ESO (External Secrets Operator)**, and apply default-deny NetworkPolicies — before observability secrets (SMTP) and app images land. Kyverno provides the admission policies.
 
 ## Why this topic is required
 

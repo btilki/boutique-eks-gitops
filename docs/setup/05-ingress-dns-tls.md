@@ -11,7 +11,7 @@ Related ADRs: [0003](../adr/0003-tls-acm-alb.md) · [0004](../adr/0004-dns-hostn
 
 ## Topic goal
 
-Expose HTTPS on boutique DNS via ACM + ALB, with external-dns managing records, proving the ingress path before Argo CD (Topic 06).
+Expose HTTPS on boutique DNS via **ACM (AWS Certificate Manager)** + **ALB (Application Load Balancer)**, with external-dns managing records and **TLS (Transport Layer Security)** terminating on the load balancer, proving the ingress path before Argo CD (Topic 06).
 
 ## Why this topic is required
 

@@ -11,7 +11,7 @@ Pins: Argo CD **v2.14.x** / Helm chart **7.8.14** ([docs/versions.md](../version
 
 ## Topic goal
 
-Make **Git the deploy authority**: install Argo CD, connect the GitLab repo, and wire app-of-apps so platform components and env namespaces are reconciled — with **prod manual sync only**.
+Make Git the deploy authority — **GitOps (Git as the deploy authority)**: install Argo CD, connect the GitLab repo, and wire app-of-apps so platform components and env namespaces are reconciled — with **prod manual sync only**.
 
 ## Why this topic is required
 

@@ -15,7 +15,7 @@
 | **Environments** | `dev`, `stage`, `prod` as namespaces on **one** cluster |
 | **Estimated calendar time** | ~4–8 working sessions (plan-dependent); teardown is mandatory after tests |
 | **Estimated cost** | ~**$35–45** for a ~2-day pilot with teardown; ~**$350–500/mo** if left running — see [cost model](../architecture/10-cost-model.md) |
-| **Who executes** | You run every CLI/GUI step; partner designs and authors guides/files |
+| **Who executes** | You run every CLI/**GUI (Graphical User Interface)** step; partner designs and authors guides/files |
 | **Phase status** | A ✅ · B ✅ · **C:** Topics **01–14** complete (M3 + M4 PASS) · pilot closed · D optional / rebuild |
 
 **Do not** skip topics after an error. **Do not** replace documented steps with install-all scripts unless explicitly requested.
@@ -62,6 +62,7 @@ Topic guides `01`–`14` are authored; live execution through Topic **13** is co
 | **AWS region** | `eu-central-1` (locked) |
 | **Cluster** | Single EKS **1.31**; nodes **3× `m6i.large`** (ASG 2–5) |
 | **DNS zone** | `biroltilki.art` (Route53) |
+| **Terminology** | On **first mention** in the Setup topic that owns the concept: **Abbreviation (Full form)** — both parts bold. Later mentions use the abbreviation only. See [Terminology ownership](#terminology-ownership) below. |
 | **Placeholders** | Guides use `<ACCOUNT_ID>`, `<GITLAB_PROJECT_PATH>`, `<SMOKE_HOST>` — **never commit tokens or SMTP passwords**. Env overlays may pin this pilot’s ECR/ACM account IDs so Argo can sync; redact for a public fork (see [CONTRIBUTING.md](../../CONTRIBUTING.md)). |
 | **Local state** | Terraform state in remote S3/DynamoDB after topic 03; kubeconfig via `aws eks update-kubeconfig`; no secrets in Git |
 | **Version pins** | Authoritative matrix in `docs/versions.md` (materialized in topic 02 / used from 01) |
@@ -71,6 +72,32 @@ Topic guides `01`–`14` are authored; live execution through Topic **13** is co
 | **Signing** | Sigstore **keyless** (GitLab OIDC) |
 | **First images** | Bootstrap ECR digests in topic **09** before first CI digest MR |
 | **After tests** | Topic **14** teardown **immediately** |
+
+### Terminology ownership
+
+Expand abbreviations **once**, in the owning topic (first prose mention in **Topic goal** or **Why**). Format: **`ABBR (Full Name)`**.
+
+| Abbreviation | Full form | Owning topic |
+|--------------|-----------|--------------|
+| **DNS** | Domain Name System | [01](01-prerequisites.md) |
+| **SMTP** | Simple Mail Transfer Protocol | [01](01-prerequisites.md) |
+| **S3** | Simple Storage Service | [03](03-remote-state.md) |
+| **VPC** | Virtual Private Cloud | [04](04-network-eks-ecr-iam.md) |
+| **EKS** | Elastic Kubernetes Service | [04](04-network-eks-ecr-iam.md) |
+| **ECR** | Elastic Container Registry | [04](04-network-eks-ecr-iam.md) |
+| **IAM** | Identity and Access Management | [04](04-network-eks-ecr-iam.md) |
+| **NAT** | Network Address Translation | [04](04-network-eks-ecr-iam.md) |
+| **OIDC** | OpenID Connect | [04](04-network-eks-ecr-iam.md) |
+| **IRSA** | IAM Roles for Service Accounts | [04](04-network-eks-ecr-iam.md) |
+| **ASG** | Auto Scaling Group | [04](04-network-eks-ecr-iam.md) |
+| **ALB** | Application Load Balancer | [05](05-ingress-dns-tls.md) |
+| **TLS** | Transport Layer Security | [05](05-ingress-dns-tls.md) |
+| **ACM** | AWS Certificate Manager | [05](05-ingress-dns-tls.md) |
+| **GitOps** | Git as the deploy authority | [06](06-argocd-bootstrap.md) |
+| **ESO** | External Secrets Operator | [07](07-security-baseline.md) |
+| **CI** | Continuous Integration | [10](10-gitlab-ci-digest.md) |
+| **MR** | Merge Request | [10](10-gitlab-ci-digest.md) |
+| **GUI** | Graphical User Interface | Setup Guide (this README) |
 
 ### Locked DNS hostnames
 

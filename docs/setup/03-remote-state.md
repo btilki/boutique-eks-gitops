@@ -10,7 +10,7 @@ Related ADRs: None (operational bootstrap) · Pins: [docs/versions.md](../versio
 
 ## Topic goal
 
-Bootstrap durable, locked Terraform remote state so Topic 04 (and later) applies are safe across sessions and do not rely on local `terraform.tfstate` files.
+Bootstrap durable, locked Terraform remote state so Topic 04 (and later) applies are safe across sessions and do not rely on local `terraform.tfstate` files. State lives in **S3 (Simple Storage Service)** with a DynamoDB lock table.
 
 ## Why this topic is required
 

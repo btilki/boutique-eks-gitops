@@ -10,7 +10,7 @@ Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0006](../adr/0006-co
 
 ## Topic goal
 
-Run a GitLab pipeline that builds/publishes images to ECR (OIDC), fails on Trivy CRITICAL, signs with cosign Sigstore keyless, and opens a **digest-only MR** for `gitops/envs/dev` — without ever deploying to the cluster.
+Run a GitLab **CI (Continuous Integration)** pipeline that builds/publishes images to ECR (OIDC), fails on Trivy CRITICAL, signs with cosign Sigstore keyless, and opens a digest-only **MR (Merge Request)** for `gitops/envs/dev` — without ever deploying to the cluster.
 
 ## Why this topic is required
 
