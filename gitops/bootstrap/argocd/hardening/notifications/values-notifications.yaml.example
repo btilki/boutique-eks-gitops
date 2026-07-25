@@ -1,0 +1,21 @@
+# EXAMPLE — enable Argo CD Notifications after rebuild (Topic 17)
+# Merge with: helm upgrade ... -f values.yaml -f hardening/notifications/values-notifications.yaml.example
+#
+# Default bootstrap keeps notifications.enabled: false (values.yaml).
+# Prefer email via existing Alertmanager SMTP secret patterns, or Slack webhook via Secret.
+
+notifications:
+  enabled: true
+  argocdUrl: https://argocd.boutique.biroltilki.art
+  secret:
+    # Create separately; do not commit tokens
+    create: false
+  cm:
+    create: true
+    context: {}
+  # Minimal triggers: sync failures + prod deploy success
+  # Full catalog: https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/
+  # services / templates can also live in argocd-notifications-cm — see configmap.example.yaml
+
+# After enable, annotate Applications or AppProjects, e.g.:
+#   notifications.argoproj.io/subscribe.on-sync-failed.slack: boutique-gitops

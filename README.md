@@ -50,7 +50,7 @@ This repository is the **operational control plane** for running a scoped Online
 | **Infrastructure** | Terraform: VPC (1× NAT), EKS 1.31, ECR, IAM OIDC/IRSA, ACM/Route53 data, remote state |
 | **Platform** | LB Controller, external-dns, cert-manager, Argo CD, Kyverno, ESO, NetworkPolicy, Rollouts, monitoring |
 | **Applications** | 7 Boutique services + Redis via Helm; env overlays pin digests |
-| **CI/CD** | GitLab CI: test → build → Trivy → cosign (Sigstore keyless) → digest MR |
+| **CI/CD** | GitLab CI: test → build → Trivy → cosign → SBOM attest → digest MR |
 | **Observability** | Prometheus + Loki + Grafana + Alertmanager (email); no CloudWatch/PagerDuty/OTel in v1 |
 
 **Environments:** `dev`, `stage`, `prod` as namespaces on **one** cluster (cost over blast-radius isolation — see architecture).
@@ -66,15 +66,19 @@ Details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`
 | **Infrastructure** | Terraform VPC / EKS / ECR / OIDC / remote state | ✅ Implemented |
 | **Platform** | Ingress (ACM+ALB), external-dns, cert-manager | ✅ Implemented |
 | **GitOps** | Argo CD app-of-apps + ApplicationSet; prod manual sync | ✅ Implemented |
-| **Security** | Kyverno digest/ECR rules, ESO, NetworkPolicy | ✅ Implemented |
+| **GitOps (Phase 12)** | AppProjects; Dex/SSO + notifications examples | 🚧 Scaffold |
+| **Security** | Kyverno digest/ECR, ESO, NetworkPolicy | ✅ Implemented |
+| **Security (Phase 12)** | Signature/SBOM Audit policies; WAF/Falco stubs | 🚧 Scaffold |
 | **Observability** | Prom / Loki / Grafana / AM email | ✅ Implemented |
 | **Applications** | 7 Boutique Helm charts + Redis; boutique hostnames | ✅ Implemented |
-| **CI/CD** | Digest-only MRs; Sigstore keyless cosign; Trivy CRITICAL gate | ✅ Implemented |
+| **CI/CD** | Digest-only MRs; Sigstore keyless cosign; Trivy CRITICAL | ✅ Implemented |
+| **CI/CD (Phase 12)** | SBOM attest; Gitleaks/Checkov/policy_test | 🚧 Scaffold |
 | **Delivery** | Promotion governance; frontend canary stage+prod | ✅ Implemented |
+| **Delivery (Phase 12)** | AnalysisTemplates (opt-in) | 🚧 Scaffold |
 | **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 + M4 PASS (Appendix T) | Topic 14 ✅ |
 
 
-Legend: ✅ Implemented · 🚧 Planned · ⬜ Not started · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
+Legend: ✅ Implemented (pilot-proven) · 🚧 Scaffold (in-repo; enable after rebuild) · ⬜ Not started · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
 
 ---
 
@@ -94,7 +98,7 @@ Legend: ✅ Implemented · 🚧 Planned · ⬜ Not started · ❌ Out of scope (
 | Ingress / DNS / TLS | AWS LB Controller, external-dns, ACM (+ cert-manager installed) | See ADRs |
 | Registry | Amazon ECR | scan-on-push |
 | CI | GitLab CI | OIDC → IAM |
-| Scan / sign | Trivy **0.71.0**, cosign **2.4.x** (Sigstore keyless) | — |
+| Scan / sign / SBOM | Trivy **0.71.0**, cosign **2.4.x** keyless + CycloneDX attest | Topic 15 |
 | Observability | kube-prometheus-stack, Loki, Grafana, Alertmanager | email alerts |
 
 Non-obvious choices: [`docs/architecture/README.md`](docs/architecture/README.md) · pins: [`docs/versions.md`](docs/versions.md)
@@ -200,12 +204,13 @@ Plan: [`docs/implementation/plan.md`](docs/implementation/plan.md) · Flow: [`do
 
 ## 11. CI/CD
 
+**Post-teardown:** pipelines are **dormant** unless GitLab CI/CD has `ENABLE_PILOT_CI=true` (full path, needs AWS) or `ENABLE_REPO_GATES=true` (MR test-stage only). See [`docs/ci.md`](docs/ci.md).
+
 | Pipeline concern | Trigger | Behavior |
 |------------------|---------|----------|
-| test → build | MR / main (as configured) | Build service images |
-| scan | after build | Trivy **0.71.0**; fail on CRITICAL |
-| sign | after scan pass | cosign **Sigstore keyless** (GitLab OIDC) |
-| gitops | after sign | Open MR patching **only** `image.digest` under `gitops/envs/dev/` |
+| test | MR / main (when gates enabled) | Helm lint + Gitleaks + Checkov (soft-fail) + policy_test |
+| build → scan → sign → sbom | default branch + `ENABLE_PILOT_CI` | ECR publish, Trivy CRITICAL, cosign, CycloneDX attest |
+| gitops | after sbom | Open MR patching **only** `image.digest` under `gitops/envs/dev/` |
 
 **Hard rule:** no `kubectl` / `argocd sync` in CI for routine deploys.
 
@@ -310,8 +315,9 @@ Local entry: `make lint` && `make docs-check` (no install/apply bypass).
 | 9 | Promotion + frontend canary | ✅ |
 | 10 | Production readiness (M3) | ✅ |
 | 11 | Teardown (immediate after tests) | ✅ |
+| 12 | GitOps hardening scaffolds (Topics 15–19) | 🚧 Scaffold |
 
-Milestones: **M1–M4** complete — details in [`ROADMAP.md`](ROADMAP.md).
+Milestones: **M1–M4** complete — details in [`ROADMAP.md`](ROADMAP.md). Phase 12 is **in-repo scaffold only** (no live AWS).
 
 ---
 

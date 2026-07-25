@@ -25,6 +25,10 @@ Deep architecture for **boutique-eks-gitops**. Start with the executive summary:
 | [ADR-0004](../adr/0004-dns-hostname-scheme.md) | Locked boutique hostnames |
 | [ADR-0005](../adr/0005-observability-on-cluster.md) | Prom/Loki/Grafana/AM email; no CW/PD/OTel |
 | [ADR-0006](../adr/0006-cosign-signing-mode.md) | Cosign Sigstore keyless via GitLab OIDC |
+| [ADR-0007](../adr/0007-admission-verify-and-sbom.md) | Admission verify + CycloneDX SBOM (Topic 15) |
+| [ADR-0008](../adr/0008-argocd-appprojects-sso.md) | Argo AppProjects + deferred SSO/notifications (Topic 17) |
+| [ADR-0009](../adr/0009-canary-analysis-templates.md) | Canary AnalysisTemplates (Topic 18) |
+| [ADR-0010](../adr/0010-edge-waf-and-falco.md) | Optional WAF + Falco (Topic 19) |
 
 Additional notes (region `eu-central-1`, node size, no mesh) remain in [../ARCHITECTURE.md](../ARCHITECTURE.md) tradeoffs and [10-cost-model.md](10-cost-model.md).
 

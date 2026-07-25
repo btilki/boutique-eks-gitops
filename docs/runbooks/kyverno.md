@@ -14,6 +14,8 @@ Unblock legitimate workloads blocked by admission policy — without weakening d
 | `deny-latest-tag` | Blocks `:latest` |
 | `require-image-digest` | Requires `@sha256:…` |
 | `ecr-registry-allowlist` | ECR `eu-central-1` only |
+| `verify-image-signatures` | Cosign keyless (Topic 15; default **Audit**) |
+| `verify-sbom-attestation` | CycloneDX attest (Topic 15; default **Audit**) |
 
 ## Quick triage
 
@@ -43,6 +45,7 @@ kubectl -n <ns> get events --sort-by='.lastTimestamp' | tail -40
 | Denied `:latest` | Tag slipped into manifest | Pin digest in `gitops/envs/**` |
 | Denied missing digest | Only `image: repo:tag` | Use `@sha256:` contract |
 | Denied registry | Public GHCR/Docker Hub | Mirror/push to project ECR |
+| Signature / SBOM Audit fails | Unsigned bootstrap or subject mismatch | Run Topic 10+15 CI; fix `subjectRegExp` (Topic 15.2); Enforce only after proof |
 | Rollout pods denied | Same as Deployment | Fix Rollout pod template image |
 | Policy not loaded | AppSet path | Sync `kyverno-policies` app |
 
@@ -60,5 +63,5 @@ Fix the image in Git → merge → Argo sync (manual for prod). Re-test with [`t
 
 ## Related
 
-- Setup: [`../setup/07-security-baseline.md`](../setup/07-security-baseline.md)
+- Setup: [`../setup/07-security-baseline.md`](../setup/07-security-baseline.md) · [`../setup/15-supply-chain-verify-sbom.md`](../setup/15-supply-chain-verify-sbom.md)
 - CI: [`../ci.md`](../ci.md)

@@ -111,6 +111,7 @@ argocd app sync kyverno-policies --grpc-web
 
 kubectl get clusterpolicy
 kubectl get clusterpolicy deny-latest-tag require-image-digest ecr-registry-allowlist -o wide
+# Phase 12 may also show verify-image-signatures + verify-sbom-attestation (Audit) — Topic 15
 ```
 
 ### GUI instructions (if applicable)
@@ -119,13 +120,13 @@ kubectl get clusterpolicy deny-latest-tag require-image-digest ecr-registry-allo
 |---------|---------|
 | Platform | Argo CD UI |
 | Navigation | **kyverno-policies** → Synced/Healthy |
-| Verification | Three ClusterPolicies present |
+| Verification | At least three **Enforce** ClusterPolicies (digest/latest/ECR); Topic 15 may add two **Audit** verify policies |
 
 Optional audit-first (only if enforce breaks platform unexpectedly): temporarily set `validationFailureAction: Audit` in Git, sync, observe, then return to `Enforce`. Prefer staying on Enforce for this pilot once Kyverno is healthy.
 
 ### Expected output
 
-Three ClusterPolicies with `validationFailureAction: Enforce`.
+Three **Enforce** ClusterPolicies for Topic 07 (`deny-latest-tag`, `require-image-digest`, `ecr-registry-allowlist`). If Phase 12 files are on `main`, also expect `verify-image-signatures` and `verify-sbom-attestation` in **Audit** (Topic 15) — do not treat Audit as Enforce.
 
 ### Validation
 
@@ -455,7 +456,7 @@ All checklist items pass.
 ### Validation
 
 - [ ] Kyverno Healthy (7.1)
-- [ ] Three ClusterPolicies Enforce (7.2)
+- [ ] Three ClusterPolicies **Enforce** for digest/latest/ECR (7.2); optional Topic 15 Audit verify policies OK
 - [ ] `:latest` Pod denied (7.3) — evidence saved
 - [ ] ESO + ClusterSecretStore Ready (7.4)
 - [ ] Sample ExternalSecret synced once (7.5)

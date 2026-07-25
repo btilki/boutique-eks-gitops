@@ -51,6 +51,22 @@ spec:
           ingress: {{ include "frontend.fullname" . }}
           servicePort: {{ .Values.service.port }}
           rootService: {{ include "frontend.fullname" . }}-root
+      {{- if and .Values.canary.analysis .Values.canary.analysis.enabled }}
+      # Topic 18 / ADR-0009 — background analysis while canary progresses
+      analysis:
+        templates:
+          - templateName: {{ .Values.canary.analysis.background.templateName | default "frontend-pod-ready" }}
+            clusterScope: {{ .Values.canary.analysis.background.clusterScope | default true }}
+        args:
+          - name: namespace
+            value: {{ .Release.Namespace | quote }}
+          - name: pod-prefix
+            value: {{ include "frontend.fullname" . | quote }}
+      {{- end }}
       steps:
+        {{- if and .Values.canary.analysis .Values.canary.analysis.enabled .Values.canary.analysis.steps }}
+        {{- toYaml .Values.canary.analysis.steps | nindent 8 }}
+        {{- else }}
         {{- toYaml .Values.canary.steps | nindent 8 }}
+        {{- end }}
 {{- end }}

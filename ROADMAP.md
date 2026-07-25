@@ -23,8 +23,9 @@
 | 9 | Promotion + frontend canary | L | ✅ | `11-promotion`, `12-canary-rollouts` |
 | 10 | Production readiness | M | ✅ | `13-production-readiness` |
 | 11 | Teardown | M | ✅ | `14-teardown` |
+| 12 | GitOps hardening (scaffold) | M | ✅ Scaffold authored | `15` … `19-edge-runtime-waf-falco` |
 
-Status: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Skipped
+Status: ⬜ Not started · 🔄 In progress · ✅ Complete · ✅ Scaffold authored (files in Git; live enable after rebuild) · ⏭️ Skipped
 
 ---
 
@@ -62,3 +63,15 @@ FC review prompts run at **M1, M2, M3** (phases 3, 6, 10). **Phase 11 teardown r
 ## Current focus
 
 **Pilot closed.** Phases **1–11 ✅** · M3 PASS 2026-07-19 · **M4 PASS** 2026-07-19/20. **No live AWS pilot resources remain** (Appendix T). Rebuild = Topic 01 (zone) → 03 → 04+.
+
+**Phase 12 (scaffold-only):** extend GitOps/DevSecOps in-repo for a future rebuild — **no** Terraform apply required to author files.
+
+| Slice | Topic | Status |
+|-------|-------|--------|
+| Supply chain close-loop (cosign admit + SBOM) | [15](docs/setup/15-supply-chain-verify-sbom.md) | 🚧 Scaffold in Git (Audit policies; Enforce after rebuild) |
+| CI security gates (Checkov/Gitleaks/policy tests) | [16](docs/setup/16-ci-security-gates.md) | 🚧 Scaffold in Git (optional `ENABLE_REPO_GATES` for MRs) |
+| Argo hardening (AppProjects/SSO/notifications) | [17](docs/setup/17-argocd-hardening.md) | 🚧 Scaffold in Git (AppProjects wired; SSO/notifications examples only) |
+| Rollouts AnalysisTemplates | [18](docs/setup/18-canary-analysis.md) | 🚧 Scaffold in Git (templates synced when cluster up; analysis off until example merged) |
+| Edge/runtime stubs (WAF/Falco) | [19](docs/setup/19-edge-runtime-waf-falco.md) | 🚧 Scaffold in Git (WAF/Falco off by default; enable after rebuild) |
+
+**Phase 12 scaffold authored** for Topics 15–19. Cluster enable remains rebuild-gated.

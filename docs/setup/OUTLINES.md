@@ -291,6 +291,97 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 
 ---
 
+## 15 — Supply chain verify + SBOM (Phase 12 scaffold)
+
+**Goal:** Kyverno admission verify (Audit→Enforce) for Sigstore keyless signatures + CycloneDX SBOM attest from CI; no live AWS required to author.  
+**Depends on:** 07 + 10 for live apply; scaffold anytime after 14  
+**Creates:** verify ClusterPolicies, CI `sbom` stage, ADR-0007, Topic 15 guide.
+
+| Step | Title | Concern |
+|------|--------|---------|
+| 15.1 | Confirm scaffold files in Git | Repo-only |
+| 15.2 | Align GitLab `subjectRegExp` | Identity match |
+| 15.3 | After rebuild: sync policies + run sbom CI | Live loop |
+| 15.4 | Flip signature verify to Enforce after proof | Fail closed |
+| 15.5 | Topic validation (scaffold) | Gate |
+
+**Why required:** Closes sign→admit loop deferred by ADR-0006.
+
+---
+
+## 16 — CI security gates (Phase 12 scaffold)
+
+**Goal:** Gitleaks + Checkov (soft-fail) + Kyverno CLI unit tests in `test` stage; optional `ENABLE_REPO_GATES` for MR pipelines without AWS.  
+**Depends on:** 10 for CI contract; no cluster for scaffold / MR gates  
+**Creates:** `.checkov.yaml`, `.gitleaks.toml`, `tests/policy/unit/**`, Topic 16 guide, CI jobs.
+
+| Step | Title | Concern |
+|------|--------|---------|
+| 16.1 | Confirm scaffold files | Repo-only |
+| 16.2 | Run gates locally (optional) | Pre-CI |
+| 16.3 | Checkov soft-fail baseline | IaC noise |
+| 16.4 | Enable `ENABLE_REPO_GATES` / pilot CI | GitLab vars |
+| 16.5 | Topic validation (scaffold) | Gate |
+
+**Why required:** Catch secrets, risky Terraform, and policy regressions before digest promotion.
+
+---
+
+## 17 — Argo CD hardening (Phase 12 scaffold)
+
+**Goal:** AppProjects for platform vs workloads; Dex/SSO and notifications as examples only; ApplicationSets reference named projects.  
+**Depends on:** 06 for live apply; scaffold anytime  
+**Creates:** `hardening/projects/*`, SSO/notifications examples, ADR-0008, Topic 17.
+
+| Step | Title | Concern |
+|------|--------|---------|
+| 17.1 | Confirm scaffold files | Repo-only |
+| 17.2 | Review AppProject boundaries | Blast radius |
+| 17.3 | After rebuild: sync AppProjects first | Ordering |
+| 17.4 | SSO Dex+GitLab prepare only | IdP |
+| 17.5 | Notifications prepare only | Alerts |
+| 17.6 | Topic validation (scaffold) | Gate |
+
+**Why required:** Move off `default` project and shared admin toward production GitOps hygiene.
+
+---
+
+## 18 — Canary AnalysisTemplates (Phase 12 scaffold)
+
+**Goal:** ClusterAnalysisTemplates (HTTP smoke + Prometheus pod-ready); chart opt-in; timed canary remains default.  
+**Depends on:** 12 + 08 for live enable; scaffold anytime  
+**Creates:** `argo-rollouts/analysis/*`, frontend chart analysis support, example env overlays, ADR-0009, Topic 18.
+
+| Step | Title | Concern |
+|------|--------|---------|
+| 18.1 | Confirm scaffold files | Repo-only |
+| 18.2 | Understand templates | Smoke vs Prom |
+| 18.3 | After rebuild: sync templates | Wave 26 |
+| 18.4 | Enable on stage then prod | Opt-in |
+| 18.5 | Topic validation (scaffold) | Gate |
+
+**Why required:** Auto-abort bad canaries beyond timed pauses.
+
+---
+
+## 19 — Edge WAF + Falco (Phase 12 scaffold)
+
+**Goal:** Optional WAFv2 Terraform module (default off) + Falco Helm values/AppSet example (not live-synced).  
+**Depends on:** 04–06 for WAF/Ingress; 08 helpful for Falco; scaffold anytime  
+**Creates:** `terraform/modules/waf`, falco values + example AppSet, Ingress annotation example, ADR-0010, Topic 19.
+
+| Step | Title | Concern |
+|------|--------|---------|
+| 19.1 | Confirm scaffold files | Repo-only |
+| 19.2 | Review WAF module disabled | Cost gate |
+| 19.3 | After rebuild: enable WAF + annotate Ingress | Edge |
+| 19.4 | After rebuild: enable Falco opt-in | Runtime |
+| 19.5 | Topic validation (scaffold) | Gate |
+
+**Why required:** Documented edge/runtime path without paying during short pilots.
+
+---
+
 ## Outline → Phase B mapping
 
 | When approved | Author next |
@@ -298,3 +389,4 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | Phase A | Topic **01** guide + its `SETUP_REQUIRED` files |
 | After each topic B approval | Next numeric topic |
 | After topic 14 B | Start Phase C at `01` step `1.1` |
+| Phase 12 | Topic **15–19** scaffolds without rebuilding AWS |

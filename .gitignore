@@ -42,4 +42,5 @@ node_modules/
 # Test / coverage noise
 coverage/
 *.log
-terraform/envs/prod/tfplan # only if not already ignored
+*.tfplan
+terraform/envs/prod/tfplan # legacy path; covered by *.tfplan

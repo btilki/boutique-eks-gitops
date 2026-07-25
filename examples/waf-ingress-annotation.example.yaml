@@ -1,0 +1,33 @@
+# EXAMPLE Ingress annotation — associate WAFv2 Web ACL (Topic 19)
+# After: terraform apply with enable_waf=true → terraform output -raw waf_web_acl_arn
+#
+# Add under ingress.annotations in gitops/envs/*/values/frontend.yaml (and argocd/grafana if desired):
+#
+#   alb.ingress.kubernetes.io/wafv2-acl-arn: "arn:aws:wafv2:eu-central-1:ACCOUNT:regional/webacl/NAME/ID"
+#
+# Requires AWS LB Controller IRSA wafv2:* Associate permissions (already in Topic 04 policy).
+#
+# Do not commit a live account ARN in shared forks without redaction.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-waf-annotation-example
+  namespace: prod
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/wafv2-acl-arn: "REPLACE_WAF_WEB_ACL_ARN"
+spec:
+  rules:
+    - host: boutique.biroltilki.art
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-root
+                port:
+                  number: 8080

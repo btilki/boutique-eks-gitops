@@ -5,7 +5,7 @@
 | Zone | Trust | Controls |
 |------|-------|----------|
 | Internet | Untrusted | TLS (ACM), minimal exposure (ALB 443 only) |
-| Cluster edge (ALB→Ingress) | Semi-trusted | ACM, security groups, optional future WAF |
+| Cluster edge (ALB→Ingress) | Semi-trusted | ACM, security groups; optional WAFv2 (Topic 19, `enable_waf`) |
 | App namespaces | Tenant-trusted | NetworkPolicy, PSA baseline, Kyverno |
 | Platform namespaces | Higher trust | Restricted RBAC; IRSA-scoped controllers |
 | EKS control plane | Highly trusted | Private or public endpoint with restricted CIDRs (choose at implement); IAM auth |
@@ -63,10 +63,13 @@ flowchart LR
 | Control | Tool |
 |---------|------|
 | Vulnerability gate | Trivy `0.71.0` CRITICAL fail |
-| Image signing | cosign `2.4.x` |
+| Image signing | cosign `2.4.x` Sigstore keyless |
+| SBOM | CycloneDX via Trivy + `cosign attest` (Topic 15) |
 | Registry | ECR scan-on-push |
 | Admission | Kyverno: digest required, deny `:latest`, ECR allowlist |
+| Admission (Phase 12) | Signature + SBOM verify **Audit** → Enforce after rebuild (ADR-0007) |
 | Prod path | CODEOWNERS `@btilki` |
+| Edge / runtime (optional) | WAFv2 + Falco stubs (Topic 19; off by default) |
 
 ## Blast radius
 

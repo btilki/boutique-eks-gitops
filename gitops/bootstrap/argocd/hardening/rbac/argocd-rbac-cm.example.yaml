@@ -1,0 +1,22 @@
+# EXAMPLE RBAC ConfigMap overlay — Topic 17
+# Prefer configuring via Helm configs.rbac (see sso/values-dex-gitlab.yaml.example).
+# This file documents the shape of argocd-rbac-cm for operators editing live.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  policy.default: role:readonly
+  policy.csv: |
+    # Break-glass local admin remains via accounts.admin until SSO proven
+    g, btilki, role:admin
+    # Developers: read/sync workloads project only (not platform)
+    p, role:org-developer, applications, get, boutique-workloads/*, allow
+    p, role:org-developer, applications, sync, boutique-workloads/*, allow
+    p, role:org-developer, projects, get, boutique-workloads, allow
+    g, REPLACE_GITLAB_DEV_GROUP, role:org-developer
+  scopes: "[groups, email]"

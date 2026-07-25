@@ -1,0 +1,20 @@
+# Positive — digest-pinned ECR image must pass require-image-digest
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-with-digest-test
+  namespace: dev
+  labels:
+    test: kyverno-unit
+spec:
+  containers:
+    - name: pause
+      image: 123456789012.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend@sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
+  restartPolicy: Never

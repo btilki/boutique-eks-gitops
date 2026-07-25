@@ -1,5 +1,6 @@
 # Namespace-only ApplicationSet — keeps env namespaces defined in Git
 # Service Helm apps: boutique-applicationset.yaml (Topic 09)
+# Topic 17: project boutique-workloads — sync AppProjects first on rebuild (Topic 06.5 / 17.3).
 # CRITICAL: prod namespace app must NOT enable automated sync (same as workloads).
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -33,7 +34,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
-      project: default
+      project: boutique-workloads
       source:
         repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
         targetRevision: main

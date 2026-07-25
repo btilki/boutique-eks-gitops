@@ -1,0 +1,23 @@
+# EXAMPLE ConfigMap fragment for Argo CD Notifications (Topic 17)
+# Apply only after notifications controller is enabled via Helm values example.
+# REPLACE webhook/email endpoints; store tokens in Secret argocd-notifications-secret.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm-example
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: argocd
+data:
+  service.slack: |
+    token: $slack-token
+  template.app-sync-failed: |
+    message: |
+      Application {{.app.metadata.name}} sync failed.
+      Sync status: {{.app.status.sync.status}}
+      Health: {{.app.status.health.status}}
+  trigger.on-sync-failed: |
+    - when: app.status.operationState.phase in ['Error', 'Failed']
+      send: [app-sync-failed]
+  defaultTriggers: |
+    - on-sync-failed

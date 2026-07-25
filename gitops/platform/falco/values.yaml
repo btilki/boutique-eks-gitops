@@ -1,0 +1,38 @@
+# Falco Helm values — Topic 19 / ADR-0010 scaffold
+# Pin: Falco chart **4.19.3** (falcosecurity) — confirm with helm show chart before enable
+# NOT synced by default — add ApplicationSet element from falco-applicationset-snippet.yaml.example
+
+# Driver: modern-bpf preferred on EKS 1.31 (no DKMS on nodes)
+driver:
+  enabled: true
+  kind: modern-bpf
+
+falco:
+  json_output: true
+  http_output:
+    enabled: false
+  # Ship to stdout; scrape via Loki/Promtail later if desired
+  stdout_output:
+    enabled: true
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Keep footprint small for pilot rebuilds
+falcoctl:
+  artifact:
+    install:
+      enabled: true
+    follow:
+      enabled: true
+
+# Optional: disable falcosidekick initially
+falcosidekick:
+  enabled: false
+
+tolerations: []

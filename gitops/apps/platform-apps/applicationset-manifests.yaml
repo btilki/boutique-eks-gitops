@@ -1,5 +1,5 @@
-# Directory-synced platform manifests (policies, secret stores, NetworkPolicies)
-# Setup Topic 07 · wave 21 (after operators on wave 20)
+# Directory-synced platform manifests (policies, secret stores, NetworkPolicies, Argo projects)
+# Setup Topic 07 · Topic 17 (argocd-hardening wave 5)
 # REPLACE https://gitlab.com/btilki/boutique-eks-gitops.git
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -12,22 +12,37 @@ spec:
   generators:
     - list:
         elements:
+          # Topic 17 — AppProjects before other platform manifests
+          - name: argocd-hardening
+            path: gitops/bootstrap/argocd/hardening/projects
+            namespace: argocd
+            wave: "5"
+            project: default
           - name: kyverno-policies
             path: gitops/platform/kyverno/policies
             namespace: kyverno
             wave: "21"
+            project: boutique-platform
           - name: external-secrets-config
             path: gitops/platform/external-secrets
             namespace: external-secrets
             wave: "21"
+            project: boutique-platform
           - name: network-policies
             path: gitops/platform/network-policies
             namespace: default
             wave: "21"
+            project: boutique-platform
+          - name: argo-rollouts-analysis
+            path: gitops/platform/argo-rollouts/analysis
+            namespace: argo-rollouts
+            wave: "26"
+            project: boutique-platform
           - name: monitoring-config
             path: gitops/platform/monitoring/manifests
             namespace: monitoring
             wave: "31"
+            project: boutique-platform
   template:
     metadata:
       name: "{{.name}}"
@@ -37,7 +52,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
-      project: default
+      project: "{{.project}}"
       source:
         repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
         targetRevision: main
@@ -45,7 +60,7 @@ spec:
         directory:
           recurse: true
           include: "*.yaml"
-          exclude: "{README.md,values.yaml}"
+          exclude: "{README.md,values.yaml,*.example.yaml}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{.namespace}}"

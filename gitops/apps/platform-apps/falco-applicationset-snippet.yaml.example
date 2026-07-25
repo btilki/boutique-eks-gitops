@@ -1,0 +1,68 @@
+# EXAMPLE — Falco ApplicationSet element / standalone ApplicationSet (Topic 19)
+# Extension is .yaml.example so root app-of-apps does NOT sync this file.
+#
+# Option A: copy the list element under generators.list.elements in applicationset.yaml
+# Option B: rename to .yaml and place under gitops/apps/ only after AppProject allows falco chart + ns
+#
+# REPLACE chartVersion after helm show chart falcosecurity/falco
+#
+# --- list element to merge into platform-apps ApplicationSet ---
+# - name: falco
+#   namespace: falco
+#   chart: falco
+#   chartRepo: https://falcosecurity.github.io/charts
+#   chartVersion: "4.19.3"
+#   valuesPath: gitops/platform/falco/values.yaml
+#   wave: "22"
+#
+# --- OR standalone ApplicationSet (apply manually / after rename) ---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: falco-optional
+  namespace: argocd
+  annotations:
+    boutique.eks.gitops/topic: "19"
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - name: falco
+            namespace: falco
+            chart: falco
+            chartRepo: https://falcosecurity.github.io/charts
+            chartVersion: "4.19.3"
+            valuesPath: gitops/platform/falco/values.yaml
+            wave: "22"
+  template:
+    metadata:
+      name: "{{.name}}"
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{.wave}}"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: boutique-platform
+      sources:
+        - repoURL: "{{.chartRepo}}"
+          chart: "{{.chart}}"
+          targetRevision: "{{.chartVersion}}"
+          helm:
+            valueFiles:
+              - "$values/{{.valuesPath}}"
+        - repoURL: https://gitlab.com/btilki/boutique-eks-gitops.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

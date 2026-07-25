@@ -246,3 +246,12 @@ module "irsa_external_secrets" {
   policy_json       = data.aws_iam_policy_document.external_secrets.json
   tags              = local.tags
 }
+
+# Topic 19 / ADR-0010 — optional WAFv2 (default disabled)
+module "waf" {
+  source = "../../modules/waf"
+
+  enabled = var.enable_waf
+  name    = "${local.name}-alb"
+  tags    = local.tags
+}

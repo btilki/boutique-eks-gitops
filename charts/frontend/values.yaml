@@ -48,6 +48,7 @@ ingress:
   annotations: {}
 
 # Progressive delivery (Topic 12). Off in chart defaults / dev; on for stage+prod overlays.
+# Topic 18: set canary.analysis.enabled + optional analysis.steps (see frontend-analysis.example.yaml).
 canary:
   enabled: false
   steps:
@@ -58,3 +59,10 @@ canary:
     - pause:
         duration: 60
     - setWeight: 100
+  analysis:
+    enabled: false
+    background:
+      templateName: frontend-pod-ready
+      clusterScope: true
+    # When enabled and non-empty, replaces canary.steps
+    steps: []

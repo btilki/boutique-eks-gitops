@@ -1,0 +1,65 @@
+# Workload AppProject — Boutique apps in dev/stage/prod only
+# Setup Topic 17 · ADR-0008
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: boutique-workloads
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Online Boutique Helm workloads (digest-pinned)
+  sourceRepos:
+    - https://gitlab.com/btilki/boutique-eks-gitops.git
+  destinations:
+    - namespace: dev
+      server: https://kubernetes.default.svc
+    - namespace: stage
+      server: https://kubernetes.default.svc
+    - namespace: prod
+      server: https://kubernetes.default.svc
+  # Workloads should not create cluster-scoped resources
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: ""
+      kind: Pod
+    - group: apps
+      kind: Deployment
+    - group: apps
+      kind: ReplicaSet
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+    - group: policy
+      kind: PodDisruptionBudget
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: argoproj.io
+      kind: Rollout
+    - group: argoproj.io
+      kind: AnalysisRun
+    - group: argoproj.io
+      kind: AnalysisTemplate
+    - group: external-secrets.io
+      kind: ExternalSecret
+  orphanedResources:
+    warn: true
+  # Optional project roles — wire to Dex groups after SSO (Topic 17 Step 17.4)
+  roles:
+    - name: sync-nonprod
+      description: Sync/Get apps in this project (map Dex groups later)
+      policies:
+        - p, proj:boutique-workloads:sync-nonprod, applications, get, boutique-workloads/*, allow
+        - p, proj:boutique-workloads:sync-nonprod, applications, sync, boutique-workloads/*, allow
+      groups: []

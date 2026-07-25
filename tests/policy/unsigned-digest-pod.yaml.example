@@ -1,0 +1,34 @@
+# EXAMPLE negative fixture — unsigned digest should fail when verify-image-signatures is Enforce
+# Setup Topic 15 Step 15.5
+#
+# Do not apply until:
+#   1. Cluster rebuilt (Topics 04–07)
+#   2. Policy switched to Enforce
+#   3. You substitute a real ECR digest that has NO cosign signature
+#
+# Expected (Enforce): admission deny from verify-image-signatures
+# Expected (Audit): pod creates; ClusterPolicyReport / events show fail
+#
+# Usage after rebuild:
+#   cp tests/policy/unsigned-digest-pod.yaml.example /tmp/unsigned-digest-pod.yaml
+#   # edit image to ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend@sha256:…
+#   kubectl apply -f /tmp/unsigned-digest-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-unsigned-digest-test
+  namespace: dev
+  labels:
+    test: kyverno-unsigned
+spec:
+  containers:
+    - name: pause
+      image: REPLACE_ACCOUNT.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/frontend@sha256:REPLACE_UNSIGNED_DIGEST
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
+  restartPolicy: Never

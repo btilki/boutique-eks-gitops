@@ -154,7 +154,7 @@ Owner step IDs refer to [OUTLINES.md](OUTLINES.md).
 |------|--------|------------|-----------------|--------|
 | `docs/setup/10-gitlab-ci-digest.md` | SETUP_REQUIRED | — | OIDC GUI + pipeline validation | EXISTS (Phase B) |
 | `docs/ci.md` | FEATURE_REQUIRED | 10.3 | Contract: digest-only MR; no cluster deploy | EXISTS (Phase B) |
-| `.gitlab-ci.yml` | FEATURE_REQUIRED | 10.3 | test→build→scan→sign→gitops MR | EXISTS (Phase B) |
+| `.gitlab-ci.yml` | FEATURE_REQUIRED | 10.3 | test→build→scan→sign→sbom→gitops MR (SBOM Topic 15) | EXISTS (Phase B + 12) |
 | `docs/adr/0006-cosign-signing-mode.md` | FEATURE_REQUIRED | 10.5 | Sigstore keyless via GitLab OIDC | EXISTS (Phase B) |
 
 ---
@@ -203,23 +203,78 @@ Owner step IDs refer to [OUTLINES.md](OUTLINES.md).
 
 ---
 
-## Phase A inventory summary
+## Topic 15 — Supply chain verify + SBOM (Phase 12)
 
-| Topic | Guide file | SETUP_REQUIRED paths | FEATURE/RELEASE paths | Blockers |
-|-------|------------|----------------------|----------------------|----------|
-| 01 | MISSING | 2 | 0 | None |
-| 02 | EXISTS | Many (docs spine) | 0 | None — architecture + ADRs EXISTS |
-| 03 | EXISTS | 3–4 | 0 | None |
-| 04 | EXISTS | 1 | Terraform modules + env | None |
-| 05 | EXISTS | 1 | Platform ingress + smoke | Needs 04 live |
-| 06 | EXISTS | 1 | Bootstrap + apps | Needs 05 |
-| 07 | EXISTS | 1 | Kyverno/ESO/NP | Needs 06 |
-| 08 | EXISTS | 1 | Monitoring + alerting runbook | Needs 07 |
-| 09 | EXISTS | 1 | Charts + envs | Needs 08 |
-| 10 | EXISTS | 1 | CI + ADR 0006 | Needs 09 + OIDC |
-| 11 | EXISTS | 1 | Promotion/rollback docs | Needs 10 |
-| 12 | EXISTS | 1 | Rollouts + canary values | Needs 11 |
-| 13 | EXISTS | 1 | Checklist + runbooks | Needs 12 |
-| 14 | EXISTS | 1 | Teardown runbook | Needs 13 or abort |
+| Path | Timing | Owner step | Minimum content | Status |
+|------|--------|------------|-----------------|--------|
+| `docs/setup/15-supply-chain-verify-sbom.md` | SETUP_REQUIRED | — | Scaffold + apply-after-rebuild steps | EXISTS (Phase 12) |
+| `docs/adr/0007-admission-verify-and-sbom.md` | FEATURE_REQUIRED | 15.1 | Admission Audit→Enforce + CycloneDX | EXISTS (Phase 12) |
+| `gitops/platform/kyverno/policies/verify-image-signatures.yaml` | FEATURE_REQUIRED | 15.1 | Keyless verifyImages (Audit) | EXISTS (Phase 12) |
+| `gitops/platform/kyverno/policies/verify-sbom-attestation.yaml` | FEATURE_REQUIRED | 15.1 | CycloneDX attest verify (Audit) | EXISTS (Phase 12) |
+| `.gitlab-ci.yml` (`sbom` stage) | FEATURE_REQUIRED | 15.3 | Trivy CycloneDX + cosign attest | EXISTS (Phase 12) |
+| `tests/policy/unsigned-digest-pod.yaml.example` | FEATURE_REQUIRED | 15.4 | Negative fixture template | EXISTS (Phase 12) |
+| `docs/ci.md` (SBOM + verify) | FEATURE_REQUIRED | 15.1 | Contract update | EXISTS (Phase 12) |
 
-**Phase A file-inventory gate:** complete. No planning blockers. Topic guides and FEATURE files are intentionally **not** created until Phase B.
+---
+
+## Topic 16 — CI security gates (Phase 12)
+
+| Path | Timing | Owner step | Minimum content | Status |
+|------|--------|------------|-----------------|--------|
+| `docs/setup/16-ci-security-gates.md` | SETUP_REQUIRED | — | Gitleaks/Checkov/policy_test + ENABLE_REPO_GATES | EXISTS (Phase 12) |
+| `.checkov.yaml` | FEATURE_REQUIRED | 16.1 | Terraform soft-fail + skip-check baseline | EXISTS (Phase 12) |
+| `.gitleaks.toml` | FEATURE_REQUIRED | 16.1 | Allowlist for docs/examples | EXISTS (Phase 12) |
+| `tests/policy/unit/**` | FEATURE_REQUIRED | 16.1 | Kyverno CLI unit tests | EXISTS (Phase 12) |
+| `.gitlab-ci.yml` (gitleaks/checkov/policy_test) | FEATURE_REQUIRED | 16.4 | test-stage jobs | EXISTS (Phase 12) |
+| `.pre-commit-config.yaml` (gitleaks) | FEATURE_REQUIRED | 16.2 | Local secret scan hook | EXISTS (Phase 12) |
+| `docs/ci.md` (Topic 16 vars) | FEATURE_REQUIRED | 16.1 | Contract update | EXISTS (Phase 12) |
+
+---
+
+## Topic 17 — Argo CD hardening (Phase 12)
+
+| Path | Timing | Owner step | Minimum content | Status |
+|------|--------|------------|-----------------|--------|
+| `docs/setup/17-argocd-hardening.md` | SETUP_REQUIRED | — | AppProjects first; SSO/notifications deferred | EXISTS (Phase 12) |
+| `docs/adr/0008-argocd-appprojects-sso.md` | FEATURE_REQUIRED | 17.1 | Named projects + deferred Dex/notifications | EXISTS (Phase 12) |
+| `gitops/bootstrap/argocd/hardening/projects/*.yaml` | FEATURE_REQUIRED | 17.3 | boutique-platform + boutique-workloads | EXISTS (Phase 12) |
+| `gitops/bootstrap/argocd/hardening/sso/*.example` | FEATURE_REQUIRED | 17.4 | Dex GitLab values | EXISTS (Phase 12) |
+| `gitops/bootstrap/argocd/hardening/notifications/*.example*` | FEATURE_REQUIRED | 17.5 | Notifications stubs | EXISTS (Phase 12) |
+| ApplicationSets `project:` fields | FEATURE_REQUIRED | 17.1 | Named projects on child apps | EXISTS (Phase 12) |
+
+---
+
+## Topic 18 — Canary AnalysisTemplates (Phase 12)
+
+| Path | Timing | Owner step | Minimum content | Status |
+|------|--------|------------|-----------------|--------|
+| `docs/setup/18-canary-analysis.md` | SETUP_REQUIRED | — | Sync templates; opt-in analysis | EXISTS (Phase 12) |
+| `docs/adr/0009-canary-analysis-templates.md` | FEATURE_REQUIRED | 18.1 | Metric/smoke canary gates | EXISTS (Phase 12) |
+| `gitops/platform/argo-rollouts/analysis/*.yaml` | FEATURE_REQUIRED | 18.3 | ClusterAnalysisTemplates | EXISTS (Phase 12) |
+| `charts/frontend/templates/rollout.yaml` analysis | FEATURE_REQUIRED | 18.1 | Background + analysis.steps | EXISTS (Phase 12) |
+| `gitops/envs/*/values/frontend-analysis.example.yaml` | FEATURE_REQUIRED | 18.4 | Stage/prod enable examples | EXISTS (Phase 12) |
+
+---
+
+## Topic 19 — Edge WAF + Falco (Phase 12)
+
+| Path | Timing | Owner step | Minimum content | Status |
+|------|--------|------------|-----------------|--------|
+| `docs/setup/19-edge-runtime-waf-falco.md` | SETUP_REQUIRED | — | Enable WAF/Falco after rebuild | EXISTS (Phase 12) |
+| `docs/adr/0010-edge-waf-and-falco.md` | FEATURE_REQUIRED | 19.1 | Optional WAF + Falco | EXISTS (Phase 12) |
+| `terraform/modules/waf/**` | FEATURE_REQUIRED | 19.3 | WAFv2 when enable_waf | EXISTS (Phase 12) |
+| `terraform/envs/prod` enable_waf + output | FEATURE_REQUIRED | 19.3 | Default false | EXISTS (Phase 12) |
+| `gitops/platform/falco/values.yaml` | FEATURE_REQUIRED | 19.4 | Falco modern-bpf values | EXISTS (Phase 12) |
+| `falco-applicationset-snippet.yaml.example` | FEATURE_REQUIRED | 19.4 | Not auto-synced | EXISTS (Phase 12) |
+| `examples/waf-ingress-annotation.example.yaml` | FEATURE_REQUIRED | 19.3 | ALB WAF annotation | EXISTS (Phase 12) |
+
+---
+
+## Inventory summary (current)
+
+| Topic | Guide file | Notes |
+|-------|------------|--------|
+| 01–14 | EXISTS | Pilot complete (M3/M4); live AWS destroyed |
+| 15–19 | EXISTS | Phase 12 **scaffold** in-repo; enable after rebuild |
+
+**Phase A historical note:** Early planning treated guides as deferred until Phase B. That gate is closed — guides and FEATURE files for Topics 01–19 now exist as listed above.

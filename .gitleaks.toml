@@ -1,0 +1,22 @@
+# Gitleaks config — Topic 16 / docs/setup/16-ci-security-gates.md
+# Extends default rules; allowlist docs/examples that intentionally show placeholders.
+
+title = "boutique-eks-gitops"
+
+[allowlist]
+description = "Docs, examples, and fixture placeholders — not live secrets"
+paths = [
+  '''(.*?)docs/setup/.*\.md$''',
+  '''(.*?)docs/operations/.*\.md$''',
+  '''(.*?)docs/runbooks/.*\.md$''',
+  '''(.*?)examples/.*''',
+  '''(.*?)tests/policy/.*''',
+  '''(.*?)terraform/.*\.tfvars\.example$''',
+  '''(.*?)terraform/backend\.hcl\.example$''',
+]
+regexes = [
+  '''REPLACE_[A-Z0-9_]+''',
+  '''<ACCOUNT_ID>''',
+  '''<GITLAB_[A-Z_]+>''',
+  '''<SMOKE_HOST>''',
+]

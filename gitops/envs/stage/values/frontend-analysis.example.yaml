@@ -1,0 +1,40 @@
+# EXAMPLE — enable metric/smoke-driven canary (Topic 18)
+# Copy steps into gitops/envs/stage/values/frontend.yaml (or prod) after AnalysisTemplates sync.
+# Do not merge blindly: analysis.enabled flips Rollout behavior.
+#
+# Usage after rebuild:
+#   1. Sync argo-rollouts-analysis (ClusterAnalysisTemplates)
+#   2. Merge canary.analysis + steps below into the env frontend values
+#   3. Argo sync frontend-stage (auto) / frontend-prod (manual)
+
+canary:
+  enabled: true
+  analysis:
+    enabled: true
+    # Background: fail canary if Ready pods drop (Prometheus)
+    background:
+      templateName: frontend-pod-ready
+      clusterScope: true
+    # When set, replaces canary.steps (see chart rollout.yaml)
+    steps:
+      - setWeight: 20
+      - analysis:
+          templates:
+            - templateName: frontend-http-smoke
+              clusterScope: true
+          args:
+            - name: url
+              value: "http://frontend-canary.stage.svc:8080/"
+      - pause:
+          duration: 60
+      - setWeight: 50
+      - analysis:
+          templates:
+            - templateName: frontend-http-smoke
+              clusterScope: true
+          args:
+            - name: url
+              value: "http://frontend-canary.stage.svc:8080/"
+      - pause:
+          duration: 60
+      - setWeight: 100

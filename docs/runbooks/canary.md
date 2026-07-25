@@ -49,6 +49,7 @@ Then **always** fix Git (lasting recovery):
 | ImagePullBackOff | Bad digest / ECR | Fix digest in Git; sync |
 | 503 mid-canary | Canary targets unhealthy | Pods Ready? See [ingress.md](ingress.md) |
 | Weights not changing | ALB trafficRouting / Ingress name | Confirm Rollout `trafficRouting.alb.ingress: frontend` |
+| AnalysisRun Failed | Smoke/Prom gate (Topic 18) | `kubectl -n $NS get analysisrun`; fix URL/metrics or abort |
 | Deployment + Rollout | Orphan Deployment | Delete leftover `deploy/frontend` once |
 
 ## Promote early (healthy)
@@ -77,6 +78,6 @@ curl -fsS -o /dev/null -w "%{http_code}\n" "https://$( [ "$NS" = prod ] && echo 
 
 ## Related
 
-- Setup: [`../setup/12-canary-rollouts.md`](../setup/12-canary-rollouts.md)
+- Setup: [`../setup/12-canary-rollouts.md`](../setup/12-canary-rollouts.md) · [`../setup/18-canary-analysis.md`](../setup/18-canary-analysis.md)
 - Argo sync: [`argo-sync.md`](argo-sync.md)
 - Ingress: [`ingress.md`](ingress.md)

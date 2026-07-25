@@ -15,8 +15,11 @@ ingress:
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     external-dns.alpha.kubernetes.io/hostname: "boutique.biroltilki.art"
 # Topic 12 — frontend canary (ALB traffic split); starts only after manual Argo sync
+# Topic 18 — analysis off by default; see frontend-analysis.example.yaml to enable
 canary:
   enabled: true
+  analysis:
+    enabled: false
   steps:
     - setWeight: 10
     - pause:

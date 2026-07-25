@@ -1,0 +1,42 @@
+# EXAMPLE — prod metric/smoke-driven canary (Topic 18)
+# Stricter weights/pauses; URL uses prod namespace. Manual Argo sync still required.
+
+canary:
+  enabled: true
+  analysis:
+    enabled: true
+    background:
+      templateName: frontend-pod-ready
+      clusterScope: true
+    steps:
+      - setWeight: 10
+      - analysis:
+          templates:
+            - templateName: frontend-http-smoke
+              clusterScope: true
+          args:
+            - name: url
+              value: "http://frontend-canary.prod.svc:8080/"
+      - pause:
+          duration: 120
+      - setWeight: 30
+      - analysis:
+          templates:
+            - templateName: frontend-http-smoke
+              clusterScope: true
+          args:
+            - name: url
+              value: "http://frontend-canary.prod.svc:8080/"
+      - pause:
+          duration: 120
+      - setWeight: 50
+      - analysis:
+          templates:
+            - templateName: frontend-http-smoke
+              clusterScope: true
+          args:
+            - name: url
+              value: "http://frontend-canary.prod.svc:8080/"
+      - pause:
+          duration: 120
+      - setWeight: 100

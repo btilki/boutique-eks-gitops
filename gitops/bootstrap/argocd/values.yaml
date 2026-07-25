@@ -48,9 +48,11 @@ applicationSet:
 
 notifications:
   enabled: false
+  # Topic 17: enable via hardening/notifications/values-notifications.yaml.example after rebuild
 
 dex:
   enabled: false
+  # Topic 17: enable via hardening/sso/values-dex-gitlab.yaml.example after IdP registration
 
 redis-ha:
   enabled: false

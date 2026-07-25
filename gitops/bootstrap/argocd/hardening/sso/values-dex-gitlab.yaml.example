@@ -1,0 +1,45 @@
+# EXAMPLE — merge into Argo Helm values after IdP app registration (Topic 17)
+# Do NOT enable on rebuild until GitLab OAuth application + secrets exist.
+# Copy relevant keys into gitops/bootstrap/argocd/values.yaml or use:
+#   helm upgrade ... -f values.yaml -f hardening/sso/values-dex-gitlab.yaml.example
+#
+# REPLACE:
+#   <GITLAB_OAUTH_CLIENT_ID>
+#   Store client secret in Kubernetes Secret argocd-secret (keys below) — never commit secrets.
+
+dex:
+  enabled: true
+
+configs:
+  cm:
+    # URL users hit for the UI
+    url: https://argocd.boutique.biroltilki.art
+    dex.config: |
+      connectors:
+        - type: gitlab
+          id: gitlab
+          name: GitLab
+          config:
+            baseURL: https://gitlab.com
+            clientID: $dex.gitlab.clientID
+            clientSecret: $dex.gitlab.clientSecret
+            redirectURI: https://argocd.boutique.biroltilki.art/api/dex/callback
+            groups:
+              - btilki
+            useSystemAccountAsGroupFilter: false
+    # After Dex works, prefer SSO; keep local admin for break-glass only
+    accounts.admin: apiKey, login
+
+  rbac:
+    # EXAMPLE policy — adjust GitLab group / email subjects
+    policy.default: role:readonly
+    policy.csv: |
+      g, btilki, role:admin
+      p, role:org-developer, applications, get, boutique-workloads/*, allow
+      p, role:org-developer, applications, sync, boutique-workloads/*, allow
+      g, REPLACE_GITLAB_DEV_GROUP, role:org-developer
+
+# Populate via kubectl / ExternalSecret (never Git):
+#   dex.gitlab.clientID
+#   dex.gitlab.clientSecret
+# on Secret argocd-secret in namespace argocd

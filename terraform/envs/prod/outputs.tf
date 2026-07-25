@@ -54,6 +54,12 @@ output "irsa_external_secrets_role_arn" {
   value = module.irsa_external_secrets.role_arn
 }
 
+# Topic 19 — null when enable_waf = false
+output "waf_web_acl_arn" {
+  value       = module.waf.web_acl_arn
+  description = "WAFv2 Web ACL ARN for alb.ingress.kubernetes.io/wafv2-acl-arn (null if disabled)"
+}
+
 output "configure_kubectl" {
   value = "aws eks update-kubeconfig --region eu-central-1 --name ${module.eks.cluster_name}"
 }

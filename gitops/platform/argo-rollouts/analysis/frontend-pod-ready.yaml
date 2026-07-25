@@ -1,0 +1,28 @@
+# ClusterAnalysisTemplate — Prometheus pod-ready check (Topic 18)
+# Requires kube-prometheus-stack (Topic 08). Soft signal during canary.
+# Args: namespace, pod-prefix (default frontend)
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterAnalysisTemplate
+metadata:
+  name: frontend-pod-ready
+  annotations:
+    argocd.argoproj.io/sync-wave: "26"
+spec:
+  args:
+    - name: namespace
+    - name: pod-prefix
+      value: frontend
+  metrics:
+    - name: pod-ready
+      interval: 30s
+      count: 3
+      # At least one Ready pod matching the Rollout prefix
+      successCondition: result[0] >= 1
+      failureLimit: 2
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
+          query: |
+            sum(
+              kube_pod_status_ready{condition="true",namespace="{{args.namespace}}",pod=~"{{args.pod-prefix}}-.*"}
+            ) or vector(0)

@@ -1,7 +1,7 @@
 # CI/CD contract — boutique-eks-gitops
 
 **Audience:** L2 — Implementer / Reviewer  
-**Setup:** Topic 10 · **ADR:** [0001](adr/0001-digest-only-gitops.md) · [0006](adr/0006-cosign-signing-mode.md)  
+**Setup:** Topic 10 · Topic 15 · Topic 16 · **ADR:** [0001](adr/0001-digest-only-gitops.md) · [0006](adr/0006-cosign-signing-mode.md) · [0007](adr/0007-admission-verify-and-sbom.md)  
 **Pipeline:** [`.gitlab-ci.yml`](../.gitlab-ci.yml)
 
 ## Post-teardown status (current)
@@ -14,7 +14,9 @@ To run CI again after a rebuild:
 2. Set GitLab CI/CD variable `ENABLE_PILOT_CI=true`
 3. Confirm `AWS_ROLE_ARN` is set
 
-Without `ENABLE_PILOT_CI=true`, workflow rules use `when: never` — no pipeline is created (no red Failed badge).
+**Repo gates without AWS (Topic 16):** set `ENABLE_REPO_GATES=true` to create **MR** pipelines for `helm_lint` / `gitleaks` / `checkov` / `policy_test` only (no build/sign).
+
+Without `ENABLE_PILOT_CI=true` and without `ENABLE_REPO_GATES=true`, workflow rules use `when: never` — no pipeline is created (no red Failed badge).
 
 ## Hard rules
 
@@ -25,6 +27,9 @@ Without `ENABLE_PILOT_CI=true`, workflow rules use `when: never` — no pipeline
 | Successful build opens an MR that changes **only** `image.digest` under `gitops/envs/dev/values/` | Digest-only promotion path |
 | Trivy **CRITICAL** findings fail the pipeline | Supply-chain gate (pin **0.71.0**) |
 | Images are signed with cosign **Sigstore keyless** | ADR-0006 |
+| Images get a **CycloneDX SBOM** + `cosign attest` | ADR-0007 / Topic 15 |
+| Kyverno **Audit**s signatures (+ optional SBOM attest); **Enforce** after rebuild proof | ADR-0007 |
+| MR/test stage runs **Gitleaks**, **Checkov** (soft-fail), **Kyverno CLI** policy tests | Topic 16 |
 | Re-sign of an already-signed digest is OK | ECR tags are **immutable**; CI treats existing signatures as success |
 
 Node services (`currencyservice`, `paymentservice`) apply `ci/docker/patch-protobufjs.Dockerfile` to bump `protobufjs` to **7.5.5** (CVE-2026-41242) before scan.
@@ -32,22 +37,24 @@ Node services (`currencyservice`, `paymentservice`) apply `ci/docker/patch-proto
 ## Stages
 
 ```text
-test → build → scan → sign → gitops
+test → build → scan → sign → sbom → gitops
 ```
 
 | Stage | What | Fail means |
 |-------|------|------------|
-| test | Helm lint / chart sanity | Broken charts |
+| test | Helm lint; Gitleaks; Checkov (**soft-fail** until baselined); Kyverno `policy_test` | Broken charts / secrets / policy unit tests (Checkov findings do not fail while soft_fail) |
 | build | Publish Boutique **v0.10.6** to ECR (OIDC): default retag `:bootstrap`; optional `BOUTIQUE_BUILD_MODE=git` | No artifact |
 | scan | Trivy image scan | CRITICAL CVE |
 | sign | cosign keyless | Unsigned image |
+| sbom | Trivy CycloneDX + cosign attest | Missing/failed attestation |
 | gitops | Branch + MR updating digest in **dev** only | No GitOps change |
 
 ## Variables (CI/CD settings — not in Git)
 
 | Variable | Purpose |
 |----------|---------|
-| `ENABLE_PILOT_CI` | Must be `true` to create any pipeline (off by default after teardown) |
+| `ENABLE_PILOT_CI` | Must be `true` to run full pilot pipeline including build/sign (off by default after teardown) |
+| `ENABLE_REPO_GATES` | Optional: `true` to run **MR** test-stage gates without AWS (Topic 16) |
 | `AWS_ROLE_ARN` | GitLab OIDC IAM role from Terraform `gitlab_ci_role_arn` |
 | `AWS_DEFAULT_REGION` | `eu-central-1` |
 | (optional) `BOUTIQUE_BUILD_MODE` | `ecr-bootstrap` (default) or `git` |
@@ -86,3 +93,14 @@ cosign verify \
 ```
 
 Adjust identity regexp to your GitLab project path when tightening.
+
+## Verify SBOM attestation (Topic 15)
+
+```bash
+cosign verify-attestation --type cyclonedx \
+  --certificate-identity-regexp "https://gitlab.com/.+" \
+  --certificate-oidc-issuer "https://gitlab.com" \
+  "${REGISTRY}/boutique-eks-gitops/frontend@${DIGEST}"
+```
+
+CI also uploads `sbom-<service>.cdx.json` as a job artifact (7-day retention). Admission policies: [`gitops/platform/kyverno/policies/verify-*.yaml`](../gitops/platform/kyverno/policies/) (default **Audit** until Topic 15 Step 15.4).

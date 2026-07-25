@@ -11,11 +11,13 @@
 
 ## Policies
 
-| Policy | Effect |
-|--------|--------|
-| `deny-latest-tag` | Blocks `:latest` in app namespaces |
-| `require-image-digest` | Requires `@sha256:` digests |
-| `ecr-registry-allowlist` | ECR `eu-central-1` only |
+| Policy | Effect | Mode |
+|--------|--------|------|
+| `deny-latest-tag` | Blocks `:latest` in app namespaces | Enforce |
+| `require-image-digest` | Requires `@sha256:` digests | Enforce |
+| `ecr-registry-allowlist` | ECR `eu-central-1` only | Enforce |
+| `verify-image-signatures` | Sigstore keyless cosign verify (Topic 15) | **Audit** → Enforce after rebuild proof |
+| `verify-sbom-attestation` | CycloneDX attestation verify (Topic 15) | **Audit** (Enforce optional later) |
 
 ## Sync
 

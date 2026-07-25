@@ -1,24 +1,32 @@
 # boutique-eks-gitops — GitLab CI
 # Setup Topic 10 · Contract: docs/ci.md · Pins: docs/versions.md
 #
-# Stages: test → build → scan → sign → gitops (digest MR to envs/dev only)
+# Stages: test → build → scan → sign → sbom → gitops (digest MR to envs/dev only)
 # HARD RULES: no kubectl / no argocd CLI / no static AWS keys / no prod path writes
+# Topic 15: CycloneDX SBOM + cosign attest after sign (ADR-0007)
+# Topic 16: gitleaks + checkov + kyverno policy_test in test stage
 #
 # Post-teardown (M4): pipelines are DORMANT by default. AWS/ECR/OIDC are gone;
 # auto-runs on main would fail and look like a broken project. Re-enable only
 # when rebuilding: set CI/CD variable ENABLE_PILOT_CI=true (and restore AWS).
+# Optional (no AWS): ENABLE_REPO_GATES=true runs MR pipelines for test-stage jobs only.
 
 workflow:
   rules:
     - if: $ENABLE_PILOT_CI == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $ENABLE_PILOT_CI == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $ENABLE_PILOT_CI == "true" && $CI_COMMIT_BRANCH =~ /^ci\/.*/
+    # Topic 16: security/lint gates without ECR — MR only (build/scan/sign still skipped)
+    - if: $ENABLE_REPO_GATES == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
     - when: never
 
 variables:
   AWS_DEFAULT_REGION: "eu-central-1"
   TRIVY_VERSION: "0.71.0"
   COSIGN_VERSION: "2.4.3"
+  GITLEAKS_VERSION: "8.21.2"
+  CHECKOV_VERSION: "3.2.334"
+  KYVERNO_CLI_VERSION: "1.13.4"
   # v0.10.6 lives in ECR from Topic 09 bootstrap (Artifact Registry is not publicly pullable).
   # Default: retag ECR :bootstrap. Set BOUTIQUE_BUILD_MODE=git to rebuild from GitHub.
   BOUTIQUE_BUILD_MODE: "ecr-bootstrap"
@@ -40,6 +48,7 @@ stages:
   - build
   - scan
   - sign
+  - sbom
   - gitops
 
 helm_lint:
@@ -52,6 +61,57 @@ helm_lint:
     - helm version
     - helm lint charts/frontend charts/cartservice charts/redis charts/checkoutservice
     - helm lint charts/productcatalogservice charts/currencyservice charts/paymentservice charts/shippingservice
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Topic 16 — secret scan (no AWS)
+gitleaks:
+  stage: test
+  image:
+    name: zricethezav/gitleaks:v${GITLEAKS_VERSION}
+    entrypoint: [""]
+  services: []
+  script:
+    - gitleaks version
+    - gitleaks detect --source . --config .gitleaks.toml --verbose --redact --exit-code 1
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Topic 16 — Terraform IaC scan (soft-fail via .checkov.yaml until baselined)
+checkov:
+  stage: test
+  image:
+    name: bridgecrew/checkov:${CHECKOV_VERSION}
+    entrypoint: [""]
+  services: []
+  script:
+    - checkov --version
+    - checkov --config-file .checkov.yaml --directory terraform -o cli -o json --output-file-path .
+  artifacts:
+    when: always
+    paths:
+      - results_json.json
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Topic 16 — Kyverno CLI policy unit tests (offline)
+policy_test:
+  stage: test
+  image: alpine:3.20
+  services: []
+  script:
+    - |
+      set -euo pipefail
+      apk add --no-cache curl tar
+      curl -fsSL -o /tmp/kyverno.tgz \
+        "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_CLI_VERSION}/kyverno-cli_v${KYVERNO_CLI_VERSION}_linux_x86_64.tar.gz"
+      tar -xzf /tmp/kyverno.tgz -C /tmp kyverno
+      /tmp/kyverno version
+      /tmp/kyverno test tests/policy/unit
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -246,13 +306,88 @@ sign:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
+# Topic 15 / ADR-0007: CycloneDX SBOM (Trivy) + cosign keyless attestation
+sbom:
+  stage: sbom
+  extends:
+    - .service_matrix
+    - .aws_ecr
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: https://gitlab.com
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
+  needs:
+    - job: sign
+  script:
+    - |
+      set -euo pipefail
+      # shellcheck disable=SC1090
+      source "digest-${SERVICE}.env"
+      test -n "${SIGSTORE_ID_TOKEN:-}"
+      test -n "${IMAGE:-}"
+      apk add --no-cache ca-certificates
+      curl -fsSL -o /tmp/trivy.tgz \
+        "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+      tar -xzf /tmp/trivy.tgz -C /tmp trivy
+      curl -fsSL -o /tmp/cosign \
+        "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64"
+      chmod +x /tmp/cosign
+      docker pull "${IMAGE}"
+      SBOM="sbom-${SERVICE}.cdx.json"
+      /tmp/trivy image --format cyclonedx --output "${SBOM}" "${IMAGE}"
+      test -s "${SBOM}"
+      export COSIGN_YES=true
+      set +e
+      ATTEST_OUT="$(/tmp/cosign attest --yes \
+        --predicate "${SBOM}" \
+        --type cyclonedx \
+        --identity-token="${SIGSTORE_ID_TOKEN}" \
+        --registry-referrers-mode=oci-1-1 \
+        "${IMAGE}" 2>&1)"
+      ATTEST_RC=$?
+      set -e
+      printf '%s\n' "${ATTEST_OUT}"
+      if [ "${ATTEST_RC}" -eq 0 ]; then
+        exit 0
+      fi
+      if printf '%s\n' "${ATTEST_OUT}" | grep -qiE 'already exists|TagAlreadyExists|IMAGE_TAG_ALREADY_EXISTS|entity already exists'; then
+        echo "cosign attest: SBOM attestation already present for ${IMAGE} — OK"
+        exit 0
+      fi
+      # Fallback without OCI referrers mode
+      set +e
+      ATTEST_OUT="$(/tmp/cosign attest --yes \
+        --predicate "${SBOM}" \
+        --type cyclonedx \
+        --identity-token="${SIGSTORE_ID_TOKEN}" \
+        "${IMAGE}" 2>&1)"
+      ATTEST_RC=$?
+      set -e
+      printf '%s\n' "${ATTEST_OUT}"
+      if [ "${ATTEST_RC}" -eq 0 ]; then
+        exit 0
+      fi
+      if printf '%s\n' "${ATTEST_OUT}" | grep -qiE 'already exists|TagAlreadyExists|IMAGE_TAG_ALREADY_EXISTS|entity already exists'; then
+        echo "cosign attest: SBOM attestation already present for ${IMAGE} — OK"
+        exit 0
+      fi
+      exit "${ATTEST_RC}"
+  artifacts:
+    paths:
+      - "digest-${SERVICE}.env"
+      - "sbom-${SERVICE}.cdx.json"
+    expire_in: 7 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 gitops_digest_mr:
   stage: gitops
   image: alpine:3.20
   services: []
   # Explicit matrix needs so all digest-*.env artifacts are downloaded.
   needs:
-    - job: sign
+    - job: sbom
       parallel:
         matrix:
           - SERVICE:
@@ -288,7 +423,7 @@ gitops_digest_mr:
       shopt -s nullglob
       files=(digest-*.env)
       if [ "${#files[@]}" -eq 0 ]; then
-        echo "ERROR: no digest-*.env artifacts from sign matrix"
+        echo "ERROR: no digest-*.env artifacts from sbom matrix"
         exit 1
       fi
       echo "found ${#files[@]} digest files"

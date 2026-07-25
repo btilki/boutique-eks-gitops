@@ -30,5 +30,8 @@ tags = {
   Owner = "platform"
 }
 
+# Topic 19 — WAFv2 (keep false until ACL + Ingress annotation planned)
+# enable_waf = false
+
 # Prefer project_id when GitLab burns path-based OIDC tokens
 # gitlab_project_id = "84601482"

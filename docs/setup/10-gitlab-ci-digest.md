@@ -4,13 +4,15 @@ Audience: L2 — Implementer
 Estimated time: 2–3 hours  
 Prerequisites: [09 — Boutique charts](09-boutique-charts.md) complete; Terraform GitLab OIDC role from Topic 04  
 Creates: [`.gitlab-ci.yml`](../../.gitlab-ci.yml), [`docs/ci.md`](../ci.md), [`docs/adr/0006-cosign-signing-mode.md`](../adr/0006-cosign-signing-mode.md)  
-Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0006](../adr/0006-cosign-signing-mode.md)
+Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0006](../adr/0006-cosign-signing-mode.md) · later [0007](../adr/0007-admission-verify-and-sbom.md) (Topic 15 SBOM)
 
 ---
 
 ## Topic goal
 
 Run a GitLab **CI (Continuous Integration)** pipeline that builds/publishes images to ECR (OIDC), fails on Trivy CRITICAL, signs with cosign Sigstore keyless, and opens a digest-only **MR (Merge Request)** for `gitops/envs/dev` — without ever deploying to the cluster.
+
+Phase 12 extends the same pipeline with an **`sbom`** stage and test-stage security gates (Topics [15](15-supply-chain-verify-sbom.md)–[16](16-ci-security-gates.md)); stages become `test → build → scan → sign → sbom → gitops`.
 
 ## Why this topic is required
 
@@ -483,7 +485,7 @@ Pipeline green on `main`; digest MR merged; Argo `frontend-dev` (etc.) Healthy o
 
 All checklist items pass.
 
-![GitLab CI pipeline passed — test → build → scan → sign → gitops_digest_mr](../../assets/images/setup/10-gitlab-ci-pipeline-passed.png)
+![GitLab CI pipeline passed — test → build → scan → sign → sbom → gitops_digest_mr](../../assets/images/setup/10-gitlab-ci-pipeline-passed.png)
 
 ### Validation
 
@@ -525,7 +527,7 @@ Topic 10 is complete when Step 10.8 checklist passes.
 
 | Area | Symptom | Action |
 |------|---------|--------|
-| Matrix artifacts | Missing `digest-*.env` in gitops job | Ensure `needs: sign` and artifacts paths |
+| Matrix artifacts | Missing `digest-*.env` in gitops job | Ensure `needs: sbom` (Topic 15) and artifacts paths |
 | yq | Not found | alpine job installs yq via apk |
 | Immutable tag | `ci-SHA` collision | SHA unique per commit |
 | Cosign | Rekor failures | Retry; check time sync |

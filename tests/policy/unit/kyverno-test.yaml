@@ -1,0 +1,54 @@
+# Kyverno CLI unit tests — Setup Topic 16
+# Run: kyverno test tests/policy/unit
+# CI job: policy_test (see .gitlab-ci.yml)
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: boutique-supply-chain-validate
+policies:
+  - ../../../gitops/platform/kyverno/policies/deny-latest-tag.yaml
+  - ../../../gitops/platform/kyverno/policies/require-image-digest.yaml
+resources:
+  - resource-deny-latest.yaml
+  - resource-missing-digest.yaml
+  - resource-with-digest.yaml
+results:
+  # :latest pod
+  - policy: deny-latest-tag
+    rule: deny-latest
+    resources:
+      - dev/kyverno-deny-latest-test
+    kind: Pod
+    result: fail
+  - policy: require-image-digest
+    rule: require-digest
+    resources:
+      - dev/kyverno-deny-latest-test
+    kind: Pod
+    result: fail
+  # tag without digest
+  - policy: deny-latest-tag
+    rule: deny-latest
+    resources:
+      - dev/kyverno-missing-digest-test
+    kind: Pod
+    result: pass
+  - policy: require-image-digest
+    rule: require-digest
+    resources:
+      - dev/kyverno-missing-digest-test
+    kind: Pod
+    result: fail
+  # digest-pinned
+  - policy: deny-latest-tag
+    rule: deny-latest
+    resources:
+      - dev/kyverno-with-digest-test
+    kind: Pod
+    result: pass
+  - policy: require-image-digest
+    rule: require-digest
+    resources:
+      - dev/kyverno-with-digest-test
+    kind: Pod
+    result: pass

@@ -2,6 +2,7 @@
 # Install: pip install pre-commit && pre-commit install
 # Run: pre-commit run --all-files
 # TODO(setup:2.5): adjust rev pins if org mirror differs.
+# Topic 16: gitleaks hook added alongside detect-private-key.
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -15,6 +16,12 @@ repos:
         args: [--maxkb=500]
       - id: check-merge-conflict
       - id: detect-private-key
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        args: ["--config", ".gitleaks.toml"]
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.96.3

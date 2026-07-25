@@ -1,5 +1,6 @@
 # Extend platform-apps with Kyverno + External Secrets (Helm)
 # Merged into the same ApplicationSet resource — replace the Topic 06 file contents.
+# Topic 17: project boutique-platform — sync argocd-hardening AppProjects first on rebuild (Topic 06.5 / 17.3).
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -76,7 +77,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io
     spec:
-      project: default
+      project: boutique-platform
       sources:
         - repoURL: "{{.chartRepo}}"
           chart: "{{.chart}}"

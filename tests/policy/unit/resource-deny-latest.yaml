@@ -1,0 +1,20 @@
+# Negative — :latest must fail deny-latest-tag (Topic 07 / 16)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kyverno-deny-latest-test
+  namespace: dev
+  labels:
+    test: kyverno-unit
+spec:
+  containers:
+    - name: pause
+      image: public.ecr.aws/nginx/nginx:latest
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
+  restartPolicy: Never

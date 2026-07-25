@@ -30,3 +30,7 @@ Register the GitLab repo in Argo (UI or CLI) — **never** commit the token (Ste
 ## Next
 
 Apply root app: `gitops/bootstrap/root/application.yaml`
+
+## Hardening (Topic 17)
+
+AppProjects live under [`hardening/projects/`](hardening/projects/). SSO and notifications remain **example-only** until after rebuild — see [`hardening/README.md`](hardening/README.md) and [`docs/setup/17-argocd-hardening.md`](../../../docs/setup/17-argocd-hardening.md).

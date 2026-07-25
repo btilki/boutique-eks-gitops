@@ -2,7 +2,7 @@
 
 **Audience:** L2 — Implementer  
 **Authority:** This directory is the **single source of truth** for bootstrap. If README, chat, or scripts conflict with `docs/setup/`, **this guide wins**.  
-**Last reviewed:** 2026-07-20  
+**Last reviewed:** 2026-07-25  
 **Related:** [Architecture](../ARCHITECTURE.md) · [Implementation plan](../implementation/plan.md) · [Roadmap](../../ROADMAP.md) · [Topic outlines](OUTLINES.md) · [Required files](REQUIRED-FILES.md)
 
 ---
@@ -16,7 +16,7 @@
 | **Estimated calendar time** | ~4–8 working sessions (plan-dependent); teardown is mandatory after tests |
 | **Estimated cost** | ~**$35–45** for a ~2-day pilot with teardown; ~**$350–500/mo** if left running — see [cost model](../architecture/10-cost-model.md) |
 | **Who executes** | You run every CLI/**GUI (Graphical User Interface)** step; partner designs and authors guides/files |
-| **Phase status** | A ✅ · B ✅ · **C:** Topics **01–14** complete (M3 + M4 PASS) · pilot closed · D optional / rebuild |
+| **Phase status** | A ✅ · B ✅ · **C:** Topics **01–14** complete (M3 + M4 PASS) · pilot closed · **Phase 12 scaffold:** Topics **15–19** authored · D optional / rebuild |
 
 **Do not** skip topics after an error. **Do not** replace documented steps with install-all scripts unless explicitly requested.
 
@@ -24,7 +24,7 @@
 
 ## Topic sequence
 
-Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Skipped (document risk)
+Status legend: ⬜ Not started · 🔄 In progress · 🚧 Scaffold (in-repo; enable after rebuild) · ✅ Complete · ⏭️ Skipped (document risk)
 
 | # | Topic | Guide | Prerequisites | Est. time | Cost impact | Status |
 |---|--------|-------|---------------|-----------|-------------|--------|
@@ -42,8 +42,13 @@ Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Ski
 | 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ✅ |
 | 13 | Production readiness | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
 | 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | **Stops billables** | ✅ |
+| 15 | Supply chain verify + SBOM | [15-supply-chain-verify-sbom.md](15-supply-chain-verify-sbom.md) | 07 + 10 (live after rebuild) | 1–2 h | None while scaffold-only | 🚧 Scaffold |
+| 16 | CI security gates | [16-ci-security-gates.md](16-ci-security-gates.md) | 10 (CI files); no AWS for MR gates | 1–1.5 h | None | 🚧 Scaffold |
+| 17 | Argo CD hardening | [17-argocd-hardening.md](17-argocd-hardening.md) | 06 (live after rebuild) | 1.5–2 h | None while scaffold-only | 🚧 Scaffold |
+| 18 | Canary AnalysisTemplates | [18-canary-analysis.md](18-canary-analysis.md) | 12 + 08 (live after rebuild) | 1–1.5 h | None while scaffold-only | 🚧 Scaffold |
+| 19 | Edge WAF + Falco | [19-edge-runtime-waf-falco.md](19-edge-runtime-waf-falco.md) | 04–06 (WAF); 08 helpful (Falco) | 1–2 h | WAF/Falco only when enabled | 🚧 Scaffold |
 
-**Dependency rule:** complete topics in numeric order. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the pilot — still follow ordered destroy.
+**Dependency rule:** complete topics in numeric order through 14 for the original pilot. Topic **15–19** are Phase 12 scaffolds: author anytime; **live apply** after the listed prerequisites on a rebuilt cluster. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the pilot — still follow ordered destroy.
 
 **Planning artifacts (Phase A):**
 
@@ -97,6 +102,7 @@ Expand abbreviations **once**, in the owning topic (first prose mention in **Top
 | **ESO** | External Secrets Operator | [07](07-security-baseline.md) |
 | **CI** | Continuous Integration | [10](10-gitlab-ci-digest.md) |
 | **MR** | Merge Request | [10](10-gitlab-ci-digest.md) |
+| **SBOM** | Software Bill of Materials | [15](15-supply-chain-verify-sbom.md) |
 | **GUI** | Graphical User Interface | Setup Guide (this README) |
 
 ### Locked DNS hostnames
@@ -159,4 +165,6 @@ Partner response pattern: symptom → likely cause → fix (guide and/or files) 
 
 **Phase C Topics 01–14 complete (M3 + M4 PASS).** Pilot closed — **AWS cloud stack destroyed** (EKS/VPC/NAT/ALB/ECR, TF backend, Secrets Manager, ACM, Route53 zone). This repo is documentation + rebuild blueprint only.
 
-Rebuild later = Topic 01 (Route53 zone) → Topic 03 remote-state → Topic 04+ from the Setup Guide.
+**Phase 12:** scaffold Topics [15](15-supply-chain-verify-sbom.md)–[19](19-edge-runtime-waf-falco.md) complete in-repo — live Enforce / hard Checkov / Dex / canary analysis / WAF / Falco only after rebuild + deliberate enable.
+
+Rebuild later = Topic 01 (Route53 zone) → Topic 03 remote-state → Topic 04+ → Topics 15–19 enable steps as needed.

@@ -365,6 +365,20 @@ Confirm `platform-apps` and `workload-apps` ApplicationSets generate Application
 
 Platform Helm releases move under Argo; env namespaces become GitOps-managed.
 
+### Phase 12 AppProjects (required on rebuild)
+
+Child Applications use named projects **`boutique-platform`** / **`boutique-workloads`** (Topic 17). Those AppProjects must exist **before** other apps reconcile, or Argo reports invalid project.
+
+```bash
+# Sync AppProjects first (wave 5) — or apply from Git:
+argocd app sync argocd-hardening --grpc-web || \
+  kubectl apply -f gitops/bootstrap/argocd/hardening/projects/
+
+kubectl -n argocd get appprojects boutique-platform boutique-workloads
+```
+
+Details: [Topic 17 Step 17.3](17-argocd-hardening.md).
+
 ### Commands
 
 ```bash
@@ -416,10 +430,11 @@ kubectl get ns dev stage prod
 |---------|--------------|-----|
 | Multi-source Helm error | Chart repo / values path | Check ApplicationSet elements; values placeholders from Topic 05 must be filled |
 | Env app empty/error | Missing namespace.yaml | Confirm Topic 06 env files exist on `main` |
+| Invalid project / app stuck | AppProjects not created yet | Sync `argocd-hardening` or `kubectl apply` projects (see above) |
 
 ### Recovery
 
-Fix Git; refresh apps; sync platform first (wave 10), then workloads (wave 40).
+Fix Git; refresh apps; sync **AppProjects first**, then platform (wave 10), then workloads (wave 40).
 
 ### Best practices
 

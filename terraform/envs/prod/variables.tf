@@ -87,3 +87,10 @@ variable "tags" {
   description = "Additional resource tags"
   default     = {}
 }
+
+# Topic 19 — WAFv2 (disabled by default; no cost until true)
+variable "enable_waf" {
+  type        = bool
+  description = "Create REGIONAL WAFv2 Web ACL for ALB association (Topic 19)"
+  default     = false
+}

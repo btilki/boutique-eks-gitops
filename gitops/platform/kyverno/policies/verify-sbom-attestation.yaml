@@ -1,0 +1,50 @@
+# Verify CycloneDX SBOM attestations attached via cosign attest (Topic 15 CI)
+# Setup Topic 15 · ADR-0007
+#
+# Default: Audit. Enable Enforce only after sbom CI jobs attach attestations to digests
+# that land in gitops/envs/** and after signature verify (verify-image-signatures) is healthy.
+#
+# REPLACE subjectRegExp if the GitLab path_with_namespace differs.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-sbom-attestation
+  annotations:
+    policies.kyverno.io/title: Verify CycloneDX SBOM attestation
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/minversion: 1.8.0
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  validationFailureAction: Audit
+  background: false
+  failurePolicy: Fail
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: require-cyclonedx-sbom
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - dev
+                - stage
+                - prod
+      verifyImages:
+        - imageReferences:
+            - "*.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/*"
+          attestations:
+            - name: cyclonedx
+              type: https://cyclonedx.org/bom
+              attestors:
+                - count: 1
+                  entries:
+                    - keyless:
+                        subjectRegExp: "https://gitlab.com/btilki/boutique-eks-gitops//.*"
+                        issuer: "https://gitlab.com"
+                        rekor:
+                          url: https://rekor.sigstore.dev
+          mutateDigest: false
+          verifyDigest: true
+          required: true

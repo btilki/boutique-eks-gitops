@@ -1,0 +1,50 @@
+# Verify Sigstore keyless cosign signatures on Boutique ECR images
+# Setup Topic 15 · ADR-0007
+#
+# Default: Audit — safe for rebuild (Topic 09 bootstrap digests may be unsigned).
+# Switch validationFailureAction to Enforce only after CI has signed images (Topic 10+15)
+# and you have proven admission with a signed digest pod.
+#
+# REPLACE subjectRegExp project path if the GitLab path_with_namespace differs.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-image-signatures
+  annotations:
+    policies.kyverno.io/title: Verify cosign keyless signatures
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/minversion: 1.8.0
+    argocd.argoproj.io/sync-wave: "21"
+spec:
+  # Audit until rebuild + signed digests exist — see Topic 15 Step 15.4
+  validationFailureAction: Audit
+  background: false
+  failurePolicy: Fail
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: verify-sigstore-keyless
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - dev
+                - stage
+                - prod
+      verifyImages:
+        - imageReferences:
+            - "*.dkr.ecr.eu-central-1.amazonaws.com/boutique-eks-gitops/*"
+          attestors:
+            - count: 1
+              entries:
+                - keyless:
+                    # GitLab CI Fulcio identity (job path + ref). Tighten to @refs/heads/main after rebuild.
+                    subjectRegExp: "https://gitlab.com/btilki/boutique-eks-gitops//.*"
+                    issuer: "https://gitlab.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev
+          mutateDigest: false
+          verifyDigest: true
+          required: true

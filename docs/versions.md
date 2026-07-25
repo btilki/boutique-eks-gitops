@@ -3,7 +3,7 @@
 **Audience:** L2 — Implementer / CI author  
 **Authority:** Locked stack from Planning Gate + [implementation plan](implementation/plan.md) §7.11  
 **Setup owner:** Topic 01 (consume) · Topic 02 (align ADRs/README)  
-**Last reviewed:** 2026-07-18
+**Last reviewed:** 2026-07-25
 
 Do not drift these pins without an ADR update and Setup Guide revision.
 
@@ -38,6 +38,9 @@ Do not drift these pins without an ADR update and Setup Guide revision.
 |------|------------------|-----|
 | Trivy | **0.71.0** | CRITICAL gate — pin exact in CI image/job |
 | cosign | **2.4.x** | Sigstore keyless sign (GitLab OIDC) |
+| Gitleaks | **8.21.2** | Secret scan (Topic 16) |
+| Checkov | **3.2.334** | Terraform IaC scan (Topic 16; soft-fail default) |
+| Kyverno CLI | **1.13.4** | Offline policy unit tests (Topic 16) |
 
 ---
 
@@ -66,6 +69,8 @@ Exact chart versions are confirmed when each platform topic is authored. Treat t
 | kube-prometheus-stack | **chart 69.8.0** (pin at Topic 08) | 08 |
 | Grafana Loki | **chart 6.24.0** (Loki 3.x) | 08 |
 | Argo Rollouts | **v1.8.2** (Helm chart **2.39.5**) | 12 |
+| Falco (optional) | Helm chart **4.19.3** (target; confirm before enable) | 19 |
+| AWS WAFv2 | REGIONAL Web ACL module (optional `enable_waf`) | 19 |
 
 ---
 
@@ -76,6 +81,11 @@ Exact chart versions are confirmed when each platform topic is authored. Treat t
 | Trivy | **0.71.0** |
 | cosign | **2.4.x** |
 | Signing mode | Sigstore **keyless** via GitLab OIDC (`SIGSTORE_ID_TOKEN`) |
+| SBOM format | **CycloneDX** via `trivy image --format cyclonedx` + `cosign attest --type cyclonedx` (Topic 15) |
+| Admission verify | Kyverno `verifyImages` (default **Audit**; Enforce after rebuild) — ADR-0007 |
+| Gitleaks | **8.21.2** (CI + pre-commit) |
+| Checkov | **3.2.334** (`.checkov.yaml` soft_fail until baselined) |
+| Kyverno CLI tests | **1.13.4** (`kyverno test tests/policy/unit`) |
 | Image references in Git | **digest only** (`image.digest`); never `:latest` |
 
 ---
@@ -86,6 +96,7 @@ Exact chart versions are confirmed when each platform topic is authored. Treat t
 |------|--------|
 | CODEOWNERS (prod digests) | `@btilki` on `gitops/envs/prod/**` |
 | Prod Argo sync | **Manual** (no automated sync) |
+| Argo AppProjects | `boutique-platform` · `boutique-workloads` (Topic 17); Dex/notifications disabled until examples merged |
 
 ---
 

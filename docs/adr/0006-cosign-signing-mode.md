@@ -19,4 +19,4 @@ Container images pushed to ECR must be signed for supply-chain integrity. Long-l
 
 - **Positive:** No long-lived signing keys; signatures bound to GitLab identity; aligns with “no static AWS keys” posture.
 - **Negative:** Requires outbound access to Sigstore infrastructure; offline air-gap signing unsupported in v1.
-- **Follow-ups:** Document verify command in `docs/ci.md`; optional Kyverno/policy verify deferred.
+- **Follow-ups:** Document verify command in `docs/ci.md` (done). Admission verify + SBOM → [ADR-0007](0007-admission-verify-and-sbom.md) / Setup Topic 15.

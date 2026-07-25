@@ -15,7 +15,7 @@
 ## CI stages (GitLab)
 
 ```text
-test → build → scan (Trivy 0.71.0) → sign (cosign 2.4.x) → gitops (digest MR)
+test → build → scan (Trivy 0.71.0) → sign (cosign 2.4.x) → sbom (CycloneDX + attest, Topic 15) → gitops (digest MR)
 ```
 
 Pinned in `docs/versions.md`. Failure at CRITICAL CVE or sign error blocks the digest MR. Signing is **Sigstore keyless** (GitLab OIDC → Fulcio). Phase 7 performs a **one-time ECR digest bootstrap** so Argo can sync before the first full CI run.

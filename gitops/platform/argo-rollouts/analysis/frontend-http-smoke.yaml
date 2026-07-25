@@ -1,0 +1,36 @@
+# ClusterAnalysisTemplate — HTTP smoke against canary Service (Topic 18)
+# Args: url (e.g. http://frontend-canary.stage.svc:8080/)
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterAnalysisTemplate
+metadata:
+  name: frontend-http-smoke
+  annotations:
+    argocd.argoproj.io/sync-wave: "26"
+spec:
+  args:
+    - name: url
+  metrics:
+    - name: http-smoke
+      count: 3
+      interval: 15s
+      failureLimit: 1
+      provider:
+        job:
+          spec:
+            backoffLimit: 0
+            template:
+              metadata:
+                labels:
+                  boutique.analysis: frontend-http-smoke
+              spec:
+                containers:
+                  - name: smoke
+                    image: curlimages/curl:8.11.1
+                    command: ["/bin/sh", "-c"]
+                    args:
+                      - |
+                        set -e
+                        echo "GET {{args.url}}"
+                        curl -sf --max-time 5 "{{args.url}}" >/dev/null
+                        echo OK
+                restartPolicy: Never
