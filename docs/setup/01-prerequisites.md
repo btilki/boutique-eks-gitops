@@ -427,7 +427,7 @@ AWS_PROFILE=boutique-pilot aws sts get-caller-identity
 
 | Element | Content |
 |---------|---------|
-| Platform | AWS IAM Identity Center (SSO) **or** IAM console |
+| Platform | **SSO (AWS IAM Identity Center)** **or** IAM console |
 | Navigation (SSO) | Your org SSO portal → AWS account → role → **Command line or programmatic access** → copy env vars / profile instructions |
 | Navigation (keys) | IAM → Users → Security credentials → Create access key (**emergency only**) |
 | Permissions | Permission to view account and later create VPC/EKS/IAM (admin recommended for pilot) |
