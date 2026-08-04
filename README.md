@@ -2,13 +2,26 @@
 
 **Production-pilot GitOps platform for Online Boutique on Amazon EKS — Git is the only deploy authority.**
 
+Part of the [DevOps Engineering Playbook](https://github.com/btilki/devops-engineering-playbook) · Author: [Birol Tilki](https://www.linkedin.com/in/birol-tilki-48731326/)
+
 [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.9-purple.svg)](https://www.terraform.io/)
 [![EKS](https://img.shields.io/badge/EKS-1.31-FF9900.svg)](https://aws.amazon.com/eks/)
 [![GitLab CI](https://img.shields.io/badge/CI-GitLab%20CI-FC6D26.svg)](https://docs.gitlab.com/ee/ci/)
 [![Argo CD](https://img.shields.io/badge/GitOps-Argo%20CD-EF7B4D.svg)](https://argo-cd.readthedocs.io/)
 [![Maturity](https://img.shields.io/badge/maturity-production%20pilot-blue.svg)](docs/ARCHITECTURE.md)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 > Version badges above reflect the locked pin matrix in [`docs/versions.md`](docs/versions.md). CI status badges are omitted (use GitLab pipelines).
+
+### At a glance (30 seconds)
+
+| | |
+|-|-|
+| **What** | Digest-only GitOps on Amazon EKS for a scoped Online Boutique workload |
+| **Hard rule** | **CI never deploys** — pipelines open digest MRs; Argo CD reconciles from Git |
+| **Proven** | Multi-AZ pilot (M3+M4 PASS); AWS resources **torn down** after validation |
+| **Stack** | Terraform · EKS 1.31 · Argo CD · Rollouts · Kyverno · Prom/Loki/Grafana |
+| **Start reading** | Diagram below → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) → [`docs/adr/0001-digest-only-gitops.md`](docs/adr/0001-digest-only-gitops.md) |
 
 ```mermaid
 flowchart LR
@@ -21,7 +34,7 @@ flowchart LR
   Users((Users)) -->|HTTPS ACM+ALB| Dev & Stage & Prod
 ```
 
-Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/)
+Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/) · Playbook brief: [featured project](https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md)
 
 ---
 
@@ -29,7 +42,7 @@ Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs
 
 This repository is the **operational control plane** for running a scoped Online Boutique workload on a single AWS EKS cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab CI builds, scans, and signs images, then opens digest-only merge requests. It never `kubectl apply`s or `argocd sync`s to the cluster.
 
-**Audience:** platform engineers, SRE/GitOps practitioners, and operators reviewing a production-oriented AWS reference.
+**Audience:** platform engineers, SRE/GitOps practitioners, hiring managers reviewing AWS/GitOps depth, and operators studying a production-oriented reference.
 
 **Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven; **not** multi-account or multi-region HA. **M3 + M4 PASS** (2026-07-19/20): production path proven; **AWS cloud resources fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
 
@@ -142,13 +155,15 @@ Authoritative checklist: [`docs/setup/01-prerequisites.md`](docs/setup/01-prereq
 ## 7. Quick Start
 
 ```bash
-git clone <your-gitlab-repo-url> boutique-eks-gitops
+git clone https://github.com/btilki/boutique-eks-gitops.git
 cd boutique-eks-gitops
 # Read the plan and architecture before any apply:
 #   docs/ARCHITECTURE.md
 #   docs/implementation/plan.md
 #   ROADMAP.md
 ```
+
+Mirror / CI remote may also exist on GitLab; GitHub is the public portfolio entry point.
 
 **Do not provision AWS from the README.** Follow the Setup Guide: [`docs/setup/`](docs/setup/).
 
@@ -344,7 +359,21 @@ Upstream Online Boutique is a separate Google project; this repository’s contr
 
 ---
 
-## 20. References
+## 20. Related portfolio
+
+| Resource | Link |
+|----------|------|
+| **DevOps Engineering Playbook** (hub) | https://github.com/btilki/devops-engineering-playbook |
+| Playbook project brief | https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md |
+| Article angle — digest-only GitOps (E1) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
+| Sister platform — AKS DevSecOps | https://github.com/btilki/boutique-aks-devsecops |
+| Sister platform — GKE SRE | https://github.com/btilki/boutique-gke-sre |
+| Workshop books | https://github.com/btilki/learn-devops-by-building |
+| LinkedIn | https://www.linkedin.com/in/birol-tilki-48731326/ |
+
+---
+
+## 21. References
 
 - [Argo CD documentation](https://argo-cd.readthedocs.io/)
 - [Argo Rollouts](https://argo-rollouts.readthedocs.io/)
