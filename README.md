@@ -40,9 +40,9 @@ Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs
 
 ## 1. Project Overview
 
-This repository is the **operational control plane** for running a scoped Online Boutique workload on a single AWS EKS cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab CI builds, scans, and signs images, then opens digest-only merge requests. It never `kubectl apply`s or `argocd sync`s to the cluster.
+This repository is the **operational control plane** for running a scoped Online Boutique workload on a single **AWS (Amazon Web Services)** **EKS (Elastic Kubernetes Service)** cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab **CI (Continuous Integration)** builds, scans, and signs images, then opens digest-only **MRs (Merge Requests)**. It never runs `kubectl apply` or `argocd sync` against the cluster.
 
-**Audience:** platform engineers, SRE/GitOps practitioners, hiring managers reviewing AWS/GitOps depth, and operators studying a production-oriented reference.
+**Audience:** platform engineers, **SRE (Site Reliability Engineering)**/**GitOps (Git as the deploy authority)** practitioners, hiring managers reviewing AWS/GitOps depth, and operators studying a production-oriented reference.
 
 **Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven; **not** multi-account or multi-region HA. **M3 + M4 PASS** (2026-07-19/20): production path proven; **AWS cloud resources fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
 

@@ -10,9 +10,9 @@
 
 ## Executive summary
 
-This repository is the **operational control plane** for Online Boutique on Amazon EKS. **Git is the only authority** for what runs on the cluster. GitLab CI builds, scans (Trivy), signs (cosign), and opens merge requests that change **only image digests**. Argo CD reconciles desired state; it never receives deploy commands from CI.
+This repository is the **operational control plane** for Online Boutique on Amazon **EKS (Elastic Kubernetes Service)**. **Git is the only authority** for what runs on the cluster. GitLab **CI (Continuous Integration)** builds, scans (Trivy), signs (cosign), and opens **MRs (Merge Requests)** that change **only image digests**. Argo CD reconciles desired state; it never receives deploy commands from CI.
 
-Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces, isolated by NetworkPolicy, sync policy, CODEOWNERS, and manual prod sync. Public HTTPS uses **ACM on ALB**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive). **This pilot’s AWS resources were destroyed 2026-07-19/20** (Appendix T); the live cluster is gone.
+Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces, isolated by NetworkPolicy, sync policy, CODEOWNERS, and manual prod sync. Public HTTPS uses **ACM (AWS Certificate Manager)** on **ALB (Application Load Balancer)**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive). **This pilot’s AWS resources were destroyed 2026-07-19/20** (Appendix T); the live cluster is gone.
 
 ---
 

@@ -84,8 +84,11 @@ Expand abbreviations **once**, in the owning topic (first prose mention in **Top
 
 | Abbreviation | Full form | Owning topic |
 |--------------|-----------|--------------|
+| **AWS** | Amazon Web Services | [01](01-prerequisites.md) |
 | **DNS** | Domain Name System | [01](01-prerequisites.md) |
 | **SMTP** | Simple Mail Transfer Protocol | [01](01-prerequisites.md) |
+| **SSO** | AWS IAM Identity Center | [01](01-prerequisites.md) |
+| **SRE** | Site Reliability Engineering | Root [README](../../README.md) (audience) |
 | **S3** | Simple Storage Service | [03](03-remote-state.md) |
 | **VPC** | Virtual Private Cloud | [04](04-network-eks-ecr-iam.md) |
 | **EKS** | Elastic Kubernetes Service | [04](04-network-eks-ecr-iam.md) |

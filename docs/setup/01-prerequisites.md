@@ -10,7 +10,7 @@ Related ADRs: None yet (authored in Topic 02)
 
 ## Topic goal
 
-Prove that your workstation and cloud/SaaS access are ready before any repository foundation or Terraform apply. After this topic you can install CLIs to the pinned versions, authenticate to AWS, confirm **DNS (Domain Name System)** via the Route53 zone `biroltilki.art`, have a GitLab project with a linked local Git repository, and know an **SMTP (Simple Mail Transfer Protocol)** mailbox exists for later Alertmanager tests.
+Prove that your workstation and cloud/SaaS access are ready before any repository foundation or Terraform apply. After this topic you can install CLIs to the pinned versions, authenticate to **AWS (Amazon Web Services)**, confirm **DNS (Domain Name System)** via the Route53 zone `biroltilki.art`, have a GitLab project with a linked local Git repository, and know an **SMTP (Simple Mail Transfer Protocol)** mailbox exists for later Alertmanager tests.
 
 ## Why this topic is required
 
