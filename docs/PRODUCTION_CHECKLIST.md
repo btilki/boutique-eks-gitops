@@ -22,7 +22,7 @@ Filled **2026-07-19** during Phase C Topic 13.1 evidence walk.
 
 1. Walk sections top to bottom during Topic 13.
 2. For each Must item: run the check, paste evidence, tick the box.
-3. Complete **Demo path** (digest → promote → prod sync + canary).
+3. Complete **Production path** (digest → promote → prod sync + canary).
 4. Confirm runbooks are linked and usable.
 5. On PASS: update [`ROADMAP.md`](../ROADMAP.md) phases **1–10** to ✅; proceed **immediately** to Topic 14 teardown (no keep-alive).
 
@@ -87,7 +87,7 @@ Filled **2026-07-19** during Phase C Topic 13.1 evidence walk.
 
 ---
 
-## E — Demo path (required proof)
+## E — Production path (required proof)
 
 Record one end-to-end pass:
 
@@ -100,7 +100,7 @@ Record one end-to-end pass:
 | E5 | Prod canary → stable; `https://boutique.biroltilki.art` OK | Healthy + HTTPS 200 on `563ebf12…` |
 | E6 | Optional: abort or revert once to prove recovery | MR **!12** rollback; cleanup **!13** realign stage→prod (`365c59d`, canary Healthy) |
 
-Demo owner: Birol Tilki Date: 2026-07-19
+Path owner: Birol Tilki Date: 2026-07-19
 
 ---
 

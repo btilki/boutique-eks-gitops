@@ -10,7 +10,7 @@ Creates / owns: [`docs/PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md), ru
 
 ## Topic goal
 
-Prove the full production path with evidence: checklist green, runbooks usable, demo digest → promote → prod manual sync + canary — then proceed **immediately** to teardown (Topic 14).
+Prove the full production path with evidence: checklist green, runbooks usable, digest → promote → prod manual sync + canary — then proceed **immediately** to teardown (Topic 14).
 
 ## Why this topic is required
 
@@ -159,11 +159,11 @@ Runbooks must not instruct static AWS keys or cluster deploy from CI.
 
 ---
 
-## Step 13.3: Capture demo path (digest → promote → prod + canary)
+## Step 13.3: Capture production path (digest → promote → prod + canary)
 
 ### Goal
 
-Fill checklist section **E** with one full demo: CI digest MR → promote stage → promote prod (CODEOWNERS) → manual sync → canary → storefront OK.
+Fill checklist section **E** with one full production path: CI digest MR → promote stage → promote prod (CODEOWNERS) → manual sync → canary → storefront OK.
 
 ### Why this step is required
 
@@ -177,7 +177,7 @@ M3 definition of done requires the production path proven, not only component ch
 mkdir -p /tmp/m3-evidence
 date -u > /tmp/m3-evidence/timestamp.txt
 
-# After demo, record:
+# After the production path, record:
 # - GitLab CI pipeline URL (digest MR to dev)
 # - Stage promote MR URL
 # - Prod promote MR URL + CODEOWNERS approval
@@ -202,14 +202,14 @@ Optional recovery proof: one `git revert` or canary abort + revert ([rollback.md
 
 ### Expected output
 
-Section **E** fully filled; demo owner + date set.
+Section **E** fully filled; path owner + date set.
 
 ![Online Boutique storefront — `boutique.biroltilki.art` (prod)](../../assets/images/setup/13-boutique-prod-homepage.png)
 
 ### Validation
 
 ```bash
-grep -q 'Demo path' docs/PRODUCTION_CHECKLIST.md
+grep -q 'Production path' docs/PRODUCTION_CHECKLIST.md
 ```
 
 ### Common problems
@@ -229,7 +229,7 @@ Keep evidence files until Topic 14 destroy note is written.
 
 ### Security notes
 
-Prod promote still requires `@btilki`; demo does not bypass CODEOWNERS.
+Prod promote still requires `@btilki`; the production-path proof does not bypass CODEOWNERS.
 
 ---
 
@@ -298,7 +298,7 @@ Teardown reduces attack surface and bill — treat as security hygiene.
 |-------|----------|
 | Checklist A–E complete | `docs/PRODUCTION_CHECKLIST.md` |
 | Runbooks min set | ingress, argo-sync, kyverno, canary (+ alerting) |
-| Demo path recorded | Section E |
+| Production path recorded | Section E |
 | ROADMAP 1–10 ✅ | After live sign-off |
 | Teardown started | Topic 14 / Appendix T in progress |
 

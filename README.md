@@ -42,7 +42,7 @@ Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs
 
 This repository is the **operational control plane** for running a scoped Online Boutique workload on a single **AWS (Amazon Web Services)** **EKS (Elastic Kubernetes Service)** cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab **CI (Continuous Integration)** builds, scans, and signs images, then opens digest-only **MRs (Merge Requests)**. It never runs `kubectl apply` or `argocd sync` against the cluster.
 
-**Audience:** platform engineers, **SRE (Site Reliability Engineering)**/**GitOps (Git as the deploy authority)** practitioners, hiring managers reviewing AWS/GitOps depth, and operators studying a production-oriented reference.
+**Audience:** platform engineers, **SRE (Site Reliability Engineering)**/**GitOps (Git as the deploy authority)** practitioners, and operators running or reviewing an AWS/GitOps production path.
 
 **Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven; **not** multi-account or multi-region HA. **M3 + M4 PASS** (2026-07-19/20): production path proven; **AWS cloud resources fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
 
@@ -163,7 +163,7 @@ cd boutique-eks-gitops
 #   ROADMAP.md
 ```
 
-Mirror / CI remote may also exist on GitLab; GitHub is the public portfolio entry point.
+Mirror / CI remote may also exist on GitLab; GitHub is the public source entry point.
 
 **Do not provision AWS from the README.** Follow the Setup Guide: [`docs/setup/`](docs/setup/).
 
@@ -303,6 +303,7 @@ Local entry: `make lint` && `make docs-check` (no install/apply bypass).
 | [Architecture deep dive](docs/architecture/) | Requirements → cost model |
 | [Implementation plan](docs/implementation/plan.md) | Phases, inventories, validation |
 | [Roadmap](ROADMAP.md) | Phase status and milestones |
+| [Changelog](CHANGELOG.md) | Notable changes and recent history |
 | [Setup Guide](docs/setup/) | **Authoritative** bootstrap |
 | [ADRs](docs/adr/) | Design decisions |
 | [Versions](docs/versions.md) | Pin matrix |
@@ -359,16 +360,16 @@ Upstream Online Boutique is a separate Google project; this repository’s contr
 
 ---
 
-## 20. Related portfolio
+## 20. Related projects
 
 | Resource | Link |
 |----------|------|
 | **DevOps Engineering Playbook** (hub) | https://github.com/btilki/devops-engineering-playbook |
 | Playbook project brief | https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md |
-| Article angle — digest-only GitOps (E1) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
+| Article — digest-only GitOps (E1) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
 | Sister platform — AKS DevSecOps | https://github.com/btilki/boutique-aks-devsecops |
 | Sister platform — GKE SRE | https://github.com/btilki/boutique-gke-sre |
-| Workshop books | https://github.com/btilki/learn-devops-by-building |
+| Hands-on build guides | https://github.com/btilki/learn-devops-by-building |
 | LinkedIn | https://www.linkedin.com/in/birol-tilki-48731326/ |
 
 ---

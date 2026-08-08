@@ -33,7 +33,7 @@ make docs-check
 
 ## Account IDs in Git
 
-Guides use `<ACCOUNT_ID>` placeholders. Env overlays may pin this pilot’s ECR/ACM ARNs so Argo can sync — that is intentional for the workshop account. Redact or templatize before publishing a public fork.
+Guides use `<ACCOUNT_ID>` placeholders. Env overlays may pin this pilot’s ECR/ACM ARNs so Argo can sync — that is intentional for the pilot AWS account. Redact or templatize before publishing a public fork.
 
 ## Security reports
 

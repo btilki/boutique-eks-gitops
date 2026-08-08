@@ -265,7 +265,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 |------|--------|---------|
 | 13.1 | Walk checklist (security, GitOps, DNS, alerts, promote, canary) | Evidence |
 | 13.2 | Confirm runbooks linked and usable | Ops |
-| 13.3 | Capture demo path digest → promote → prod sync + canary | Proof |
+| 13.3 | Capture production path digest → promote → prod sync + canary | Proof |
 | 13.4 | Topic validation / M3 sign-off | Gate to 14 |
 
 **Why required:** Declares the pilot path proven before teardown.

@@ -13,7 +13,7 @@
 | FR-07 | GitLab CI test→build→scan→sign→digest MR; OIDC; never kubectl/argocd | Must | CI touches Git+ECR only |
 | FR-08 | Promotion MRs; CODEOWNERS `@btilki` on prod; promotion/rollback docs | Must | Human gate on prod digests |
 | FR-09 | Frontend canary stage **and** prod (Argo Rollouts + ALB) | Must | Progressive delivery in both envs |
-| FR-10 | PRODUCTION_CHECKLIST, diagrams, runbooks, full path demo | Must | Operability artifacts |
+| FR-10 | PRODUCTION_CHECKLIST, diagrams, runbooks, full production path proof | Must | Operability artifacts |
 | FR-11 | Ordered teardown; verify no orphan billables | Must | Decommission path for cost control |
 
 ## Non-functional requirements

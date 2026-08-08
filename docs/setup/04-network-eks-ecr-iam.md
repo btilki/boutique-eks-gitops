@@ -180,7 +180,7 @@ terraform apply tfplan
 
 Expected duration: **20–40 minutes** (EKS + node group dominate).
 
-**Optional stepwise learning** (only if teaching `-target`; reconcile with full apply after):
+**Optional stepwise apply** (only if isolating `-target`; reconcile with full apply after):
 
 ```bash
 terraform apply -target=module.network -auto-approve

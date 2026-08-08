@@ -21,7 +21,7 @@ Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO
 
 - Argo `platform-apps` ApplicationSet healthy; `<GITLAB_REPO_URL>` already substituted in AppSets.
 - Terraform IRSA output `irsa_external_secrets_role_arn` available.
-- Ability to create a short-lived secret in AWS Secrets Manager for the ESO demo.
+- Ability to create a short-lived secret in AWS Secrets Manager for the ESO smoke test.
 - Phase B Topic 07 files present on `main` (push before sync).
 
 **Idempotent:** Re-syncing Argo apps is safe. Negative kubectl tests are expected to **fail admission**.
@@ -302,15 +302,15 @@ Proves the E2E secrets path used later for Alertmanager.
 ### Commands
 
 ```bash
-# Create demo secret in AWS (one-time)
+# Create ESO smoke-test secret in AWS (one-time)
 aws secretsmanager create-secret \
-  --name boutique-eks-gitops/demo \
+  --name boutique-eks-gitops/eso-smoke \
   --region eu-central-1 \
-  --secret-string '{"demo-key":"demo-value-not-for-prod"}'
+  --secret-string '{"smoke-key":"smoke-value-not-for-prod"}'
 
 kubectl apply -f examples/externalsecret-sample.yaml
-kubectl -n dev get externalsecret demo-sm-secret
-kubectl -n dev get secret demo-sm-secret -o yaml
+kubectl -n dev get externalsecret eso-smoke-secret
+kubectl -n dev get secret eso-smoke-secret -o yaml
 # Confirm data key exists (base64) — do not paste secret values into chat
 ```
 
@@ -319,19 +319,19 @@ kubectl -n dev get secret demo-sm-secret -o yaml
 | Element | Content |
 |---------|---------|
 | Platform | AWS Console |
-| Navigation | **Secrets Manager** → Secrets → `boutique-eks-gitops/demo` |
+| Navigation | **Secrets Manager** → Secrets → `boutique-eks-gitops/eso-smoke` |
 | Permissions | Create/read secret |
 | Verification | Secret exists in `eu-central-1` |
 
 ### Expected output
 
-ExternalSecret **SecretSynced**; Kubernetes Secret `demo-sm-secret` present in `dev`.
+ExternalSecret **SecretSynced**; Kubernetes Secret `eso-smoke-secret` present in `dev`.
 
 ### Validation
 
 ```bash
-kubectl -n dev get externalsecret demo-sm-secret -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}{"\n"}'
-kubectl -n dev get secret demo-sm-secret
+kubectl -n dev get externalsecret eso-smoke-secret -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}{"\n"}'
+kubectl -n dev get secret eso-smoke-secret
 ```
 
 ### Common problems
@@ -339,7 +339,7 @@ kubectl -n dev get secret demo-sm-secret
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | AccessDenied | IAM policy too narrow / wrong secret name | Align secret name with policy; broaden temporarily for pilot |
-| Invalid key | JSON property mismatch | Ensure property `demo-key` exists |
+| Invalid key | JSON property mismatch | Ensure property `smoke-key` exists |
 
 ### Recovery
 
@@ -347,17 +347,17 @@ Fix IAM/secret payload; delete ExternalSecret and re-apply.
 
 ### Best practices
 
-Delete the demo secret after Topic 07 validation (or leave for Topic 08 SMTP which uses a different secret).
+Delete the smoke-test secret after Topic 07 validation (or leave for Topic 08 SMTP which uses a different secret).
 
 ```bash
 # Optional cleanup after success:
-kubectl -n dev delete externalsecret demo-sm-secret --ignore-not-found
-# aws secretsmanager delete-secret --secret-id boutique-eks-gitops/demo --force-delete-without-recovery
+kubectl -n dev delete externalsecret eso-smoke-secret --ignore-not-found
+# aws secretsmanager delete-secret --secret-id boutique-eks-gitops/eso-smoke --force-delete-without-recovery
 ```
 
 ### Security notes
 
-Demo value is non-production. Real SMTP secret must be unique and never committed.
+Smoke-test value is non-production. Real SMTP secret must be unique and never committed.
 
 ---
 

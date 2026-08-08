@@ -64,7 +64,7 @@
 | FR-07 | GitLab CI: test→build→scan→sign→digest MR; OIDC→IAM; no cluster deploy | Must | 8 |
 | FR-08 | Promotion MRs, CODEOWNERS `@btilki` on `gitops/envs/prod/**`, promotion/rollback docs | Must | 9 |
 | FR-09 | Argo Rollouts frontend canary on **stage and prod** | Must | 9 |
-| FR-10 | PRODUCTION_CHECKLIST, architecture docs, runbooks, full path demo | Must | 10 |
+| FR-10 | PRODUCTION_CHECKLIST, architecture docs, runbooks, full production path proof | Must | 10 |
 | FR-11 | Teardown runbook + ordered destroy (GitOps apps → EKS/ALB → Terraform → verify no orphans) | Must | 11 |
 
 ---
@@ -111,7 +111,6 @@
 | CI must not deploy to cluster | Digest MR only |
 | Prod manual Argo sync + CODEOWNERS `@btilki` | ApplicationSet + branch protection |
 | No CloudWatch, PagerDuty, OTel in v1 | Loki + Alertmanager instead |
-| No learning/demo/lab/portfolio wording | Docs use production/test |
 | Human executes cloud/CLI; AI designs/guides | One phase per approval gate |
 
 ---
@@ -730,7 +729,7 @@ Wait before Phase 10.
 
 ### Objectives
 
-- Complete checklist, architecture diagrams (Mermaid), runbooks; full build→prod path demo. Teardown is **Phase 11** (not optional for short pilots).
+- Complete checklist, architecture diagrams (Mermaid), runbooks; full build→prod path proof. Teardown is **Phase 11** (not optional for short pilots).
 
 ### Tasks
 
@@ -738,7 +737,7 @@ Wait before Phase 10.
 - Runbooks: ingress down, Argo sync stuck, Kyverno block, canary abort.
 - Verify ECR scan-on-push; no unsigned/`latest` on prod path.
 - Update `ROADMAP.md` statuses for phases 1–10.
-- Human: end-to-end demo; then **proceed immediately to Phase 11 teardown** (no keep-alive after tests).
+- Human: end-to-end production path; then **proceed immediately to Phase 11 teardown** (no keep-alive after tests).
 
 ### Expected outputs
 
@@ -895,7 +894,7 @@ See [ROADMAP.md](../../ROADMAP.md) — same statements.
 | 7 | Boutique on GitOps |
 | 8 | Digest CI |
 | 9 | Promotion + canaries |
-| 10 | Checklist + demo |
+| 10 | Checklist + production path |
 | 11 | Ordered teardown + cost stop |
 
 ---
