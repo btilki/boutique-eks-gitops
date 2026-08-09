@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Mermaid GitOps sequence in [`docs/architecture/04-data-flows.md`](docs/architecture/04-data-flows.md): removed `;` from message label (broke GitHub render) and declared missing AWS participant in secrets flow.
+
 ### Changed
 
 - Docs use **production** / **test** wording consistently (checklist section **E**, Topic 13, FR-10, README audience/related projects).

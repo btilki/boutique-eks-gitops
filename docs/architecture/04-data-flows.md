@@ -50,7 +50,7 @@ sequenceDiagram
   GL->>Git: open MR patch image.digest only
   Dev->>Git: merge digest MR
   Argo->>Git: poll/webhook
-  Argo->>K8s: sync (auto dev/stage; manual prod)
+  Argo->>K8s: sync auto for dev/stage, manual for prod
   K8s->>ECR: pull by digest
 ```
 
@@ -83,6 +83,7 @@ sequenceDiagram
   participant ESO as External Secrets
   participant Pod as Workload / Alertmanager
   participant CI as GitLab CI
+  participant AWS as AWS IAM
 
   Human->>SM: store SMTP / app secrets
   ESO->>SM: IRSA read
