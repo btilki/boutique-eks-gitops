@@ -366,10 +366,14 @@ Upstream Online Boutique is a separate Google project; this repository’s contr
 |----------|------|
 | **DevOps Engineering Playbook** (hub) | https://github.com/btilki/devops-engineering-playbook |
 | Playbook project brief | https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md |
-| Article — digest-only GitOps (E1) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
+| Article E1 — Digest-only GitOps (CI never deploys) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
+| Article E2 — Argo Rollouts canary | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E2.md |
+| Article E3 — Cost-honest EKS teardown | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E3.md |
+| Article X1 — Online Boutique on EKS, GKE, and AKS | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/X1.md |
+| Article X2 — Single cluster vs multi-cluster | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/X2.md |
 | Sister platform — AKS DevSecOps | https://github.com/btilki/boutique-aks-devsecops |
 | Sister platform — GKE SRE | https://github.com/btilki/boutique-gke-sre |
-| Hands-on build guides | https://github.com/btilki/learn-devops-by-building |
+| *Practical GitOps on Amazon EKS* (Boutique Production) | https://github.com/btilki/learn-devops-by-building/tree/main/boutique-production/gitops |
 | LinkedIn | https://www.linkedin.com/in/birol-tilki-48731326/ |
 
 ---
