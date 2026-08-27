@@ -261,7 +261,7 @@ kubectl -n monitoring get secret alertmanager-smtp
 
 # Restart Alertmanager to pick up secret if already running
 kubectl -n monitoring rollout restart statefulset \
-  alertmanager-kube-prometheus-stack-alertmanager
+  alertmanager-monitoring-alertmanager
 ```
 
 ### GUI instructions (if applicable)
@@ -282,7 +282,7 @@ Secret `alertmanager-smtp` with key `password`; Alertmanager pods Ready after re
 ```bash
 kubectl -n monitoring get secret alertmanager-smtp -o jsonpath='{.data.password}' | wc -c
 # expect > 0 (do not print the value)
-kubectl -n monitoring logs statefulset/alertmanager-kube-prometheus-stack-alertmanager --tail=50 \
+kubectl -n monitoring logs statefulset/alertmanager-monitoring-alertmanager --tail=50 \
   | grep -iE 'error|smtp|email' || true
 ```
 
@@ -324,7 +324,7 @@ This is the **M2 email proof**.
 kubectl -n monitoring get prometheusrule boutique-alerting -o yaml | grep AlertmanagerEmailTest
 
 # Check Prometheus sees the alert firing
-kubectl -n monitoring port-forward svc/kube-prometheus-stack-prometheus 9090:9090 &
+kubectl -n monitoring port-forward svc/monitoring-prometheus 9090:9090 &
 # Browser: http://127.0.0.1:9090/alerts
 # Look for AlertmanagerEmailTest state=firing
 ```

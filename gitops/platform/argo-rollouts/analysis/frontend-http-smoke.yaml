@@ -25,7 +25,9 @@ spec:
               spec:
                 containers:
                   - name: smoke
-                    image: curlimages/curl:8.11.1
+                    # Digest-pinned (Kyverno require-image-digest). Public image:
+                    # ecr-registry-allowlist excludes boutique.analysis pods.
+                    image: curlimages/curl@sha256:c1fe1679c34d9784c1b0d1e5f62ac0a79fca01fb6377cdd33e90473c6f9f9a69
                     command: ["/bin/sh", "-c"]
                     args:
                       - |

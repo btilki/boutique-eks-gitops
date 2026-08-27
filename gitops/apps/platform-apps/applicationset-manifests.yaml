@@ -28,6 +28,8 @@ spec:
             namespace: external-secrets
             wave: "21"
             project: boutique-platform
+          # Application destination is a default; YAML sets metadata.namespace to
+          # dev/stage/prod (allowed on boutique-platform).
           - name: network-policies
             path: gitops/platform/network-policies
             namespace: default

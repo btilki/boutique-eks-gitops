@@ -2,7 +2,7 @@
 # Extension is .yaml.example so root app-of-apps does NOT sync this file.
 #
 # Option A: copy the list element under generators.list.elements in applicationset.yaml
-# Option B: rename to .yaml and place under gitops/apps/ only after AppProject allows falco chart + ns
+# Option B: rename to .yaml and place under gitops/apps/ (AppProject already allows falco chart + ns)
 #
 # REPLACE chartVersion after helm show chart falcosecurity/falco
 #

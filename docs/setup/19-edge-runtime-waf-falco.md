@@ -141,8 +141,9 @@ Install Falco DaemonSet via Argo.
 ```bash
 cd "$(git rev-parse --show-toplevel)"
 
-# 1) AppProject: add sourceRepo https://falcosecurity.github.io/charts
-#    and destination namespace falco to boutique-platform.yaml — MR + sync argocd-hardening
+# 1) AppProject boutique-platform already allows
+#    sourceRepo https://falcosecurity.github.io/charts and destination ns falco.
+#    If an older checkout is missing them, MR those destinations then sync argocd-hardening
 
 # 2) Either merge list element from falco-applicationset-snippet.yaml.example
 #    into platform-apps ApplicationSet, OR kubectl/argocd apply after copying
@@ -167,7 +168,7 @@ kubectl -n falco logs -l app.kubernetes.io/name=falco --tail=50
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| AppProject denied chart | sourceRepos missing | Step 19.4 AppProject edit |
+| AppProject denied chart | sourceRepos / falco dest missing | Confirm boutique-platform.yaml lists falcosecurity charts + ns falco |
 | Driver errors | wrong driver kind | Keep `modern-bpf` on EKS 1.31 |
 | Example synced accidentally | Renamed to `.yaml` under apps/ | Keep `.yaml.example` until ready |
 

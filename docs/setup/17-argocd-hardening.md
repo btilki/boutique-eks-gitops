@@ -95,6 +95,8 @@ grep -A20 'clusterResourceWhitelist' gitops/bootstrap/argocd/hardening/projects/
 
 Workloads destinations are only `dev` / `stage` / `prod`; `clusterResourceWhitelist` is empty; Rollout kinds allowed.
 
+`boutique-platform` also lists `dev` / `stage` / `prod` so NetworkPolicies from `platform-manifests` can land in those namespaces (Boutique Helm apps stay on `boutique-workloads`). Optional Falco uses destination `falco` and source repo `https://falcosecurity.github.io/charts`.
+
 ### Security notes
 
 Do not add `*` cluster resources to `boutique-workloads`. Platform chart installs that need CRDs stay on `boutique-platform`.

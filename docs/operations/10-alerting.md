@@ -62,7 +62,7 @@ Revert PrometheusRule MR if a noisy rule ships.
 
 | Alert | Dashboard | Log query |
 |-------|-----------|-----------|
-| Any | AM UI | `kubectl -n monitoring logs statefulset/alertmanager-kube-prometheus-stack-alertmanager --tail=100` |
+| Any | AM UI | `kubectl -n monitoring logs statefulset/alertmanager-monitoring-alertmanager --tail=100` |
 
 ## Security notes
 

@@ -3,4 +3,4 @@ name: productcatalogservice
 description: Online Boutique productcatalogservice (digest-pinned)
 type: application
 version: 0.1.0
-appVersion: "0.10.0"
+appVersion: "0.10.6"

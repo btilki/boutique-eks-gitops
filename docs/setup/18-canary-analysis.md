@@ -26,7 +26,7 @@ Timed `pause` alone never fails a bad digest. Analysis closes the progressive-de
 **Apply after rebuild (after Topics 08 + 12):**
 
 - Rollouts controller healthy; frontend Rollout on stage/prod.
-- Prometheus Service reachable at `kube-prometheus-stack-prometheus.monitoring.svc:9090` (for pod-ready template).
+- Prometheus Service reachable at `monitoring-prometheus.monitoring.svc:9090` (for pod-ready template). Smoke Job uses digest-pinned `curlimages/curl` and is excluded from the ECR allowlist via label `boutique.analysis=frontend-http-smoke`.
 
 **Idempotent:** Syncing ClusterAnalysisTemplates is safe. Enabling analysis changes Rollout steps — test on **stage** first.
 

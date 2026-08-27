@@ -11,7 +11,9 @@
 # SECRET (via ESO → Secret alertmanager-smtp key "password"):
 #   smtp_auth_password_file mounts /etc/alertmanager/secrets/alertmanager-smtp/password
 
-fullname: monitoring
+# Names Prometheus/Alertmanager resources monitoring-* (valid Helm key: fullnameOverride).
+# Grafana subchart still uses the Helm release name (kube-prometheus-stack-grafana).
+fullnameOverride: monitoring
 
 defaultRules:
   create: true

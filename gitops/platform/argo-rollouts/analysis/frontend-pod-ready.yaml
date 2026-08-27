@@ -21,7 +21,7 @@ spec:
       failureLimit: 2
       provider:
         prometheus:
-          address: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
+          address: http://monitoring-prometheus.monitoring.svc:9090
           query: |
             sum(
               kube_pod_status_ready{condition="true",namespace="{{args.namespace}}",pod=~"{{args.pod-prefix}}-.*"}

@@ -388,7 +388,8 @@ kubectl -n argocd get applications
 
 # Expect apps such as:
 # aws-load-balancer-controller, external-dns, cert-manager
-# boutique-dev, boutique-stage, boutique-prod
+# boutique-dev-ns, boutique-stage-ns, boutique-prod-ns
+# (per-service apps like frontend-prod arrive in Topic 09)
 
 argocd app list --grpc-web
 ```
@@ -408,11 +409,11 @@ kubectl -n argocd describe applicationset workload-apps
 |---------|---------|
 | Platform | Argo CD UI |
 | Navigation | **Applications** → filter platform / boutique-* |
-| Verification | Platform apps Healthy; `boutique-dev`/`stage` Synced; `boutique-prod` may be Unknown/OutOfSync until **manual** sync |
+| Verification | Platform apps Healthy; `boutique-dev-ns`/`boutique-stage-ns` Synced; `boutique-prod-ns` may be Unknown/OutOfSync until **manual** sync |
 
 ### Expected output
 
-Three platform apps + three boutique env apps listed.
+Platform apps + three namespace apps (`boutique-dev-ns`, `boutique-stage-ns`, `boutique-prod-ns`) listed.
 
 ![Argo CD Applications dashboard — Healthy/Synced platform and boutique apps](../../assets/images/setup/06-argocd-applications-dashboard.png)
 
@@ -420,7 +421,7 @@ Three platform apps + three boutique env apps listed.
 
 ```bash
 kubectl -n argocd get app aws-load-balancer-controller external-dns cert-manager
-kubectl -n argocd get app boutique-dev boutique-stage boutique-prod
+kubectl -n argocd get app boutique-dev-ns boutique-stage-ns boutique-prod-ns
 kubectl get ns dev stage prod
 ```
 
@@ -453,8 +454,8 @@ Do not add `automated` sync to prod via UI — next step verifies absence.
 Prove prod apps lack `syncPolicy.automated` while dev/stage have it.
 
 For this repo’s ApplicationSets that means:
-- Workloads: `frontend-prod` (and other `*-prod`) have no automated sync
-- Namespace apps: `boutique-prod-ns` has no automated sync (dev/stage ns apps may automate)
+- Namespace apps (this topic): `boutique-prod-ns` has no automated sync; `boutique-dev-ns` / `boutique-stage-ns` may automate
+- Workloads (Topic 09): `frontend-prod` (and other `*-prod`) have no automated sync
 
 ### Why this step is required
 
@@ -463,17 +464,17 @@ Locked production safety: CODEOWNERS + manual sync (plan FR-03).
 ### Commands
 
 ```bash
-kubectl -n argocd get app boutique-dev -o jsonpath='{.spec.syncPolicy.automated}{"\n"}'
-kubectl -n argocd get app boutique-stage -o jsonpath='{.spec.syncPolicy.automated}{"\n"}'
-kubectl -n argocd get app boutique-prod -o jsonpath='{.spec.syncPolicy.automated}{"\n"}'
+kubectl -n argocd get app boutique-dev-ns -o jsonpath='{.spec.syncPolicy.automated}{"\n"}'
+kubectl -n argocd get app boutique-stage-ns -o jsonpath='{.spec.syncPolicy.automated}{"\n"}'
+kubectl -n argocd get app boutique-prod-ns -o jsonpath='{.spec.syncPolicy.automated}{"\n"}'
 # prod must print empty / null
 ```
 
 Manually sync prod once for namespace scaffolding:
 
 ```bash
-argocd app sync boutique-prod --grpc-web
-# or UI: Application boutique-prod → SYNC
+argocd app sync boutique-prod-ns --grpc-web
+# or UI: Application boutique-prod-ns → SYNC
 ```
 
 ### GUI instructions (if applicable)
@@ -481,7 +482,7 @@ argocd app sync boutique-prod --grpc-web
 | Element | Content |
 |---------|---------|
 | Platform | Argo CD UI |
-| Navigation | **boutique-prod** → **Details** → **Sync Policy** |
+| Navigation | **boutique-prod-ns** → **Details** → **Sync Policy** |
 | Verification | Automated sync **disabled**; enable button not left on |
 | Permissions | Argo admin |
 
@@ -492,7 +493,7 @@ dev/stage show automated prune/selfHeal; prod automated **absent**. Manual sync 
 ### Validation
 
 ```bash
-test -z "$(kubectl -n argocd get app boutique-prod -o jsonpath='{.spec.syncPolicy.automated}')" && echo "prod manual: OK"
+test -z "$(kubectl -n argocd get app boutique-prod-ns -o jsonpath='{.spec.syncPolicy.automated}')" && echo "prod manual: OK"
 kubectl get ns prod
 ```
 
@@ -551,7 +552,7 @@ Checklist below all pass.
 - [ ] GitLab repo credential Successful (6.3)
 - [ ] `root` Application Synced (6.4)
 - [ ] Platform apps Healthy (6.5)
-- [ ] `boutique-dev` / `boutique-stage` automated; **`boutique-prod` manual** (6.6)
+- [ ] `boutique-dev-ns` / `boutique-stage-ns` automated; **`boutique-prod-ns` manual** (6.6)
 - [ ] Namespaces `dev`/`stage`/`prod` exist
 - [ ] No GitLab token in Git history
 

@@ -50,7 +50,7 @@ kubectl -n monitoring get externalsecret
 kubectl -n monitoring annotate externalsecret alertmanager-smtp \
   force-sync="$(date +%s)" --overwrite 2>/dev/null || true
 # Restart AM if needed:
-kubectl -n monitoring rollout restart statefulset/alertmanager-kube-prometheus-stack-alertmanager
+kubectl -n monitoring rollout restart statefulset/alertmanager-monitoring-alertmanager
 ```
 
 **Validation:** Secret keys present; test alert email (temporary) then disable test rule.

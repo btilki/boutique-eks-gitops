@@ -1,6 +1,7 @@
 # Allow only Amazon ECR images for Boutique app namespaces
 # Setup Topic 07
 # REPLACE or keep account-wildcard — pods must pull from *.dkr.ecr.eu-central-1.amazonaws.com
+# Exclude: Topic 18 Analysis Job pods (digest-pinned public curl; label boutique.analysis)
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -24,6 +25,12 @@ spec:
                 - dev
                 - stage
                 - prod
+      exclude:
+        any:
+          - resources:
+              selector:
+                matchLabels:
+                  boutique.analysis: frontend-http-smoke
       validate:
         message: "Only Amazon ECR images in eu-central-1 are allowed for Boutique workloads."
         foreach:

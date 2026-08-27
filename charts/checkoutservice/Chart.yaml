@@ -3,4 +3,4 @@ name: checkoutservice
 description: Online Boutique checkoutservice (digest-pinned)
 type: application
 version: 0.1.0
-appVersion: "0.10.0"
+appVersion: "0.10.6"

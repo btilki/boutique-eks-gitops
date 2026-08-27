@@ -3,4 +3,4 @@ name: frontend
 description: Online Boutique frontend (digest-pinned)
 type: application
 version: 0.1.0
-appVersion: "0.10.0"
+appVersion: "0.10.6"

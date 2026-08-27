@@ -43,7 +43,7 @@ Receive critical alerts by email. No PagerDuty in v1.
 | Route mismatch | severity labels | Confirm `severity=critical` on alert |
 
 ```bash
-kubectl -n monitoring logs statefulset/alertmanager-kube-prometheus-stack-alertmanager --tail=100
+kubectl -n monitoring logs statefulset/alertmanager-monitoring-alertmanager --tail=100
 ```
 
 ## Security
