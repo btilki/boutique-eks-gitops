@@ -189,9 +189,9 @@ build:
       if [ "${SERVICE}" = "currencyservice" ] || [ "${SERVICE}" = "paymentservice" ]; then
         docker build --platform linux/amd64 \
           --build-arg "BASE_IMAGE=${DST}:${TAG}" \
-          -f ci/docker/patch-protobufjs.Dockerfile \
+          -f .gitlab/docker/patch-protobufjs.Dockerfile \
           -t "${DST}:${TAG}" \
-          ci/docker
+          .gitlab/docker
         SOURCE="${SOURCE}+protobufjs-7.5.5"
       fi
       PUSH_LOG="$(docker push "${DST}:${TAG}" 2>&1 | tee /dev/stderr)"

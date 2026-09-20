@@ -32,7 +32,7 @@ Without `ENABLE_PILOT_CI=true` and without `ENABLE_REPO_GATES=true`, workflow ru
 | MR/test stage runs **Gitleaks**, **Checkov** (soft-fail), **Kyverno CLI** policy tests | Topic 16 |
 | Re-sign of an already-signed digest is OK | ECR tags are **immutable**; CI treats existing signatures as success |
 
-Node services (`currencyservice`, `paymentservice`) apply `ci/docker/patch-protobufjs.Dockerfile` to bump `protobufjs` to **7.5.5** (CVE-2026-41242) before scan.
+Node services (`currencyservice`, `paymentservice`) apply `.gitlab/docker/patch-protobufjs.Dockerfile` to bump `protobufjs` to **7.5.5** (CVE-2026-41242) before scan.
 
 ## Stages
 
