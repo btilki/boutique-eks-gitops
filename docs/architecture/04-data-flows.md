@@ -43,7 +43,7 @@ sequenceDiagram
   participant K8s as EKS
 
   Dev->>GL: push / MR merge to app path
-  GL->>GL: test → build
+  GL->>GL: test → publish (retag :bootstrap, or build if mode=git)
   GL->>GL: Trivy CRITICAL gate
   GL->>GL: cosign sign
   GL->>ECR: OIDC push digest
@@ -54,7 +54,7 @@ sequenceDiagram
   K8s->>ECR: pull by digest
 ```
 
-**Alt text:** CI builds, scans, signs, pushes to ECR, and opens a digest-only MR. After merge, Argo syncs the cluster; pods pull immutable digests. CI never calls kubectl or argocd sync.
+**Alt text:** CI publishes a digest (default: retag `:bootstrap`), scans, signs, pushes to ECR, and opens a digest-only MR. After merge, Argo syncs the cluster; pods pull immutable digests. CI never calls kubectl or argocd sync.
 
 ## Infrastructure flow
 

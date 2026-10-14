@@ -1,6 +1,6 @@
 # Roadmap — boutique-eks-gitops
 
-**Vision:** Production-grade GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI builds, scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
+**Vision:** Closed-pilot GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI publishes an image (default: retag `:bootstrap`), scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
 
 **Status:** M4 PASS — pilot closed; **AWS cloud deleted** (teardown complete 2026-07-19/20)  
 **Detailed plan:** [docs/implementation/plan.md](docs/implementation/plan.md)  
