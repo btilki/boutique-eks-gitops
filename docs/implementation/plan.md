@@ -200,7 +200,7 @@
 
 ## 7.12 High-level architecture
 
-GitLab CI builds and signs images to ECR, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual for `prod`**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (**email**). Frontend canaries run on stage and prod via Argo Rollouts. Short pilots end with **Phase 11 ordered teardown**.
+GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual for `prod`**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (**email**). Frontend canaries run on stage and prod via Argo Rollouts. Short pilots end with **Phase 11 ordered teardown**.
 
 **Authoritative detail:** `docs/ARCHITECTURE.md` + `docs/architecture/*` (Phase 1).
 
@@ -505,7 +505,7 @@ Wait before Phase 5.
 
 ### Objectives
 
-- Enforce digest-only / no `:latest` / ECR allowlist; ESO→Secrets Manager/SSM; default-deny NetworkPolicy patterns.
+- Enforce digest-only / no `:latest` / ECR allowlist; ESO→Secrets Manager/SSM; NetworkPolicy baseline (cross-namespace deny, same-namespace allow, VPC ingress, TCP 80/443 egress).
 
 ### Tasks
 

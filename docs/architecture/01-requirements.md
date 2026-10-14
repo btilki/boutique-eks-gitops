@@ -7,7 +7,7 @@
 | FR-01 | Terraform: VPC, EKS 1.31+, ECR, Route53, IAM OIDC/IRSA, S3+DynamoDB state | Must | Modular Terraform; remote state before cluster |
 | FR-02 | LB Controller, external-dns, cert-manager; hosts under biroltilki.art; ACM+ALB HTTPS | Must | Platform ingress layer; ACM primary TLS |
 | FR-03 | Argo CD app-of-apps + ApplicationSet; auto lower envs; manual prod; sync waves | Must | GitOps control plane; prod syncPolicy null |
-| FR-04 | Kyverno digest-only / no `:latest` / ECR allowlist; ESO; NetworkPolicy | Must | Admission + secrets + east-west controls |
+| FR-04 | Kyverno digest-only / no `:latest` / ECR allowlist; ESO; NetworkPolicy baseline | Must | Admission + secrets + cross-namespace deny (same-namespace allow) |
 | FR-05 | Prometheus, Loki, Grafana, Alertmanager → **email** | Must | On-cluster obs; no CW/PD/OTel |
 | FR-06 | 7 Boutique services + Redis as Helm; env overlays; boutique hostnames | Must | `charts/` + `gitops/envs/*` |
 | FR-07 | GitLab CI test→build→scan→sign→digest MR; OIDC; never kubectl/argocd | Must | CI touches Git+ECR only |

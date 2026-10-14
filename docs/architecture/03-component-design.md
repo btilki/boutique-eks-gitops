@@ -84,7 +84,7 @@ graph TB
 | ApplicationSet / app-of-apps | Multi-env + platform composition | FR-03 |
 | Kyverno | Enforce digest/ECR/`latest` bans | FR-04 |
 | ESO | Secrets never in Git | FR-04 |
-| NetworkPolicy | Namespace isolation baseline | FR-04 |
+| NetworkPolicy | Cross-namespace deny; all ports inside the namespace | FR-04 |
 | kube-prometheus-stack | Metrics + Grafana + AM | FR-05 |
 | Loki | Logs without CloudWatch cost | FR-05 |
 | Alertmanager email | Critical alerting without PagerDuty | FR-05 |

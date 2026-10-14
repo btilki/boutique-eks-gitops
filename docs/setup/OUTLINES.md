@@ -151,7 +151,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | 7.3 | Prove deny of `:latest` / non-digest | Negative test |
 | 7.4 | Sync ESO + ClusterSecretStore (IRSA) | Secrets path |
 | 7.5 | Apply sample ExternalSecret; verify Secret materializes | E2E secrets |
-| 7.6 | Apply default-deny + allow NetworkPolicies for app namespaces | East-west |
+| 7.6 | Apply default-deny + allow NetworkPolicies for app namespaces | Coarse baseline (see `gitops/platform/network-policies/README.md`) |
 | 7.7 | Topic validation | Gate to 08 |
 
 **Why required:** Digest-only and secret hygiene must exist before Boutique images and SMTP credentials.

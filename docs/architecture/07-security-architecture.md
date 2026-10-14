@@ -8,9 +8,9 @@
 | Cluster edge (ALB→Ingress) | Semi-trusted | ACM, security groups; optional WAFv2 (Topic 19, `enable_waf`) |
 | App namespaces | Tenant-trusted | NetworkPolicy, PSA baseline, Kyverno |
 | Platform namespaces | Higher trust | Restricted RBAC; IRSA-scoped controllers |
-| EKS control plane | Highly trusted | Private or public endpoint with restricted CIDRs (choose at implement); IAM auth |
+| EKS control plane | Highly trusted | Public and private API. `endpoint_public_access_cidrs` defaults to `0.0.0.0/0` in `terraform/modules/eks/main.tf`. IAM auth |
 | CI identity | Privileged but scoped | OIDC→IAM: ECR push + MR token only — **no** `eks:*` deploy |
-| Data / secrets | Restricted | SM/SSM; ESO IRSA read; encryption at rest defaults |
+| Data / secrets | Restricted | SM/SSM; ESO IRSA read. The EKS cluster resource has no `encryption_config`, so Kubernetes Secret encryption uses the EKS default, not a customer-managed key in this module |
 
 ```mermaid
 flowchart LR

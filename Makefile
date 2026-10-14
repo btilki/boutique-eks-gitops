@@ -84,6 +84,7 @@ docs-check:
 	@test -f terraform/envs/prod/main.tf
 	@test -f terraform/modules/network/main.tf
 	@test -f docs/versions.md
+	@test -f docs/pilot-claims.md
 	@test -f docs/ARCHITECTURE.md
 	@test -f docs/adr/0001-digest-only-gitops.md
 	@grep -q 'eu-central-1' docs/versions.md

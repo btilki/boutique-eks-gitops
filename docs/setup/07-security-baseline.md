@@ -11,11 +11,11 @@ Pins: Kyverno chart **3.3.7** · ESO chart **0.14.4** ([docs/versions.md](../ver
 
 ## Topic goal
 
-Enforce digest-only / ECR-only admission for Boutique namespaces, enable secrets sync from AWS via **ESO (External Secrets Operator)**, and apply default-deny NetworkPolicies — before observability secrets (SMTP) and app images land. Kyverno provides the admission policies.
+Enforce digest-only / ECR-only admission for Boutique namespaces, enable secrets sync from AWS via **ESO (External Secrets Operator)**, and apply the NetworkPolicy baseline in [`gitops/platform/network-policies/`](../../gitops/platform/network-policies/README.md) — before observability secrets (SMTP) and app images land. Kyverno provides the admission policies.
 
 ## Why this topic is required
 
-Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO, Topic 08 cannot deliver SMTP credentials safely. Without NetworkPolicy, east-west isolation is absent on the shared cluster.
+Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO, Topic 08 cannot deliver SMTP credentials safely. Without this NetworkPolicy baseline, any pod in the cluster can reach Boutique pods. The baseline denies other namespaces, then allows all ports inside the namespace, ingress from `10.0.0.0/16`, and egress TCP 80 and 443 except `169.254.169.254/32`.
 
 ## Before you begin
 
@@ -365,11 +365,11 @@ Smoke-test value is non-production. Real SMTP secret must be unique and never co
 
 ### Goal
 
-Apply default-deny + allow rules to `dev` / `stage` / `prod` via `network-policies` Application.
+Sync the five NetworkPolicies to `dev`, `stage`, and `prod` through the `network-policies` Application.
 
 ### Why this step is required
 
-Namespace isolation on a shared cluster depends on NetworkPolicy enforcement.
+On this shared cluster the baseline denies traffic from other namespaces. Pods in the same namespace may use any port. It does not give each Boutique service its own allow-list.
 
 ### Commands
 
@@ -390,7 +390,7 @@ kubectl -n prod get networkpolicy
 
 ### Expected output
 
-Each env namespace has `default-deny-all`, `allow-dns`, `allow-same-namespace`, `allow-from-vpc-ingress`, `allow-egress-https-aws`.
+Each env namespace has five policies: `default-deny-all`, `allow-dns`, `allow-same-namespace` (all ports), `allow-from-vpc-ingress` (`10.0.0.0/16`), and `allow-egress-https-aws` (TCP 80 and 443, except the instance metadata address).
 
 ### Validation
 
@@ -419,7 +419,7 @@ Tighten `allow-from-vpc-ingress` to ALB security group patterns when operational
 
 ### Security notes
 
-Default-deny without DNS/egress allows will break workloads — keep the allow set reviewed.
+`default-deny-all` is paired with the four allow policies. Removing DNS or egress breaks pods. The allow set is the coarse baseline in [`gitops/platform/network-policies/README.md`](../../gitops/platform/network-policies/README.md).
 
 ---
 

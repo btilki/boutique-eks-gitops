@@ -7,6 +7,10 @@
 
 Do not drift these pins without an ADR update and Setup Guide revision.
 
+## What the pins mean on 2026-10-14
+
+These pins describe the closed pilot reviewed on **2026-07-25**. They are the versions the July evidence used. EKS **1.31** extended support runs into **November 2026**, so a rebuild after that date starts by choosing a newer Kubernetes version and updating this matrix. The Kyverno **cluster** chart target is **1.16.x**. The Kyverno **CLI** pin **1.13.4** is the offline `kyverno test` binary in CI. Interview claim: [`pilot-claims.md`](pilot-claims.md).
+
 ---
 
 ## Cloud & region

@@ -57,7 +57,7 @@ Ingress / Service annotations → external-dns (IRSA) → Route53 record upsert
 ## East-west
 
 - ClusterIP Services between Boutique pods.
-- **NetworkPolicy:** default-deny per app namespace; allow DNS, ingress from ingress controller, allowed peer services, metrics scrape.
+- **NetworkPolicy** in `gitops/platform/network-policies/`: default deny, then DNS to `kube-system`, all ports inside the same namespace, ingress from `10.0.0.0/16`, and egress TCP 80 and 443 except `169.254.169.254/32`. There is no per-service peer list and no monitoring-namespace selector. A Prometheus scrape succeeds only because the VPC CIDR rule allows every port from `10.0.0.0/16`.
 - **No mesh** — no sidecar mTLS in v1.
 
 ## Egress
@@ -74,7 +74,7 @@ Ingress / Service annotations → external-dns (IRSA) → Route53 record upsert
 | ALB → pod | 8080/etc. | HTTP (service-specific) |
 | Inter-service Boutique | gRPC/HTTP | ClusterIP |
 | DNS | 53 | UDP/TCP |
-| Prometheus scrape | 9090/metrics | HTTP |
+| Prometheus scrape | metrics port | HTTP, allowed by the VPC CIDR rule above, not by a monitoring-namespace policy |
 
 ## Security groups (high level)
 

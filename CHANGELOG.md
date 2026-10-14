@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Interview claims now match the files, with no cluster required: [`docs/pilot-claims.md`](docs/pilot-claims.md). Signature admission stays Audit. The “ignore red CI” checklist line now states that the failed job was not recorded. Version pins are dated to the July 2026 pilot. The network-design page, Topic 07, and the architecture summaries now describe the coarse NetworkPolicy. The claims page names the missing workload `securityContext`, Redis durability, and the committed account id.
 - Docs use **production** / **test** wording consistently (checklist section **E**, Topic 13, FR-10, README audience/related projects).
 - ESO smoke-test sample renamed to `eso-smoke` / `eso-smoke-secret` ([`examples/externalsecret-sample.yaml`](examples/externalsecret-sample.yaml), Topic 07).
 - Abbreviation first-mention format on public overview docs (**AWS**, **EKS**, **CI**, **MR**, **SRE**, **ACM**, **ALB**); fixed broken `` `kubectl apply`s `` typography in README.

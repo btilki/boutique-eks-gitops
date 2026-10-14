@@ -14,7 +14,7 @@ Filled **2026-07-19** during Phase C Topic 13.1 evidence walk.
 | Operator | Birol Tilki (`@btilki`) |
 | Date (UTC) | 2026-07-19 |
 | M3 result | ✅ **PASS** · ⬜ FAIL |
-| Notes | Path proven end-to-end. Stage realigned via !13 (`365c59d`); stage=prod `563ebf12…`; canary Healthy; HTTPS 200. C6=!12. Ignore red CI on digest MRs. |
+| Notes | Path proven end-to-end. Stage realigned via !13 (`365c59d`); stage=prod `563ebf12…`; canary Healthy; HTTPS 200. C6=!12. Digest MR pipelines showed red on this day. This checklist does not name the failed job. The image path was taken from the default-branch pipeline and the merged digest diff ([`docs/ci.md`](ci.md)). |
 
 ---
 

@@ -21,7 +21,7 @@ Part of the [DevOps Engineering Playbook](https://github.com/btilki/devops-engin
 | **Hard rule** | **CI never deploys** — pipelines open digest MRs; Argo CD reconciles from Git |
 | **Proven** | Multi-AZ pilot (M3+M4 PASS); AWS resources **torn down** after validation |
 | **Stack** | Terraform · EKS 1.31 · Argo CD · Rollouts · Kyverno · Prom/Loki/Grafana |
-| **Start reading** | Diagram below → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) → [`docs/adr/0001-digest-only-gitops.md`](docs/adr/0001-digest-only-gitops.md) |
+| **Start reading** | Diagram below → [`docs/pilot-claims.md`](docs/pilot-claims.md) → [`docs/adr/0001-digest-only-gitops.md`](docs/adr/0001-digest-only-gitops.md) |
 
 ```mermaid
 flowchart LR
@@ -40,7 +40,7 @@ Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs
 
 ## 1. Project Overview
 
-This repository is the **operational control plane** for running a scoped Online Boutique workload on a single **AWS (Amazon Web Services)** **EKS (Elastic Kubernetes Service)** cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab **CI (Continuous Integration)** builds, scans, and signs images, then opens digest-only **MRs (Merge Requests)**. It never runs `kubectl apply` or `argocd sync` against the cluster.
+This repository is the **operational control plane** for running a scoped Online Boutique workload on a single **AWS (Amazon Web Services)** **EKS (Elastic Kubernetes Service)** cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab **CI (Continuous Integration)** publishes an image (default: retag the ECR `:bootstrap` image; optional: build from the Boutique Git tag), scans, and signs it, then opens a digest-only **MR (Merge Request)**. It never runs `kubectl apply` or `argocd sync` against the cluster. What that sentence includes, and what it leaves out, is [`docs/pilot-claims.md`](docs/pilot-claims.md).
 
 **Audience:** platform engineers, **SRE (Site Reliability Engineering)**/**GitOps (Git as the deploy authority)** practitioners, and operators running or reviewing an AWS/GitOps production path.
 
@@ -52,7 +52,7 @@ This repository is the **operational control plane** for running a scoped Online
 - Argo CD app-of-apps + ApplicationSet; **manual sync for prod**
 - Kyverno, External Secrets, NetworkPolicy baseline
 - Prometheus, Loki, Grafana, Alertmanager → **email**
-- Frontend canary on stage **and** prod (Argo Rollouts)
+- Frontend canary on stage **and** prod (Argo Rollouts, timed weights; analysis off)
 
 ---
 
@@ -268,14 +268,14 @@ Details: [`docs/architecture/09-observability.md`](docs/architecture/09-observab
 |----------|----------------|
 | Least privilege | IRSA for controllers; GitLab OIDC role scoped to ECR (no cluster deploy) |
 | Secrets | ESO ← Secrets Manager/SSM; nothing secret in Git |
-| Supply chain | Trivy gate + Sigstore keyless cosign + ECR scan-on-push |
-| Admission | Kyverno: digest-only, deny `:latest`, ECR allowlist |
-| Network | Default-deny NetworkPolicy patterns per app namespace |
+| Supply chain | Trivy CRITICAL on the published digest; Sigstore keyless cosign; SBOM attest. Default publish mode retags `:bootstrap` |
+| Admission | Kyverno **Enforce**: digest required, deny `:latest`, ECR allowlist. Signature and SBOM verify stay **Audit** |
+| Network | Default-deny, then same-namespace (all ports), VPC CIDR ingress, and TCP 80/443 egress |
 | Prod governance | CODEOWNERS `@btilki` on `gitops/envs/prod/**` |
 
-Honest limit: namespace isolation on one cluster is **not** multi-account isolation — [`docs/architecture/07-security-architecture.md`](docs/architecture/07-security-architecture.md).
+Honest limits, file by file: [`docs/pilot-claims.md`](docs/pilot-claims.md). Namespace detail: [`docs/architecture/07-security-architecture.md`](docs/architecture/07-security-architecture.md).
 
-Policy doc: [`SECURITY.md`](SECURITY.md) · Architecture: security section above.
+Policy doc: [`SECURITY.md`](SECURITY.md).
 
 ---
 
@@ -299,6 +299,7 @@ Local entry: `make lint` && `make docs-check` (no install/apply bypass).
 
 | Document | Description |
 |----------|-------------|
+| [Pilot claims](docs/pilot-claims.md) | What the files support in an interview, with no cluster running |
 | [Architecture](docs/ARCHITECTURE.md) | System design summary |
 | [Architecture deep dive](docs/architecture/) | Requirements → cost model |
 | [Implementation plan](docs/implementation/plan.md) | Phases, inventories, validation |

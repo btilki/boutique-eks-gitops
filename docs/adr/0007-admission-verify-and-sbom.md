@@ -19,6 +19,6 @@ ADR-0006 established **Sigstore keyless** cosign signing in GitLab CI. Signing a
 
 ## Consequences
 
-- **Positive:** Closes the sign→admit loop; SBOM available in CI and as OCI attestations; Audit-first avoids rebuild lockouts.
-- **Negative:** Admission needs cluster egress to Rekor/Fulcio (or a future mirror); webhook latency increases; Enforce before signed digests exist will block Boutique.
+- **Positive:** CI produces keyless signatures and CycloneDX attestations. The admission policies are in Git. Audit records a miss and still lets the pod schedule, which keeps a rebuild from locking out on an unsigned bootstrap digest.
+- **Negative:** Audit leaves the sign→admit loop open: an unsigned digest can still be scheduled. Enforce is the mode that would block it, and this ADR keeps that switch off until signed digests are proven. Admission needs cluster egress to Rekor/Fulcio (or a future mirror); webhook latency increases; Enforce before signed digests exist will block Boutique.
 - **Follow-ups:** Tighten `subjectRegExp` to `@refs/heads/main` (or protected tags); optional Enforce for SBOM after signature Enforce is stable. Edge WAF / runtime Falco → [ADR-0010](0010-edge-waf-and-falco.md) / Topic 19 (scaffold done).

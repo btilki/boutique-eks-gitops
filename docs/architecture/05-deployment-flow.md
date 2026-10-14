@@ -20,6 +20,8 @@ test → build → scan (Trivy 0.71.0) → sign (cosign 2.4.x) → sbom (Cyclone
 
 Pinned in `docs/versions.md`. Failure at CRITICAL CVE or sign error blocks the digest MR. Signing is **Sigstore keyless** (GitLab OIDC → Fulcio). Phase 7 performs a **one-time ECR digest bootstrap** so Argo can sync before the first full CI run.
 
+Default `BOUTIQUE_BUILD_MODE` is `ecr-bootstrap`: CI retags that bootstrap image and publishes its digest. `BOUTIQUE_BUILD_MODE=git` builds from the Boutique Git tag. Kyverno signature verify stays **Audit** until that Enforce switch is proven ([ADR-0007](../adr/0007-admission-verify-and-sbom.md)).
+
 ## GitOps sync model
 
 | Layer | Mechanism | Sync |
@@ -40,6 +42,7 @@ Pinned in `docs/versions.md`. Failure at CRITICAL CVE or sign error blocks the d
 ## Canary (frontend)
 
 - **Stage and prod** use Argo Rollouts + ALB traffic splitting.
+- Steps are timed weights (10, 30, 50, 100). `canary.analysis.enabled` is `false` in the env values. The AnalysisTemplate is in Git and does not gate the rollout.
 - Abort = Git revert of bad digest (Rollout cancels/returns to stable).
 - Prod canary still requires manual Application sync to start reconciliation.
 
@@ -76,7 +79,7 @@ flowchart TD
   N -->|no| P[Done]
 ```
 
-**Alt text:** Pipeline builds and gates images, opens a digests MR for dev, then humans promote through stage and prod with CODEOWNERS and manual prod sync; reverts roll back via Git.
+**Alt text:** The default-branch pipeline publishes a digest (retag `:bootstrap` unless `BOUTIQUE_BUILD_MODE=git`), gates it with Trivy and cosign, and opens a digest MR for dev. Humans promote through stage and prod with CODEOWNERS and a manual prod sync. A revert rolls back through Git.
 
 ## Human gates
 

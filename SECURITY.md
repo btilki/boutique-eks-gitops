@@ -29,4 +29,17 @@ If you find a vulnerability in this repository’s configs or docs, open a confi
 
 ## Honest limits
 
-Namespace isolation on a **single** cluster is not multi-account isolation. Short pilots must run **Topic 14 teardown** immediately after tests to remove blast radius and cost.
+The precise claim for each control is [`docs/pilot-claims.md`](docs/pilot-claims.md).
+
+- `dev`, `stage`, and `prod` are namespaces on one cluster. A node or cluster-admin mistake reaches all three.
+- Signature and SBOM policies are **Audit**. The Enforce policies are `:latest`, digest, and the ECR allowlist.
+- The default CI mode retags `:bootstrap`. A from-source build is `BOUTIQUE_BUILD_MODE=git`.
+- NetworkPolicy denies other namespaces. Inside the namespace, all ports are allowed. Egress allows TCP 80 and 443 except the instance metadata address.
+- The EKS API default CIDR is `0.0.0.0/0`. Kubernetes secrets have no customer-managed KMS key in this module. Checkov is `soft_fail: true`.
+- The frontend canary uses timed weights. `canary.analysis.enabled` is false.
+- Boutique charts set no `securityContext`. Namespaces enforce Pod Security `baseline`. Redis has no password and no volume.
+- Account `868480224481` and the July ACM certificate ARN remain in Git as identifiers. The certificate is gone.
+- Pins were reviewed on 2026-07-25. EKS 1.31 extended support runs into November 2026.
+- The pilot AWS resources are gone. A green pipeline today requires `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES`.
+
+Short pilots must run **Topic 14 teardown** immediately after tests to remove blast radius and cost.
