@@ -1,7 +1,6 @@
 # ADR-0006: Cosign Sigstore keyless signing via GitLab OIDC
 
 - **Status:** Accepted  
-- **Date:** 2026-07-18  
 - **Setup:** Topic 10  
 
 ## Context

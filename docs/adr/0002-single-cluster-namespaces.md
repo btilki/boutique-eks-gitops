@@ -1,7 +1,6 @@
 # ADR-0002: Single cluster with namespace environments
 
 - **Status:** Accepted  
-- **Date:** 2026-07-18  
 - **Setup:** Topic 02  
 
 ## Context

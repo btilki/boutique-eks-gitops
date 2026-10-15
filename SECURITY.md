@@ -38,8 +38,8 @@ The precise claim for each control is [`docs/pilot-claims.md`](docs/pilot-claims
 - The EKS API default CIDR is `0.0.0.0/0`. Kubernetes secrets have no customer-managed KMS key in this module. Checkov is `soft_fail: true`.
 - The frontend canary uses timed weights. `canary.analysis.enabled` is false.
 - Boutique charts set no `securityContext`. Namespaces enforce Pod Security `baseline`. Redis has no password and no volume.
-- Account `868480224481` and the July ACM certificate ARN remain in Git as identifiers. The certificate is gone.
-- Pins were reviewed on 2026-07-25. EKS 1.31 extended support runs into November 2026.
+- Account `868480224481` and the ACM certificate ARN remain in Git as identifiers. The certificate is gone.
+- EKS 1.31 extended support runs into November 2026.
 - The pilot AWS resources are gone. A green pipeline today requires `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES`.
 
 Short pilots must run **Topic 14 teardown** immediately after tests to remove blast radius and cost.

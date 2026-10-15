@@ -2,8 +2,6 @@
 
 **Production-pilot GitOps platform for Online Boutique on Amazon EKS — Git is the only deploy authority.**
 
-Part of the [DevOps Engineering Playbook](https://github.com/btilki/devops-engineering-playbook) · Author: [Birol Tilki](https://www.linkedin.com/in/birol-tilki-48731326/)
-
 [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.9-purple.svg)](https://www.terraform.io/)
 [![EKS](https://img.shields.io/badge/EKS-1.31-FF9900.svg)](https://aws.amazon.com/eks/)
 [![GitLab CI](https://img.shields.io/badge/CI-GitLab%20CI-FC6D26.svg)](https://docs.gitlab.com/ee/ci/)
@@ -34,7 +32,7 @@ flowchart LR
   Users((Users)) -->|HTTPS ACM+ALB| Dev & Stage & Prod
 ```
 
-Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/) · Playbook brief: [featured project](https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md)
+Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/)
 
 ---
 
@@ -44,7 +42,7 @@ This repository is the **operational control plane** for running a scoped Online
 
 **Audience:** platform engineers, **SRE (Site Reliability Engineering)**/**GitOps (Git as the deploy authority)** practitioners, and operators running or reviewing an AWS/GitOps production path.
 
-**Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven; **not** multi-account or multi-region HA. **M3 + M4 PASS** (2026-07-19/20): production path proven; **AWS cloud resources fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
+**Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven. Scope is one account and one region. **M3 + M4 PASS**: the production-pilot path was proven, then **AWS cloud resources were fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
 
 **Outcomes**
 
@@ -88,7 +86,7 @@ Details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`
 | **CI/CD (Phase 12)** | SBOM attest; Gitleaks/Checkov/policy_test | 🚧 Scaffold |
 | **Delivery** | Promotion governance; frontend canary stage+prod | ✅ Implemented |
 | **Delivery (Phase 12)** | AnalysisTemplates (opt-in) | 🚧 Scaffold |
-| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 + M4 PASS (Appendix T) | Topic 14 ✅ |
+| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 + M4 PASS (Appendix T) | ✅ Implemented |
 
 
 Legend: ✅ Implemented (pilot-proven) · 🚧 Scaffold (in-repo; enable after rebuild) · ⬜ Not started · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
@@ -184,7 +182,7 @@ Bootstrap is **phase-ordered** and documented only under `docs/setup/`:
 | Boutique charts + ECR bootstrap digests | `09` |
 | GitLab CI digest pipeline | `10` |
 | Promotion + canary | `11`, `12` |
-| Production checklist | `13` |
+| Production-pilot checklist | `13` |
 | **Immediate teardown after tests** | `14` |
 
 Index: [`docs/setup/README.md`](docs/setup/README.md)
@@ -309,7 +307,7 @@ Local entry: `make lint` && `make docs-check` (no install/apply bypass).
 | [ADRs](docs/adr/) | Design decisions |
 | [Versions](docs/versions.md) | Pin matrix |
 | [Promotion](docs/promotion.md) / [Rollback](docs/rollback.md) | Digest governance |
-| [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) | Readiness (M3) |
+| [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) | Production-pilot checklist (M3) |
 | [Operations index](docs/operations/README.md) | Day-2 deploy, DR, incidents, health |
 | [Teardown runbook](docs/runbooks/teardown.md) | Immediate destroy after tests (Topic 14 / M4) |
 | [Runbooks index](docs/runbooks/README.md) | Symptom playbooks: ingress, Argo, Kyverno, canary, alerting |
@@ -330,7 +328,7 @@ Local entry: `make lint` && `make docs-check` (no install/apply bypass).
 | 7 | Boutique charts + ECR digest bootstrap | ✅ |
 | 8 | GitLab CI digest pipeline | ✅ |
 | 9 | Promotion + frontend canary | ✅ |
-| 10 | Production readiness (M3) | ✅ |
+| 10 | Production-pilot checklist (M3) | ✅ |
 | 11 | Teardown (immediate after tests) | ✅ |
 | 12 | GitOps hardening scaffolds (Topics 15–19) | 🚧 Scaffold |
 
@@ -361,25 +359,7 @@ Upstream Online Boutique is a separate Google project; this repository’s contr
 
 ---
 
-## 20. Related projects
-
-| Resource | Link |
-|----------|------|
-| **DevOps Engineering Playbook** (hub) | https://github.com/btilki/devops-engineering-playbook |
-| Playbook project brief | https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md |
-| Article E1 — Digest-only GitOps (CI never deploys) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
-| Article E2 — Argo Rollouts canary | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E2.md |
-| Article E3 — Cost-honest EKS teardown | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E3.md |
-| Article X1 — Online Boutique on EKS, GKE, and AKS | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/X1.md |
-| Article X2 — Single cluster vs multi-cluster | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/X2.md |
-| Sister platform — AKS DevSecOps | https://github.com/btilki/boutique-aks-devsecops |
-| Sister platform — GKE SRE | https://github.com/btilki/boutique-gke-sre |
-| *Practical GitOps on Amazon EKS* (Boutique Production) | https://github.com/btilki/learn-devops-by-building/tree/main/boutique-production/gitops |
-| LinkedIn | https://www.linkedin.com/in/birol-tilki-48731326/ |
-
----
-
-## 21. References
+## 20. References
 
 - [Argo CD documentation](https://argo-cd.readthedocs.io/)
 - [Argo Rollouts](https://argo-rollouts.readthedocs.io/)

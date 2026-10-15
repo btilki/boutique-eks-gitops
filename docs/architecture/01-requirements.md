@@ -20,7 +20,7 @@
 
 | Category | Requirement | Architectural implication |
 |----------|-------------|---------------------------|
-| Availability | Production-minimum on one cluster; prod changes deliberate | Manual prod sync; multi-AZ nodes; single NAT risk accepted |
+| Availability | Production-pilot minimum on one cluster; prod changes deliberate | Manual prod sync; multi-AZ nodes; single NAT risk accepted |
 | Scalability | 3 app envs + platform + 7 services; later multi-cluster without rewrite | ApplicationSet; path-based envs |
 | Security | Least privilege; no secrets in Git; OIDC; signed images; admission | IRSA, ESO, Kyverno, cosign, Trivy |
 | Observability | Metrics + logs + email alerts | Prom/Loki/Grafana/AM |

@@ -1,6 +1,6 @@
 # Architecture — boutique-eks-gitops
 
-**Status:** Accepted — M3 + M4 PASS (2026-07-19/20); pilot closed — **AWS cloud deleted** (EKS/VPC/NAT/ALB/ECR, TF backend, SM, ACM, Route53)  
+**Status:** Accepted — M3 + M4 PASS; production pilot closed — **AWS cloud deleted** (EKS/VPC/NAT/ALB/ECR, TF backend, SM, ACM, Route53)  
 **Maturity:** Production pilot (single AWS account, single EKS cluster) — **decommissioned**  
 **Region:** `eu-central-1` (when provisioned)  
 **Deep docs:** [docs/architecture/](architecture/README.md)  
@@ -12,7 +12,7 @@
 
 This repository is the **operational control plane** for Online Boutique on Amazon **EKS (Elastic Kubernetes Service)**. **Git is the only authority** for what runs on the cluster. GitLab **CI (Continuous Integration)** publishes an image (default: retag `:bootstrap`; optional: build from the Boutique Git tag), scans (Trivy), signs (cosign), and opens **MRs (Merge Requests)** that change **only image digests**. Argo CD reconciles desired state; it never receives deploy commands from CI.
 
-Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces. NetworkPolicy denies traffic from other namespaces and allows every port inside the namespace. Sync policy, CODEOWNERS, and manual prod sync are the other boundaries. The claim sheet is [`docs/pilot-claims.md`](pilot-claims.md). Public HTTPS uses **ACM (AWS Certificate Manager)** on **ALB (Application Load Balancer)**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive). **This pilot’s AWS resources were destroyed 2026-07-19/20** (Appendix T); the live cluster is gone.
+Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces. NetworkPolicy denies traffic from other namespaces and allows every port inside the namespace. Sync policy, CODEOWNERS, and manual prod sync are the other boundaries. The claim sheet is [`docs/pilot-claims.md`](pilot-claims.md). Public HTTPS uses **ACM (AWS Certificate Manager)** on **ALB (Application Load Balancer)**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive). **This production pilot’s AWS resources were destroyed** (Appendix T); the live cluster is gone.
 
 ---
 

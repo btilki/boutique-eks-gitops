@@ -173,7 +173,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | 8.5 | Fire / route one critical test alert; confirm inbox | Proof |
 | 8.6 | Topic validation | Gate to 09 |
 
-**Why required:** Without alerts and dashboards, production readiness is unverifiable.
+**Why required:** Without alerts and dashboards, the production-pilot checklist is unverifiable.
 
 ---
 
@@ -255,7 +255,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 
 ---
 
-## 13 — Production readiness
+## 13 — Production-pilot checklist
 
 **Goal:** `PRODUCTION_CHECKLIST` green with evidence; runbooks present. **Milestone M3.**  
 **Depends on:** 12  

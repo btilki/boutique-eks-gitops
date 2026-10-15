@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Roadmap vision and the CI data-flow caption now say the default publish mode retags `:bootstrap`.
-- Interview claims now match the files, with no cluster required: [`docs/pilot-claims.md`](docs/pilot-claims.md). Signature admission stays Audit. The “ignore red CI” checklist line now states that the failed job was not recorded. Version pins are dated to the July 2026 pilot. The network-design page, Topic 07, and the architecture summaries now describe the coarse NetworkPolicy. The claims page names the missing workload `securityContext`, Redis durability, and the committed account id.
+- Interview claims now match the files, with no cluster required: [`docs/pilot-claims.md`](docs/pilot-claims.md). Signature admission stays Audit. The “ignore red CI” checklist line now states that the failed job was not recorded. Version pins match the closed production pilot. The network-design page, Topic 07, and the architecture summaries now describe the coarse NetworkPolicy. The claims page names the missing workload `securityContext`, Redis durability, and the committed account id.
 - Docs use **production** / **test** wording consistently (checklist section **E**, Topic 13, FR-10, README audience/related projects).
 - ESO smoke-test sample renamed to `eso-smoke` / `eso-smoke-secret` ([`examples/externalsecret-sample.yaml`](examples/externalsecret-sample.yaml), Topic 07).
 - Abbreviation first-mention format on public overview docs (**AWS**, **EKS**, **CI**, **MR**, **SRE**, **ACM**, **ALB**); fixed broken `` `kubectl apply`s `` typography in README.
@@ -23,9 +23,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Phase 12 scaffold** (Topics 15–19): cosign admission verify + SBOM Audit policies, CI gates (Gitleaks/Checkov/Kyverno unit), Argo AppProjects + Dex/notifications examples, canary AnalysisTemplates, optional WAF/Falco stubs — see [`ROADMAP.md`](ROADMAP.md).
 - Setup screenshots embedded in Topics 06–13; abbreviation ownership table in [`docs/setup/README.md`](docs/setup/README.md).
 
-## [0.1.0] — 2026-07-20
+## [0.1.0]
 
-Production pilot closed: **M3 PASS** (2026-07-19) · **M4 PASS** (2026-07-19/20). AWS billable resources destroyed (Appendix T).
+Production pilot closed: **M3 PASS** · **M4 PASS**. AWS billable resources destroyed (Appendix T).
 
 ### Added
 

@@ -1,9 +1,8 @@
 # Operations — boutique-eks-gitops
 
 **Audience:** L2–L3 Operator / on-call (solo maintainer: **You**)  
-**Maturity:** Production **pilot** — not enterprise multi-region on-call  
-**Authority:** Day-2 procedures. Bootstrap remains [`docs/setup/`](../setup/). Symptom playbooks remain [`docs/runbooks/`](../runbooks/).  
-**Last reviewed:** 2026-07-19
+**Maturity:** Production **pilot**. Enterprise multi-region on-call is out of scope.  
+**Authority:** Day-2 procedures. Bootstrap remains [`docs/setup/`](../setup/). Symptom playbooks remain [`docs/runbooks/`](../runbooks/).
 
 Operations assume Topics **01–13** succeeded at least once. If the cluster is gone, rebuild via Setup Guide, then return here.
 

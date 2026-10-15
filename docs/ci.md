@@ -27,7 +27,7 @@ What the files show:
 - The pipeline that publishes an image and opens the digest MR runs on the default branch.
 - The digest commit message includes `[skip ci]`.
 - `build`, `scan`, `sign`, `sbom`, and `gitops` rules match the default branch, so an MR pipeline does not re-run those jobs.
-- The 2026-07-19 checklist does not name the failed job on those digest MRs. The image path was taken from the default-branch pipeline and the merged digest diff.
+- The production-pilot checklist does not name the failed job on those digest MRs. The image path was taken from the default-branch pipeline and the merged digest diff.
 
 After teardown, commits on `main` failed when a pipeline still tried to reach ECR and the GitLab OIDC role. Workflow rules now create no pipeline unless `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES` is set.
 

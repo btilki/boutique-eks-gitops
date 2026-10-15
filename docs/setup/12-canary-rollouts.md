@@ -479,4 +479,4 @@ Confirm no `:latest` and digests still enforced under canary pods.
 
 ## Next topic
 
-**[13 — Production readiness](13-production-readiness.md)** (Phase B next).
+**[13 — Production-pilot checklist](13-production-readiness.md)** (Phase B next).

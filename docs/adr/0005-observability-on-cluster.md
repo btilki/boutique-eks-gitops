@@ -1,7 +1,6 @@
 # ADR-0005: On-cluster observability (no CloudWatch / PagerDuty / OTel in v1)
 
 - **Status:** Accepted  
-- **Date:** 2026-07-18  
 - **Setup:** Topic 02  
 
 ## Context

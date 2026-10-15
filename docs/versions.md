@@ -2,14 +2,13 @@
 
 **Audience:** L2 — Implementer / CI author  
 **Authority:** Locked stack from Planning Gate + [implementation plan](implementation/plan.md) §7.11  
-**Setup owner:** Topic 01 (consume) · Topic 02 (align ADRs/README)  
-**Last reviewed:** 2026-07-25
+**Setup owner:** Topic 01 (consume) · Topic 02 (align ADRs/README)
 
 Do not drift these pins without an ADR update and Setup Guide revision.
 
-## What the pins mean on 2026-10-14
+## What the pins mean
 
-These pins describe the closed pilot reviewed on **2026-07-25**. They are the versions the July evidence used. EKS **1.31** extended support runs into **November 2026**, so a rebuild after that date starts by choosing a newer Kubernetes version and updating this matrix. The Kyverno **cluster** chart target is **1.16.x**. The Kyverno **CLI** pin **1.13.4** is the offline `kyverno test` binary in CI. Interview claim: [`pilot-claims.md`](pilot-claims.md).
+These pins describe the closed production pilot. EKS **1.31** extended support runs into **November 2026**, so a rebuild after that date starts by choosing a newer Kubernetes version and updating this matrix. The Kyverno **cluster** chart target is **1.16.x**. The Kyverno **CLI** pin **1.13.4** is the offline `kyverno test` binary in CI. Interview claim: [`pilot-claims.md`](pilot-claims.md).
 
 ---
 

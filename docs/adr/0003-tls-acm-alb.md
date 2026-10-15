@@ -1,7 +1,6 @@
 # ADR-0003: Public TLS via ACM on ALB
 
 - **Status:** Accepted  
-- **Date:** 2026-07-18  
 - **Setup:** Topic 02  
 
 ## Context

@@ -1,7 +1,6 @@
 # ADR-0008: Argo CD AppProjects + deferred SSO/notifications
 
 - **Status:** Accepted (scaffold)  
-- **Date:** 2026-07-25  
 - **Setup:** Topic 17  
 
 ## Context

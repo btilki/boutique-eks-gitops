@@ -1,7 +1,6 @@
 # ADR-0010: Optional edge WAF + runtime Falco (scaffold)
 
 - **Status:** Accepted (scaffold)  
-- **Date:** 2026-07-25  
 - **Setup:** Topic 19  
 
 ## Context

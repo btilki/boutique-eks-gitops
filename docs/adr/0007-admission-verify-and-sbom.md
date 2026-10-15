@@ -1,7 +1,6 @@
 # ADR-0007: Admission signature verify + CycloneDX SBOM attestations
 
 - **Status:** Accepted (scaffold)  
-- **Date:** 2026-07-25  
 - **Setup:** Topic 15  
 - **Supersedes follow-up in:** [ADR-0006](0006-cosign-signing-mode.md)
 

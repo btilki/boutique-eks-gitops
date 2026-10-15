@@ -2,7 +2,7 @@
 
 **Vision:** Closed-pilot GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI publishes an image (default: retag `:bootstrap`), scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
 
-**Status:** M4 PASS — pilot closed; **AWS cloud deleted** (teardown complete 2026-07-19/20)  
+**Status:** M4 PASS — production pilot closed; **AWS cloud deleted** (teardown complete)  
 **Detailed plan:** [docs/implementation/plan.md](docs/implementation/plan.md)  
 **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/architecture/](docs/architecture/)
 
@@ -21,11 +21,11 @@
 | 7 | Boutique Helm + GitOps envs | L | ✅ | `09-boutique-charts` |
 | 8 | GitLab CI digest pipeline | L | ✅ | `10-gitlab-ci-digest` |
 | 9 | Promotion + frontend canary | L | ✅ | `11-promotion`, `12-canary-rollouts` |
-| 10 | Production readiness | M | ✅ | `13-production-readiness` |
+| 10 | Production-pilot checklist | M | ✅ | `13-production-readiness` |
 | 11 | Teardown | M | ✅ | `14-teardown` |
-| 12 | GitOps hardening (scaffold) | M | ✅ Scaffold authored | `15` … `19-edge-runtime-waf-falco` |
+| 12 | GitOps hardening (scaffold) | M | 🚧 Scaffold | `15` … `19-edge-runtime-waf-falco` |
 
-Status: ⬜ Not started · 🔄 In progress · ✅ Complete · ✅ Scaffold authored (files in Git; live enable after rebuild) · ⏭️ Skipped
+Status: ⬜ Not started · 🔄 In progress · ✅ Complete · 🚧 Scaffold (files in Git; live enable after rebuild) · ⏭️ Skipped
 
 ---
 
@@ -35,7 +35,7 @@ Status: ⬜ Not started · 🔄 In progress · ✅ Complete · ✅ Scaffold auth
 |-----------|-------------|--------------------|
 | **M1 — Cluster reachable** | 3 | EKS Ready; ACM+ALB smoke hostname under `*.boutique.biroltilki.art` |
 | **M2 — Platform complete** | 6 | Argo + Kyverno/ESO/NP + Prometheus/Loki/Grafana/Alertmanager (email) live |
-| **M3 — Production path proven** | 10 | Digest MR → promote → prod manual sync + canary; checklist green |
+| **M3 — Production-pilot path proven** | 10 | Digest MR → promote → prod manual sync + canary; checklist green |
 | **M4 — Clean teardown** | 11 | Workloads removed; `terraform destroy` complete; no orphan billable resources |
 
 FC review prompts run at **M1, M2, M3** (phases 3, 6, 10). **Phase 11 teardown runs immediately after all tests** (mandatory).
@@ -62,7 +62,7 @@ FC review prompts run at **M1, M2, M3** (phases 3, 6, 10). **Phase 11 teardown r
 
 ## Current focus
 
-**Pilot closed.** Phases **1–11 ✅** · M3 PASS 2026-07-19 · **M4 PASS** 2026-07-19/20. **No live AWS pilot resources remain** (Appendix T). Rebuild = Topic 01 (zone) → 03 → 04+.
+**Production pilot closed.** Phases **1–11 ✅** · **M3 PASS** · **M4 PASS**. **No live AWS pilot resources remain** (Appendix T). Rebuild = Topic 01 (zone) → 03 → 04+.
 
 **Phase 12 (scaffold-only):** extend GitOps/DevSecOps in-repo for a future rebuild — **no** Terraform apply required to author files.
 

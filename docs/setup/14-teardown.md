@@ -2,7 +2,7 @@
 
 Audience: L2 — Implementer  
 Estimated time: 1–2 hours (EKS destroy often 15–30+ minutes)  
-Prerequisites: [13 — Production readiness](13-production-readiness.md) **PASS**, **or** early abort after any billable topic  
+Prerequisites: [13 — Production-pilot checklist](13-production-readiness.md) **PASS**, **or** early abort after any billable topic  
 Creates / owns: [`docs/runbooks/teardown.md`](../runbooks/teardown.md); fills [`PRODUCTION_CHECKLIST`](../PRODUCTION_CHECKLIST.md) Appendix T; ROADMAP Phase 11 ✅  
 **Milestone:** **M4 — Clean teardown**  
 **Related:** [cost model](../architecture/10-cost-model.md)

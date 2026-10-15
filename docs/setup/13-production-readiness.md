@@ -1,16 +1,16 @@
-# 13 — Production readiness
+# 13 — Production-pilot checklist
 
 Audience: L2 — Implementer / FC reviewer  
 Estimated time: 1–2 hours  
 Prerequisites: [12 — Canary rollouts](12-canary-rollouts.md) complete (stage + prod canary proven or ready)  
 Creates / owns: [`docs/PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md), runbooks set under [`docs/runbooks/`](../runbooks/), ROADMAP status update at sign-off  
-**Milestone:** **M3 — Production path proven**
+**Milestone:** **M3 — Production-pilot path proven**
 
 ---
 
 ## Topic goal
 
-Prove the full production path with evidence: checklist green, runbooks usable, digest → promote → prod manual sync + canary — then proceed **immediately** to teardown (Topic 14).
+Prove the production-pilot path with evidence: checklist green, runbooks usable, digest → promote → prod manual sync + canary — then proceed **immediately** to teardown (Topic 14).
 
 ## Why this topic is required
 
@@ -209,7 +209,7 @@ Section **E** fully filled; path owner + date set.
 ### Validation
 
 ```bash
-grep -q 'Production path' docs/PRODUCTION_CHECKLIST.md
+grep -q 'Production-pilot path' docs/PRODUCTION_CHECKLIST.md
 ```
 
 ### Common problems
@@ -298,7 +298,7 @@ Teardown reduces attack surface and bill — treat as security hygiene.
 |-------|----------|
 | Checklist A–E complete | `docs/PRODUCTION_CHECKLIST.md` |
 | Runbooks min set | ingress, argo-sync, kyverno, canary (+ alerting) |
-| Production path recorded | Section E |
+| Production-pilot path recorded | Section E |
 | ROADMAP 1–10 ✅ | After live sign-off |
 | Teardown started | Topic 14 / Appendix T in progress |
 

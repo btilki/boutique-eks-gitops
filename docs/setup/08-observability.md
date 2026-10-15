@@ -15,7 +15,7 @@ Operate on-cluster metrics, logs, dashboards, and **email** alerts — proving A
 
 ## Why this topic is required
 
-Production readiness needs observable failure. Milestone **M2** requires Grafana reachable and a test critical alert delivered by email.
+The production-pilot checklist needs observable failure. Milestone **M2** requires Grafana reachable and a test critical alert delivered by email.
 
 ## Before you begin
 

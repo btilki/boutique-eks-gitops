@@ -1,7 +1,6 @@
 # ADR-0009: Metric-driven frontend canary (AnalysisTemplates)
 
 - **Status:** Accepted (scaffold)  
-- **Date:** 2026-07-25  
 - **Setup:** Topic 18  
 - **Related:** Topic 12 (timed canary), ADR-0001  
 

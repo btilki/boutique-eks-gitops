@@ -1,7 +1,6 @@
 # ADR-0001: Digest-only GitOps (Argo CD as sole deploy authority)
 
 - **Status:** Accepted  
-- **Date:** 2026-07-18  
 - **Setup:** Topic 02  
 
 ## Context

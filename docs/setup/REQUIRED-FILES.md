@@ -182,7 +182,7 @@ Owner step IDs refer to [OUTLINES.md](OUTLINES.md).
 
 ---
 
-## Topic 13 — Production readiness
+## Topic 13 — Production-pilot checklist
 
 | Path | Timing | Owner step | Minimum content | Status |
 |------|--------|------------|-----------------|--------|

@@ -1,12 +1,11 @@
 # What this pilot claims
 
 **Audience:** Someone defending this repository in a DevOps interview  
-**Status:** Closed pilot. AWS resources were destroyed on 2026-07-19/20. Nothing in this file requires a new cluster.  
-**Evidence date:** 2026-07-19 (M3) and 2026-07-20 (M4)
+**Status:** Closed production pilot. AWS resources were destroyed. Nothing in this file requires a new cluster.
 
 Say this first: GitLab proposes image digests, Git stores them, and Argo CD is the reconciler. The pilot proved that path once, then the cloud resources were removed.
 
-## Proven on 19 July 2026
+## Proven in the closed production pilot
 
 - EKS 1.31 in `eu-central-1`, three nodes, digest-pinned Boutique pods.
 - GitLab OIDC to ECR. CI did not call the cluster API.
@@ -28,7 +27,7 @@ Say this first: GitLab proposes image digests, Git stores them, and Argo CD is t
 | Canary | `gitops/envs/prod/values/frontend.yaml` | Weights 10, 30, 50, 100 with pauses. `canary.analysis.enabled: false`. |
 | API exposure and secret encryption | `terraform/modules/eks/main.tf` | Public API access is on. The default CIDR is `0.0.0.0/0`. The cluster resource has no `encryption_config`. |
 | IaC scan | `.checkov.yaml` | `soft_fail: true`. The skipped checks include the public API and the single NAT. |
-| Versions | `docs/versions.md` | Pins reviewed 2026-07-25. EKS 1.31 extended support runs into November 2026. Kyverno CLI `1.13.4` is the offline test binary. The cluster chart target is 1.16.x. |
+| Versions | `docs/versions.md` | EKS 1.31 extended support runs into November 2026. Kyverno CLI `1.13.4` is the offline test binary. The cluster chart target is 1.16.x. |
 | CI today | `.gitlab-ci.yml` workflow | No pipeline is created unless `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES` is set. |
 | Workload hardening | `charts/*/templates/deployment.yaml` | No `securityContext`: no `runAsNonRoot`, no dropped capabilities, no read-only root filesystem. Probes are TCP. |
 | Pod Security | `gitops/envs/{dev,stage,prod}/namespace.yaml` | `pod-security.kubernetes.io/enforce: baseline`. |
@@ -37,11 +36,11 @@ Say this first: GitLab proposes image digests, Git stores them, and Argo CD is t
 
 ## Sentences to retire
 
-- “Ignore red CI on digest MRs.” The July checklist did not name the failed job. The image path was taken from the default-branch pipeline and the merged digest diff. See [`ci.md`](ci.md).
+- “Ignore red CI on digest MRs.” The production-pilot checklist did not name the failed job. The image path was taken from the default-branch pipeline and the merged digest diff. See [`ci.md`](ci.md).
 - “Signatures are enforced.” The Enforce policies are the tag, digest, and ECR checks. Signature verify is Audit ([ADR-0007](adr/0007-admission-verify-and-sbom.md)).
 - “The pipeline builds the application from source.” That is `BOUTIQUE_BUILD_MODE=git`. The default mode retags.
 - “The canary analyzes error rate.” The rehearsed canary moved traffic on a timer.
-- “These pins are the current supported set.” They are the closed-pilot set from July 2026.
+- “These pins are the current supported set.” They are the closed production-pilot set.
 
 ## Left for a rebuild you choose later
 

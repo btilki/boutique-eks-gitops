@@ -2,11 +2,10 @@
 
 **Audience:** Implementer during build  
 **Public summary:** [ROADMAP.md](../../ROADMAP.md)  
-**Architecture (authoritative):** [docs/ARCHITECTURE.md](../ARCHITECTURE.md) — physical file created in Phase 1; decisions below are **approved** from Planning Gate  
-**Structure (authoritative):** Preferred layout in Project Prompt — materialized in Phase 1  
+**Architecture (authoritative):** [docs/ARCHITECTURE.md](../ARCHITECTURE.md) — decisions below are **approved**
+**Structure (authoritative):** Preferred layout in Project Prompt — materialized in Phase 1
 
-**Plan version:** 2026-07-18  
-**Status:** Awaiting plan approval before Setup Guide authoring  
+**Status:** Production pilot closed. Phases 1–11 complete. AWS resources deleted. Phase 12 scaffold is in Git; live enable waits for a rebuild.
 
 ---
 
@@ -15,9 +14,9 @@
 | Field | Value |
 |-------|--------|
 | Project | **boutique-eks-gitops** |
-| Goal | Production GitOps platform for Online Boutique on one EKS cluster; Git is the only deploy authority; CI only updates image digests |
-| Current status | Planning complete; repo empty except this plan + ROADMAP; no AWS resources |
-| Phases | **11** (Phase 1–11, including teardown) |
+| Goal | Production-pilot GitOps control plane for Online Boutique on one EKS cluster; Git is the only deploy authority; CI only updates image digests |
+| Current status | Production pilot closed; AWS resources deleted; GitOps and docs remain |
+| Phases | **11** executed (Phase 1–11, including teardown), plus Phase 12 scaffold in [ROADMAP.md](../../ROADMAP.md) |
 | Overall complexity | **L** (platform breadth); no single XL phase if Phase 2/7/8 stay scoped |
 | Definition of done | All Must FRs validated; PRODUCTION_CHECKLIST green; digest → promote → prod manual sync + canary proven; teardown documented and executable |
 
@@ -31,12 +30,12 @@
 | G-02 | Expose platform/apps under boutique DNS | Hostnames resolve via external-dns; HTTPS via ACM+ALB |
 | G-03 | GitOps-only delivery | Argo CD app-of-apps + ApplicationSet; CI never `kubectl apply` / `argocd sync` |
 | G-04 | Digest-only promotion | MRs patch only `image.digest`; promote dev→stage→prod with CODEOWNERS `@btilki` |
-| G-05 | Production security baseline | Kyverno digest/ECR rules; ESO; NetworkPolicy |
+| G-05 | Production-pilot security baseline | Kyverno digest/ECR rules; ESO; NetworkPolicy |
 | G-06 | On-cluster observability | Prometheus + Loki + Grafana + Alertmanager (**email**) |
 | G-07 | Boutique via Helm GitOps | 7 services + Redis reachable on env hostnames |
 | G-08 | Supply-chain CI | Trivy CRITICAL gate → cosign sign → digest MR |
 | G-09 | Frontend canary | Argo Rollouts on **stage and prod** |
-| G-10 | Production readiness | Checklist, runbooks, rollback via git revert tested |
+| G-10 | Production-pilot checklist | Checklist, runbooks, rollback via git revert tested |
 | G-11 | Clean teardown | Documented decommission; AWS resources destroyed; no orphan billables |
 
 ---
@@ -44,7 +43,7 @@
 ## 7.3 Business value
 
 - Prove deep GitOps on AWS: digest-only releases and Git-driven promotion without CI deploying to the cluster.
-- Deliver a production-quality reference control plane (Terraform + Argo + policy + SRE baseline) reviewable by platform engineers.
+- Deliver a production-pilot reference control plane (Terraform + Argo + policy + SRE baseline) reviewable by platform engineers.
 - Operate `dev` / `stage` / `prod` under `biroltilki.art` with documented promotion, rollback, and alerting.
 - Keep cost suitable for a short pilot (single cluster, single NAT, no CloudWatch/PagerDuty) with a **mandatory teardown path**.
 - Encode audit-friendly patterns: Git history, signed images, CODEOWNERS on prod paths.
@@ -277,7 +276,7 @@ boutique-eks-gitops/
 |-----------|--------|--------|--------------------|
 | M1 Cluster reachable | After Phase 3 | 1–3 | Nodes Ready; HTTPS smoke host on boutique DNS |
 | M2 Platform complete | After Phase 6 | 4–6 | Argo + security + observability (Alertmanager **email**) validated |
-| M3 Production path proven | After Phase 10 | 7–10 | Digest→promote→prod canary; checklist green |
+| M3 Production-pilot path proven | After Phase 10 | 7–10 | Digest→promote→prod canary; checklist green |
 | M4 Clean teardown | After Phase 11 | 11 | Ordered destroy complete; no orphan billable resources |
 
 ---
@@ -719,7 +718,7 @@ Wait before Phase 10.
 
 ---
 
-## Phase 10: Production readiness
+## Phase 10: Production-pilot checklist
 
 **Complexity:** M  
 **Estimated effort:** 1–2 sessions  
@@ -831,7 +830,7 @@ Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
 | 7 | Boutique charts | L | Medium | 7 services |
 | 8 | GitLab CI | L | High | OIDC critical path |
 | 9 | Promotion + canary | L | High | Prod canary |
-| 10 | Production readiness | M | Low | M3 |
+| 10 | Production-pilot checklist | M | Low | M3 |
 | 11 | Teardown | M | Medium | M4; orphan risk if order wrong |
 
 | Rating | Meaning |
@@ -845,17 +844,17 @@ Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
 
 ## 7.18 Success criteria (project-level)
 
-- [ ] Terraform provisions VPC, EKS 1.31, ECR (7), IAM/OIDC, remote state in `eu-central-1`
-- [ ] Hostnames live with ACM+ALB; cert-manager installed
-- [ ] Argo app-of-apps + ApplicationSet; prod manual sync
-- [ ] Kyverno/ESO/NetworkPolicy enforced
-- [ ] Prometheus + Loki + Grafana + Alertmanager (**email**) operational
-- [ ] 7 Boutique services (+ Redis) on GitOps digests; storefront hostnames work
-- [ ] GitLab CI: scan→sign→digest MR only; no cluster deploy from CI
-- [ ] Promotion with `@btilki`; rollback via git revert documented and tested
-- [ ] Frontend canary on stage **and** prod
-- [ ] PRODUCTION_CHECKLIST complete
-- [ ] Teardown runbook executed **immediately after tests** (Phase 11 mandatory)
+- [x] Terraform provisions VPC, EKS 1.31, ECR (7), IAM/OIDC, remote state in `eu-central-1`
+- [x] Hostnames live with ACM+ALB; cert-manager installed
+- [x] Argo app-of-apps + ApplicationSet; prod manual sync
+- [x] Kyverno/ESO/NetworkPolicy enforced
+- [x] Prometheus + Loki + Grafana + Alertmanager (**email**) operational
+- [x] 7 Boutique services (+ Redis) on GitOps digests; storefront hostnames work
+- [x] GitLab CI: scan→sign→digest MR only; no cluster deploy from CI
+- [x] Promotion with `@btilki`; rollback via git revert documented and tested
+- [x] Frontend canary on stage **and** prod
+- [x] PRODUCTION_CHECKLIST complete
+- [x] Teardown runbook executed **immediately after tests** (Phase 11 mandatory)
 
 ---
 
@@ -865,17 +864,17 @@ Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
 
 | Phase | Title | Status | Setup topic | Key validation |
 |-------|--------|--------|-------------|----------------|
-| 1 | Foundation | ⬜ | 01, 02 | versions + dirs |
-| 2 | AWS foundation | ⬜ | 03, 04 | `kubectl get nodes` |
-| 3 | Ingress DNS TLS | ⬜ | 05 | HTTPS smoke |
-| 4 | Argo CD | ⬜ | 06 | root app Synced; prod manual |
-| 5 | Security | ⬜ | 07 | deny `:latest` |
-| 6 | Observability | ⬜ | 08 | Grafana + **email** test alert |
-| 7 | Boutique | ⬜ | 09 | dev hostname |
-| 8 | GitLab CI | ⬜ | 10 | digest-only MR |
-| 9 | Promotion + canary | ⬜ | 11, 12 | canary + CODEOWNERS |
-| 10 | Production readiness | ⬜ | 13 | checklist |
-| 11 | Teardown | ⬜ | 14 | cluster gone; no orphans |
+| 1 | Foundation | ✅ | 01, 02 | versions + dirs |
+| 2 | AWS foundation | ✅ | 03, 04 | `kubectl get nodes` |
+| 3 | Ingress DNS TLS | ✅ | 05 | HTTPS smoke |
+| 4 | Argo CD | ✅ | 06 | root app Synced; prod manual |
+| 5 | Security | ✅ | 07 | deny `:latest` |
+| 6 | Observability | ✅ | 08 | Grafana + **email** test alert |
+| 7 | Boutique | ✅ | 09 | dev hostname |
+| 8 | GitLab CI | ✅ | 10 | digest-only MR |
+| 9 | Promotion + canary | ✅ | 11, 12 | canary + CODEOWNERS |
+| 10 | Production-pilot checklist | ✅ | 13 | checklist |
+| 11 | Teardown | ✅ | 14 | cluster gone; no orphans |
 
 ### 10.2 Incremental value
 

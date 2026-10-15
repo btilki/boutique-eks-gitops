@@ -2,7 +2,6 @@
 
 **Audience:** L2 — Implementer  
 **Authority:** This directory is the **single source of truth** for bootstrap. If README, chat, or scripts conflict with `docs/setup/`, **this guide wins**.  
-**Last reviewed:** 2026-07-25  
 **Related:** [Architecture](../ARCHITECTURE.md) · [Implementation plan](../implementation/plan.md) · [Roadmap](../../ROADMAP.md) · [Topic outlines](OUTLINES.md) · [Required files](REQUIRED-FILES.md)
 
 ---
@@ -40,7 +39,7 @@ Status legend: ⬜ Not started · 🔄 In progress · 🚧 Scaffold (in-repo; en
 | 10 | GitLab CI digests | [10-gitlab-ci-digest.md](10-gitlab-ci-digest.md) | 09 (+ OIDC from 04) | 2–3 h | CI runners + ECR | ✅ |
 | 11 | Promotion | [11-promotion.md](11-promotion.md) | 10 | 1–1.5 h | None beyond envs | ✅ |
 | 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ✅ |
-| 13 | Production readiness | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
+| 13 | Production-pilot checklist | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
 | 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | **Stops billables** | ✅ |
 | 15 | Supply chain verify + SBOM | [15-supply-chain-verify-sbom.md](15-supply-chain-verify-sbom.md) | 07 + 10 (live after rebuild) | 1–2 h | None while scaffold-only | 🚧 Scaffold |
 | 16 | CI security gates | [16-ci-security-gates.md](16-ci-security-gates.md) | 10 (CI files); no AWS for MR gates | 1–1.5 h | None | 🚧 Scaffold |
