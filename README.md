@@ -34,13 +34,6 @@ flowchart LR
 
 Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/)
 
-## Repository Architecture Map
-
-The diagram below is a visual guide to the repository structure, platform architecture, and recommended interview walkthrough. It is intended as a navigation aid; the linked documentation remains the source of truth.
-
-![Boutique EKS GitOps Platform — Repository Map & Interview Navigation](assets/images/repository-architecture-map.png)
-
-
 ---
 
 ## 1. Project Overview
