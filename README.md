@@ -34,6 +34,13 @@ flowchart LR
 
 Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/)
 
+## Repository Map and Navigation
+
+Use this visual map to understand the repository layout, the high-level platform architecture, the EKS platform components, and where to start when exploring each engineering area.
+
+![Boutique EKS GitOps Platform — Repository Map and Navigation](assets/images/aws-eks-gitops-platform-architecture.png)
+
+
 ---
 
 ## 1. Project Overview
