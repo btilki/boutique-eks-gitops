@@ -5,17 +5,17 @@ Estimated time: 2–3 hours
 Prerequisites: [07 — Security baseline](07-security-baseline.md) complete (ESO Ready)  
 Creates: kube-prometheus-stack (Prometheus, Grafana, Alertmanager), Loki, Grafana Ingress, SMTP via ESO, alerting runbook  
 Related ADRs: [0005](../adr/0005-observability-on-cluster.md) · Runbook: [alerting.md](../runbooks/alerting.md)  
-**Milestone:** **M2 — Platform complete** (with Topics 06–07)
+Milestone: M2 — Platform complete (with Topics 06–07)
 
 ---
 
 ## Topic goal
 
-Operate on-cluster metrics, logs, dashboards, and **email** alerts — proving Alertmanager can reach your inbox — without CloudWatch, PagerDuty, or OTel. This topic installs Prometheus, Loki, Grafana, and Alertmanager as the observability stack.
+Run on-cluster metrics, logs, dashboards, and email alerts — and prove Alertmanager can reach your inbox — without CloudWatch, PagerDuty, or OTel. Prometheus, Loki, Grafana, and Alertmanager form the stack.
 
 ## Why this topic is required
 
-Production readiness needs observable failure. Milestone **M2** requires Grafana reachable and a test critical alert delivered by email.
+Production readiness depends on observable failure. M2 requires Grafana over HTTPS and a test critical alert delivered by email.
 
 ## Before you begin
 
@@ -69,7 +69,7 @@ Expected duration: 5–15 minutes for pods + Grafana ALB.
 | Element | Content |
 |---------|---------|
 | Platform | Argo CD UI |
-| Navigation | Application **kube-prometheus-stack** → SYNC if needed |
+| Navigation | Application kube-prometheus-stack → SYNC if needed |
 | Verification | Healthy; pods Ready in `monitoring` |
 
 ### Expected output
@@ -126,7 +126,7 @@ kubectl -n monitoring get pods -l app.kubernetes.io/name=loki
 | Element | Content |
 |---------|---------|
 | Platform | Argo CD UI |
-| Navigation | **loki** → Healthy |
+| Navigation | loki → Healthy |
 | Verification | Loki pod Ready; Grafana datasource `Loki` configured in values |
 
 ### Expected output
@@ -271,7 +271,7 @@ kubectl -n monitoring rollout restart statefulset \
 | Platform | AWS Console → Secrets Manager |
 | Navigation | Secret `boutique-eks-gitops/alertmanager-smtp` |
 | Verification | JSON key `password` present |
-| Argo | **monitoring-config** Synced |
+| Argo | monitoring-config Synced |
 
 ### Expected output
 
@@ -315,7 +315,7 @@ Receive email for `AlertmanagerEmailTest` (always-firing critical test rule).
 
 ### Why this step is required
 
-This is the **M2 email proof**.
+This step is the M2 email proof.
 
 ### Commands
 
@@ -418,7 +418,7 @@ All checklist items pass.
 - [ ] Runbook present
 - [ ] Topics 06–07 still healthy (Argo + Kyverno + ESO)
 
-**Milestone M2:** Platform complete (Argo + security + observability with email).
+Milestone M2: platform complete (Argo + security + observability with email).
 
 ### Common problems
 
@@ -440,7 +440,7 @@ Confirm no SMTP password in Git history (`git log -p -- gitops/platform/monitori
 
 ## Topic validation (end-to-end)
 
-Topic 08 / **M2** is complete when Step 8.6 checklist passes.
+Topic 08 / M2 is complete when Step 8.6 checklist passes.
 
 **Cost check:** Monitoring uses node memory; teardown in Topic 14 removes it with the cluster.
 

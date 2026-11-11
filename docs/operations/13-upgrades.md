@@ -1,10 +1,10 @@
 # 13 — Upgrades
 
-**Audience:** L3 — Operator  
-**Applies to:** EKS, platform charts, Boutique digests  
-**Prerequisites:** [versions.md](../versions.md); staging validation  
-**Estimated time:** Hours  
-**Risk level:** High  
+Audience: Operator  
+Applies to: EKS, platform charts, Boutique digests  
+Prerequisites: [versions.md](../versions.md); staging validation  
+Estimated time: Hours  
+Risk level: High  
 
 ## Purpose
 
@@ -12,8 +12,8 @@ Upgrade components in a safe order without breaking GitOps or Kyverno.
 
 ## When to use / When not to use
 
-**Use** when bumping pins deliberately.  
-**Do not** upgrade EKS and all Helm charts in one MR.
+Use when bumping pins deliberately.  
+Do not upgrade EKS and all Helm charts in one MR.
 
 ## Prerequisites
 
@@ -25,24 +25,24 @@ Upgrade components in a safe order without breaking GitOps or Kyverno.
 
 ### Step 1: Order of operations
 
-1. **GitLab CI pins** (Trivy/cosign) if needed — `.gitlab-ci.yml` / versions.md  
-2. **Boutique digests** via normal promote ([02](02-deployment.md))  
-3. **Platform Helm** (Argo AppSet values) — one component per MR  
-4. **EKS control plane / node AMI** via Terraform last (or per AWS guidance)  
+1. GitLab CI pins (Trivy/cosign) if needed — `.gitlab-ci.yml` / versions.md  
+2. Boutique digests via normal promote ([02](02-deployment.md))  
+3. Platform Helm (Argo AppSet values) — one component per MR  
+4. EKS control plane / node AMI via Terraform last (or per AWS guidance)  
 
-**Validation:** After each step, [08](08-health-checks.md).
+Validation: After each step, [08](08-health-checks.md).
 
-**Expected outcome:** Pins match `docs/versions.md`.
+Expected outcome: Pins match `docs/versions.md`.
 
-**Recovery steps:** Revert MR; TF apply previous version.
+Recovery steps: Revert MR; TF apply previous version.
 
-**Best practices:** Update ADR/versions.md in the same change set as the bump.
+Best practices: Update ADR/versions.md in the same change set as the bump.
 
 ### Step 2: Kyverno / PSA compatibility
 
 After policy or K8s minor bumps, re-test deny fixtures and a canary deploy on stage.
 
-**Validation:** `kyverno` policies Ready; deny `:latest` still works.
+Validation: `kyverno` policies Ready; deny `:latest` still works.
 
 ## End-to-end validation
 

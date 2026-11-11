@@ -3,29 +3,29 @@
 Audience: L2 — Implementer  
 Estimated time: 3–4 hours  
 Prerequisites: [08 — Observability](08-observability.md) complete (M2)  
-Creates: Helm charts under `charts/*`; env digest overlays; Argo boutique ApplicationSet; **bootstrap ECR digests**; `dev-boutique` HTTPS  
+Creates: Helm charts under `charts/*`; env digest overlays; Argo boutique ApplicationSet; bootstrap ECR digests; `dev-boutique` HTTPS  
 Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0004](../adr/0004-dns-hostname-scheme.md)
 
 ---
 
 ## Topic goal
 
-Run the scoped Online Boutique storefront on GitOps digests: charts + env overlays + one-time ECR image bootstrap so Argo can sync **before** the first CI digest pipeline (Topic 10).
+Run the scoped Online Boutique storefront on GitOps digests: charts, env overlays, and a one-time ECR image bootstrap so Argo can sync before the first CI digest pipeline (Topic 10).
 
 ## Why this topic is required
 
-CI only patches digests — it cannot invent first images. Charts must expose `image.repository` + `image.digest`, and ECR must hold signed/bootstrap digests Kyverno will allow.
+CI only patches digests; it cannot invent first images. Charts must expose `image.repository` + `image.digest`, and ECR must hold bootstrap digests Kyverno will allow until Topic 10 signing kicks in.
 
 ## Before you begin
 
 - Topics 06–08 healthy; ACM ARN available.
-- ECR repos exist (Topic 04) including **`redis`** (added to Terraform list — re-apply `module.ecr` if missing).
+- ECR repos exist (Topic 04) including `redis` (added to Terraform list — re-apply `module.ecr` if missing).
 - Docker (or `nerdctl`/`podman`) available to pull upstream Boutique images and push to ECR.
 - Phase B Topic 09 files on `main`.
 
 **Cost:** ECR storage + ALB for `dev-boutique` Ingress.
 
-**Idempotent:** Re-push digests and re-sync Argo is safe. Prod remains **manual sync**.
+**Idempotent:** Re-push digests and re-sync Argo is safe. **Prod remains manual sync.**
 
 ---
 
@@ -93,7 +93,7 @@ Never add `:latest` to chart templates.
 
 ### Goal
 
-Pull is not available for v0.10.6 — **build** Online Boutique from GitHub (and Redis from public ECR), push to project ECR, record digests into env values.
+Upstream pull is not available for v0.10.6 — build Online Boutique from GitHub (and Redis from public ECR), push to project ECR, and record digests into env values.
 
 ### Why this step is required
 
@@ -478,4 +478,4 @@ Topic 09 is complete when Step 9.6 checklist passes.
 
 **[10 — GitLab CI digests](10-gitlab-ci-digest.md)** (Phase B next).
 
-CI will rebuild/sign and open MRs that change **only** `image.digest` under `gitops/envs/dev/values/`.
+CI will rebuild/sign and open MRs that change only `image.digest` under `gitops/envs/dev/values/`.

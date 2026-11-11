@@ -10,13 +10,13 @@ Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0006](../adr/0006-co
 
 ## Topic goal
 
-Run a GitLab **CI (Continuous Integration)** pipeline that builds/publishes images to ECR (OIDC), fails on Trivy CRITICAL, signs with cosign Sigstore keyless, and opens a digest-only **MR (Merge Request)** for `gitops/envs/dev` — without ever deploying to the cluster.
+Run a GitLab CI pipeline that builds and publishes images to ECR via OIDC, fails on Trivy CRITICAL, signs with cosign Sigstore keyless, and opens a digest-only MR for `gitops/envs/dev` — **without ever deploying to the cluster**.
 
-Phase 12 extends the same pipeline with an **`sbom`** stage and test-stage security gates (Topics [15](15-supply-chain-verify-sbom.md)–[16](16-ci-security-gates.md)); stages become `test → build → scan → sign → sbom → gitops`.
+Phase 12 extends the same pipeline with an `sbom` stage and test-stage security gates (Topics [15](15-supply-chain-verify-sbom.md)–[16](16-ci-security-gates.md)); stages become `test → build → scan → sign → sbom → gitops`.
 
 ## Why this topic is required
 
-This is FR-07 / ADR-0001 in action: CI may change Git desired state (digests) but must not hold cluster deploy credentials.
+This is FR-07 / ADR-0001 in action: CI may change Git desired state (digests) but **must not** hold cluster deploy credentials.
 
 ## Before you begin
 
@@ -59,7 +59,7 @@ terraform apply -target=module.iam_gitlab_oidc
 | Element | Content |
 |---------|---------|
 | Platform | GitLab |
-| Navigation | Project → **Settings** → **CI/CD** → **JWT** / OIDC is automatic for `id_tokens` — no toggle required on gitlab.com for basic OIDC |
+| Navigation | Project → Settings → CI/CD → JWT / OIDC is automatic for `id_tokens` — no toggle required on gitlab.com for basic OIDC |
 | Permissions | Maintainer |
 | Verification | Later Step 10.2 succeeds |
 
@@ -69,17 +69,17 @@ terraform apply -target=module.iam_gitlab_oidc
 | Audience | `https://gitlab.com` | Matches CI `id_tokens.aud` |
 | Subject like | `project_path:<group>/<project>:*` | Limits which pipelines can assume role |
 
-**GitLab CI/CD variable:**
+GitLab CI/CD variable:
 
 | Element | Content |
 |---------|---------|
 | Platform | GitLab |
-| Navigation | **Settings** → **CI/CD** → **Variables** → **Add variable** |
+| Navigation | Settings → CI/CD → Variables → Add variable |
 | Permissions | Maintainer |
 
 | Key | Value | Flags |
 |-----|-------|-------|
-| `AWS_ROLE_ARN` | `arn:aws:iam::ACCOUNT:role/boutique-eks-gitops-gitlab-ci` | Protected (optional), **not** masked if ARN length issues — Masked OK if supported |
+| `AWS_ROLE_ARN` | `arn:aws:iam::ACCOUNT:role/boutique-eks-gitops-gitlab-ci` | Protected (optional), not masked if ARN length issues — Masked OK if supported |
 | `AWS_DEFAULT_REGION` | `eu-central-1` | Optional (also in `.gitlab-ci.yml`) |
 
 ### Expected output
@@ -140,7 +140,7 @@ aws iam get-role-policy --role-name boutique-eks-gitops-gitlab-ci --policy-name 
 | Element | Content |
 |---------|---------|
 | Platform | GitLab |
-| Navigation | **Build** → **Pipelines** → latest → **build** job log |
+| Navigation | Build → Pipelines → latest → build job log |
 | Verification | `Arn` of assumed role printed; `docker login` to ECR succeeds |
 
 ### Expected output
@@ -198,11 +198,11 @@ grep -n 'gitops/envs/dev' .gitlab-ci.yml
 | Element | Content |
 |---------|---------|
 | Platform | GitLab |
-| Navigation | **Settings** → **CI/CD** → **Runners** — ensure shared/instance runners with Docker available |
-| Also | **Settings** → **CI/CD** → **Token Access** / job token permissions — allow pushing to this project + creating MRs |
+| Navigation | Settings → CI/CD → Runners — ensure shared/instance runners with Docker available |
+| Also | Settings → CI/CD → Token Access / job token permissions — allow pushing to this project + creating MRs |
 | Verification | Pipeline appears on commit to default branch |
 
-Enable **CI_JOB_TOKEN** push + MR API as required by your GitLab version (Project → Settings → CI/CD → Job token permissions / Limit access).
+Enable CI_JOB_TOKEN push + MR API as required by your GitLab version (Project → Settings → CI/CD → Job token permissions / Limit access).
 
 ### Expected output
 
@@ -239,7 +239,7 @@ Review `.gitlab-ci.yml` in MR like production code.
 
 ### Goal
 
-Execute pipeline through **scan**; CRITICAL findings must fail the job.
+Execute pipeline through scan; CRITICAL findings must fail the job.
 
 ### Why this step is required
 
@@ -262,8 +262,8 @@ trivy image --severity CRITICAL --exit-code 1 --ignore-unfixed "${IMAGE}"
 
 | Element | Content |
 |---------|---------|
-| Platform | GitLab → **Build** → **Pipelines** |
-| Navigation | Open pipeline → ensure **scan** jobs for each SERVICE |
+| Platform | GitLab → Build → Pipelines |
+| Navigation | Open pipeline → ensure scan jobs for each SERVICE |
 | Verification | All scan jobs green, or fail with CRITICAL listed |
 
 ### Expected output
@@ -291,7 +291,7 @@ Keep Trivy at **0.71.0** per `docs/versions.md`.
 
 ### Security notes
 
-Never disable the CRITICAL gate permanently to “get green.”
+**Never disable the CRITICAL gate permanently** to “get green.”
 
 ---
 
@@ -299,7 +299,7 @@ Never disable the CRITICAL gate permanently to “get green.”
 
 ### Goal
 
-Confirm **sign** jobs succeed using `SIGSTORE_ID_TOKEN` (no cosign key variables).
+Confirm sign jobs succeed using `SIGSTORE_ID_TOKEN` (no cosign key variables).
 
 ### Why this step is required
 
@@ -315,7 +315,7 @@ ADR-0006 keyless signing is the locked supply-chain control.
 
 | Element | Content |
 |---------|---------|
-| Platform | GitLab pipeline → **sign** jobs |
+| Platform | GitLab pipeline → sign jobs |
 | Verification | Job green; no `COSIGN_PRIVATE_KEY` variable used |
 
 ### Expected output
@@ -355,7 +355,7 @@ Keyless signatures are tied to GitLab identity — protect who can run pipelines
 
 ### Goal
 
-**gitops** job opens an MR updating only `image.digest` under `gitops/envs/dev/values/*.yaml`.
+The gitops job opens an MR updating only `image.digest` under `gitops/envs/dev/values/*.yaml`.
 
 ### Why this step is required
 
@@ -371,9 +371,9 @@ This is the sole CI→cluster path: merge MR → Argo reconciles.
 
 | Element | Content |
 |---------|---------|
-| Platform | GitLab → **Merge requests** |
+| Platform | GitLab → Merge requests |
 | Navigation | Open `ci: digest updates for dev (…)` |
-| Verification | Diff touches **only** `gitops/envs/dev/values/*.yaml` digest lines |
+| Verification | Diff touches only `gitops/envs/dev/values/*.yaml` digest lines |
 | Action | Review → merge |
 
 ### Expected output
@@ -406,7 +406,7 @@ Merge digest MR; confirm Argo syncs `*-dev` apps.
 
 ### Security notes
 
-CI must never write `gitops/envs/prod/**`.
+**CI must never write `gitops/envs/prod/**`.**
 
 ---
 

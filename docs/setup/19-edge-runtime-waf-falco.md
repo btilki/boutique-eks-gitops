@@ -11,7 +11,7 @@ Pins: Falco chart **4.19.3** (target) · WAFv2 REGIONAL ([docs/versions.md](../v
 
 ## Topic goal
 
-Scaffold **edge** protection (**AWS WAFv2** on ALBs) and **runtime** detection (**Falco**) for a fuller DevSecOps posture — both **off by default** so short rebuilds stay cheap and quiet.
+Scaffold edge protection (AWS WAFv2 on ALBs) and runtime detection (Falco) for a fuller DevSecOps posture — **both off by default** so short rebuilds stay cheap and quiet.
 
 ## Why this topic is required
 
@@ -21,7 +21,7 @@ ACM+ALB+NetworkPolicy stop neither common L7 exploits at the edge nor suspicious
 
 **Scaffold-only:**
 
-- Confirm Creates files; `enable_waf` remains **false**; Falco is **not** in live `platform-apps`.
+- Confirm Creates files; `enable_waf` remains false; Falco is not in live `platform-apps`.
 
 **Apply after rebuild:**
 
@@ -69,11 +69,11 @@ grep -A10 'module "waf"' main.tf
 
 ### Expected output
 
-`enable_waf` default **false**; module wired; output `waf_web_acl_arn` present.
+`enable_waf` default false; module wired; output `waf_web_acl_arn` present.
 
 ### Security notes
 
-Managed rule groups can block legitimate traffic — enable on **stage** Ingress first when testing.
+Managed rule groups can block legitimate traffic — **enable on stage Ingress first** when testing.
 
 ---
 
@@ -200,7 +200,7 @@ make docs-check
 |-------|----------|---------------|
 | WAF module + enable_waf=false | Required | Flip when needed |
 | Falco values + example AppSet | Required | Opt-in sync |
-| Falco **absent** from live platform-apps | Required | Until Step 19.4 |
+| Falco absent from live platform-apps | Required | Until Step 19.4 |
 | ADR-0010 | Required | — |
 
 ---

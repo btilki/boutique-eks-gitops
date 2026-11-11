@@ -1,14 +1,17 @@
 # Runbook — Teardown (ordered decommission)
 
-**Audience:** L2 — Operator  
-**Setup:** Topic 14 · **Milestone:** **M4**  
-**Authority:** [`../setup/14-teardown.md`](../setup/14-teardown.md) is source of truth for live steps  
-**Checklist:** [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md) Appendix T  
-**Cost:** [`../architecture/10-cost-model.md`](../architecture/10-cost-model.md)
+Audience: Operator  
+Setup: Topic 14 · Milestone 4 — Clean teardown  
+Authority: [`../setup/14-teardown.md`](../setup/14-teardown.md) is source of truth for live steps  
+Checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md) Appendix T  
+Cost: [`../architecture/10-cost-model.md`](../architecture/10-cost-model.md)  
+Setup index: [`../setup/README.md`](../setup/README.md)
+
+> When to use: you have a live pilot cluster and must stop cost (after tests or early abort). The closed pilot already completed Milestone 4 — there is nothing to tear down today unless you rebuilt. Authoritative numbered steps: [Topic 14](../setup/14-teardown.md).
 
 ## Purpose
 
-Stop all pilot billables: release ALBs via GitOps prune, destroy EKS/VPC/NAT via Terraform, then optionally remove remote state. **Never destroy the state backend while foundation resources still exist.**
+Stop all pilot billables: release ALBs via GitOps prune, destroy EKS / VPC / NAT via Terraform, then optionally remove remote state. **Never destroy the state backend while foundation resources still exist.**
 
 ## Order (do not reorder)
 
@@ -26,8 +29,8 @@ Stop all pilot billables: release ALBs via GitOps prune, destroy EKS/VPC/NAT via
 
 | Do | Do not |
 |----|--------|
-| Prune Ingress/apps **before** `terraform destroy` | Destroy VPC while ALBs still attached |
-| Destroy foundation **before** state backend | Empty/delete state bucket first |
+| Prune Ingress/apps before `terraform destroy` | Destroy VPC while ALBs still attached |
+| Destroy foundation before state backend | Empty/delete state bucket first |
 | Record leftovers intentionally retained | Ad-hoc deletes outside this runbook |
 | Use `eu-central-1` consistently | Assume “cluster gone” without `aws eks list-clusters` |
 

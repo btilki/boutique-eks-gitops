@@ -1,12 +1,14 @@
 # 06 — Network design
 
+Ingress from the internet, east-west inside the cluster, and egress through a single NAT.
+
 ## VPC layout
 
-- **Region:** `eu-central-1`
-- **AZs:** ≥2 (prefer 3) for node group spread
-- **Public subnets:** ALB, NAT Gateway (**single NAT** for cost)
-- **Private subnets:** EKS nodes, pods
-- **VPC endpoints:** S3 + ECR (API/DKR) to reduce NAT data cost
+- Region: `eu-central-1`
+- AZs: ≥2 (prefer 3) for node group spread
+- Public subnets: ALB, NAT Gateway (single NAT for cost)
+- Private subnets: EKS nodes, pods
+- VPC endpoints: S3 + ECR (API/DKR) to reduce NAT data cost
 
 ```mermaid
 flowchart TB
@@ -57,12 +59,12 @@ Ingress / Service annotations → external-dns (IRSA) → Route53 record upsert
 ## East-west
 
 - ClusterIP Services between Boutique pods.
-- **NetworkPolicy** in `gitops/platform/network-policies/`: default deny, then DNS to `kube-system`, all ports inside the same namespace, ingress from `10.0.0.0/16`, and egress TCP 80 and 443 except `169.254.169.254/32`. There is no per-service peer list and no monitoring-namespace selector. A Prometheus scrape succeeds only because the VPC CIDR rule allows every port from `10.0.0.0/16`.
-- **No mesh** — no sidecar mTLS in v1.
+- NetworkPolicy in `gitops/platform/network-policies/`: default deny, then DNS to `kube-system`, all ports inside the same namespace, ingress from `10.0.0.0/16`, and egress TCP 80 and 443 except `169.254.169.254/32`. There is no per-service peer list and no monitoring-namespace selector. A Prometheus scrape succeeds only because the VPC CIDR rule allows every port from `10.0.0.0/16`.
+- No mesh — no sidecar mTLS in v1.
 
 ## Egress
 
-- Image pulls: prefer **ECR VPC endpoints**; otherwise NAT.
+- Image pulls: prefer ECR VPC endpoints; otherwise NAT.
 - external-dns, LB controller, ESO → AWS APIs (endpoints/NAT).
 - Alertmanager → SMTP (NAT or VPC egress path).
 
@@ -86,4 +88,4 @@ Ingress / Service annotations → external-dns (IRSA) → Route53 record upsert
 
 ## Single-NAT limitation
 
-Loss of the NAT AZ breaks **egress** (pulls, AWS API from private pods) until recovered. Ingress via ALB in other AZs may continue. Accepted for pilot cost; multi-NAT is a future enhancement.
+Loss of the NAT AZ breaks egress (pulls, AWS API from private pods) until recovered. Ingress via ALB in other AZs may continue. Accepted for pilot cost; multi-NAT is a future enhancement.

@@ -11,23 +11,23 @@ Pins: [docs/versions.md](../versions.md)
 
 ## Topic goal
 
-Provision the AWS foundation so later topics have a Ready **EKS (Elastic Kubernetes Service)** cluster, registries, DNS/TLS inputs, and least-privilege identities for GitLab CI and platform controllers. This topic creates the **VPC (Virtual Private Cloud)** (with one **NAT (Network Address Translation)** gateway), **ECR (Elastic Container Registry)** repositories, **IAM (Identity and Access Management)** roles including **OIDC (OpenID Connect)** for GitLab CI and **IRSA (IAM Roles for Service Accounts)** for controllers, and an **ASG (Auto Scaling Group)** node group.
+Provision the AWS foundation so later topics have a Ready EKS cluster, registries, DNS/TLS inputs, and least-privilege identities for GitLab CI and platform controllers. This topic creates the VPC (with one NAT gateway), ECR repositories, IAM roles (OIDC for GitLab CI and IRSA for controllers), and a managed node group.
 
 ## Why this topic is required
 
-Every platform and app topic depends on live networking, Kubernetes, ECR, and IAM. Applying this stack is the first **high cost** step — treat plan review as mandatory.
+Every platform and app topic depends on live networking, Kubernetes, ECR, and IAM. Applying this stack is the first high-cost step — **treat plan review as mandatory**.
 
 ## Before you begin
 
 - Topic 03: remote state init works (`terraform/backend.hcl` present, gitignored).
-- Route53 zone `biroltilki.art` in the **same** account (Topic 01).
+- Route53 zone `biroltilki.art` in the same AWS account (Topic 01).
 - Know your GitLab `path_with_namespace` for `gitlab_project_path`.
 - **Cost impact: HIGH** — EKS control plane + 3× `m6i.large` + NAT Gateway. Confirm budget; teardown is Topic 14.
 - Read [cost model](../architecture/10-cost-model.md).
 
-**Destructive warning:** `terraform destroy` later removes the cluster. Do not destroy mid-pilot without Topic 14 order.
+**Do not** run `terraform destroy` mid-pilot except in Topic 14 order — it removes the cluster.
 
-**Idempotent:** Re-plan/re-apply is safe for unchanged config; node group updates may roll nodes.
+Idempotent: re-plan/re-apply is safe for unchanged config; node group updates may roll nodes.
 
 ---
 
@@ -95,7 +95,7 @@ Tighten `endpoint_public_access_cidrs` to your IP `/32` for the pilot if you hav
 
 ### Security notes
 
-CI role must **not** gain `eks:*` — module enforces ECR-only. Do not widen that policy “to unblock deploys.”
+CI role must not gain `eks:*` — module enforces ECR-only. **Do not** widen that policy “to unblock deploys.”
 
 ---
 
@@ -128,7 +128,7 @@ N/A.
 
 ### Expected output
 
-`terraform validate` succeeds. Plan shows create for VPC, NAT, EKS, node group, ECR repos, ACM, OIDC providers/roles, IRSA roles. **No destroy** of unrelated resources.
+`terraform validate` succeeds. Plan shows create for VPC, NAT, EKS, node group, ECR repos, ACM, OIDC providers/roles, IRSA roles. No destroy of unrelated resources.
 
 ### Validation
 
@@ -171,16 +171,16 @@ Private subnets + single NAT + VPC endpoints are required before EKS nodes can p
 
 ### Commands
 
-**Recommended (first pilot): apply the whole stack in Step 4.3–4.8 as one apply** after reviewing the plan:
+Recommended (first pilot): apply the whole stack in Steps 4.3–4.8 as one apply after reviewing the plan:
 
 ```bash
 cd "$(git rev-parse --show-toplevel)/terraform/envs/prod"
 terraform apply tfplan
 ```
 
-Expected duration: **20–40 minutes** (EKS + node group dominate).
+Expected duration: 20–40 minutes (EKS + node group dominate).
 
-**Optional stepwise apply** (only if isolating `-target`; reconcile with full apply after):
+Optional stepwise apply (only if isolating `-target`; reconcile with full apply after):
 
 ```bash
 terraform apply -target=module.network -auto-approve
@@ -217,7 +217,7 @@ aws ec2 describe-nat-gateways --filter Name=tag:Project,Values=boutique-eks-gito
 
 ### Recovery
 
-`terraform destroy -target=module.network` only if **nothing else** depends on it yet; otherwise use Topic 14 order.
+`terraform destroy -target=module.network` only if nothing else depends on it yet; otherwise use Topic 14 order.
 
 ### Best practices
 
@@ -360,7 +360,7 @@ Immutable tags + scan-on-push support digest-only supply chain.
 
 ### Goal
 
-Confirm ACM certificate is **ISSUED** for boutique hosts.
+Confirm ACM certificate is ISSUED for boutique hosts.
 
 ### Why this step is required
 
@@ -450,7 +450,7 @@ aws iam get-role --role-name boutique-eks-gitops-gitlab-ci \
 
 ### Expected output
 
-Role ARN printed; trust policy references GitLab OIDC; **no** `eks:*` actions in role policies.
+Role ARN printed; trust policy references GitLab OIDC; no `eks:*` actions in role policies.
 
 ### Validation
 
@@ -633,7 +633,7 @@ All green per checklist below.
 - [ ] EKS Active, version 1.31
 - [ ] Nodes Ready (≈3)
 - [ ] 7 ECR repositories
-- [ ] ACM **ISSUED**
+- [ ] ACM ISSUED
 - [ ] GitLab CI role ARN present (ECR-only)
 - [ ] Three IRSA role ARNs present
 - [ ] State still in S3 (Topic 03 backend)
@@ -661,7 +661,7 @@ Confirm CI role still lacks cluster deploy permissions before celebrating.
 
 Topic 04 is complete when Step 4.10 checklist passes.
 
-**Cost check:** Billable EKS + NAT + nodes are running — do not leave idle overnight without intent; Topic 14 destroys them.
+**Cost check:** Billable EKS, NAT, and nodes are running — **do not** leave them idle overnight without intent; Topic 14 destroys them.
 
 ---
 
@@ -678,6 +678,6 @@ Topic 04 is complete when Step 4.10 checklist passes.
 
 ## Next step
 
-**[05 — Ingress, DNS, TLS](05-ingress-dns-tls.md)** (Phase B next).
+[05 — Ingress, DNS, TLS](05-ingress-dns-tls.md) (Phase B next).
 
 Use IRSA ARNs and `acm_certificate_arn` from outputs when authoring/installing controllers.

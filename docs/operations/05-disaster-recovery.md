@@ -1,19 +1,21 @@
 # 05 — Disaster recovery
 
-**Audience:** L3 — Operator  
-**Applies to:** Full platform  
-**Prerequisites:** GitLab repo intact; TF state backend accessible **or** willingness to re-bootstrap state  
-**Estimated time:** Hours (RTO)  
-**Risk level:** High  
+Audience: Operator  
+Applies to: Full platform  
+Prerequisites: GitLab repo intact; TF state backend accessible or willingness to re-bootstrap state  
+Estimated time: Hours (RTO)  
+Risk level: High  
+
+> Closed-pilot default: destroy billables when tests finish. DR here means rebuild from Git + TF when you chose to keep the platform alive.
 
 ## Purpose
 
-Recover from cluster loss or unrecoverable corruption by **rebuilding from Git + Terraform** (pilot DR).
+Recover from cluster loss or unrecoverable corruption by rebuilding from Git + Terraform (pilot DR). **No multi-region failover** — out of scope.
 
 ## When to use / When not to use
 
-**Use** when EKS is gone/unusable and apps must return.  
-**Do not** expect multi-region failover — **out of scope**.
+Use when EKS is gone/unusable and apps must return.  
+Do not expect multi-region failover.
 
 ## Prerequisites
 
@@ -34,25 +36,25 @@ If rebuild required → continue.
 2. `terraform -chdir=terraform/envs/prod init` + `apply` (Topics 03–04)  
 3. Continue Setup Guide from Topic 05 onward as needed  
 
-**Validation:** `kubectl get nodes` Ready.
+Validation: `kubectl get nodes` Ready.
 
-**Expected outcome:** Cluster API reachable.
+Expected outcome: Cluster API reachable.
 
-**Recovery steps:** Fix IAM/CIDR; do not force-unlock blindly ([17](17-common-incidents.md) Playbook F).
+Recovery steps: Fix IAM/CIDR; do not force-unlock blindly ([17](17-common-incidents.md) Playbook F).
 
-**Best practices:** Prefer apply from known Git SHA (`main`).
+Best practices: Prefer apply from known Git SHA (`main`).
 
 ### Step 3: GitOps catch-up
 
 Register Argo repo creds; sync root app-of-apps; wait for platform + Boutique.
 
-**Validation:** [08-health-checks](08-health-checks.md).
+Validation: [08-health-checks](08-health-checks.md).
 
 ### Step 4: Images
 
 ECR may be empty after destroy — re-run Topic 09 bootstrap and/or CI digest pipeline.
 
-**Validation:** Pods pull `@sha256:…` from ECR; Kyverno allows.
+Validation: Pods pull `@sha256:…` from ECR; Kyverno allows.
 
 ## End-to-end validation
 

@@ -1,19 +1,19 @@
 # 20 — Automation opportunities
 
-**Audience:** L3 — Operator / platform  
-**Applies to:** Toil reduction backlog  
-**Prerequisites:** Manual runbooks executed once  
-**Estimated time:** Planning only  
-**Risk level:** Low  
+Audience: Operator / platform  
+Applies to: Toil reduction backlog  
+Prerequisites: Manual runbooks executed once  
+Estimated time: Planning only  
+Risk level: Low  
 
 ## Purpose
 
-List high-value automations that **do not** replace Setup Guide or these runbooks.
+List high-value automations that do not replace Setup Guide or these runbooks.
 
 ## When to use / When not to use
 
-**Use** when prioritizing Feature-mode work after teardown/rebuild.  
-**Do not** ship `fix-prod.sh` as the primary ops interface.
+Use when prioritizing Feature-mode work after teardown/rebuild.  
+Do not ship `fix-prod.sh` as the primary ops interface.
 
 ## Prerequisites
 
@@ -34,13 +34,13 @@ List high-value automations that **do not** replace Setup Guide or these runbook
 | Smoke scripts fail on empty ns / wrong context | False greens | S | tests |
 | Chart `securityContext` defaults | Container hardening | M | Charts |
 
-**Validation:** Each item still points back to a human-readable runbook.
+Validation: Each item still points back to a human-readable runbook.
 
-**Expected outcome:** Ordered Feature backlog.
+Expected outcome: Ordered Feature backlog.
 
-**Recovery steps:** If automation fails, fall back to this docs tree.
+Recovery steps: If automation fails, fall back to this docs tree.
 
-**Best practices:** Automate detection/validation before mutating cluster state.
+Best practices: Automate detection/validation before mutating cluster state.
 
 ## End-to-end validation
 
@@ -58,7 +58,7 @@ Disable automation; keep docs.
 
 ## Security notes
 
-No automation may embed long-lived cloud keys.
+**No automation may embed long-lived cloud keys.**
 
 ## Automation opportunities
 

@@ -1,16 +1,18 @@
 # 01 — Prerequisites
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 60–90 minutes  
 Prerequisites: None  
 Creates: Verified local toolchain; GitLab project (created if missing); local Git repo linked to that remote; confirmed AWS / Route53 / SMTP access (no new AWS billables from this topic). Repo file: [`docs/versions.md`](../versions.md)  
 Related ADRs: None yet (authored in Topic 02)
 
+> No live cluster from the closed pilot. AWS resources were destroyed after Milestone 4 (clean teardown). This topic checks your machine and accounts only — it does not create EKS or other billable AWS resources. Full setup index: [setup README](README.md).
+
 ---
 
 ## Topic goal
 
-Prove that your workstation and cloud/SaaS access are ready before any repository foundation or Terraform apply. After this topic you can install CLIs to the pinned versions, authenticate to **AWS (Amazon Web Services)**, confirm **DNS (Domain Name System)** via the Route53 zone `biroltilki.art`, have a GitLab project with a linked local Git repository, and know an **SMTP (Simple Mail Transfer Protocol)** mailbox exists for later Alertmanager tests.
+Prove that your workstation and cloud/SaaS access are ready before any repository foundation or Terraform apply. After this topic you can install CLIs to the pinned versions, authenticate to AWS, confirm DNS via the Route53 zone `biroltilki.art`, have a GitLab project with a linked local Git repository, and know an SMTP mailbox exists for later Alertmanager tests.
 
 ## Why this topic is required
 
@@ -18,14 +20,14 @@ OIDC, DNS, and email failures surface late (Topics 04, 05, 08, 10) and waste pai
 
 ## Before you begin
 
-- Use macOS or Linux (or Windows **WSL2**). Commands below assume bash/zsh.
+- Use macOS or Linux (or Windows WSL2). Commands below assume bash/zsh.
 - You need permission to install CLI tools on your machine (Homebrew, package manager, or corporate-approved binaries).
-- Have credentials ready for: AWS (admin or equivalent for later VPC/EKS/IAM), GitLab (ability to **create** a project in your group/namespace, or Maintainer/Owner on an existing one), and access to the Route53 zone `biroltilki.art`.
-- **Do not** run `terraform apply`, create EKS, or spend on NAT/ALB in this topic.
+- Have credentials ready for: AWS (admin or equivalent for later VPC/EKS/IAM), GitLab (ability to create a project in your group/namespace, or Maintainer/Owner on an existing one), and access to the Route53 zone `biroltilki.art`.
+- Do not run `terraform apply`, create EKS, or spend on NAT/ALB in this topic.
 - Keep secrets out of the repo: no AWS keys, GitLab tokens, or SMTP passwords committed.
-- If you only have a local working tree (Phase B files, no `.git/` and no GitLab project yet), that is expected: Steps **1.8** and **1.10** create them.
+- If you only have a local working tree (Phase B files, no `.git/` and no GitLab project yet), that is expected: Steps 1.8 and 1.10 create them.
 
-**Idempotent:** Re-running verification commands is safe. Skip create/init substeps when the project or `.git/` already exists.
+Idempotent: re-running verification commands is safe. Skip create/init substeps when the project or `.git/` already exists.
 
 ---
 
@@ -50,7 +52,7 @@ test -f docs/setup/README.md && echo "setup index: OK"
 test -f docs/versions.md && echo "versions: OK"
 ```
 
-**Path A — GitLab remote already exists:** clone (or open) it:
+Path A — GitLab remote already exists: clone (or open) it:
 
 ```bash
 git clone <GITLAB_REPO_HTTPS_OR_SSH_URL> boutique-eks-gitops
@@ -59,7 +61,7 @@ cd boutique-eks-gitops
 
 Replace `<GITLAB_REPO_HTTPS_OR_SSH_URL>` with your project clone URL. Do not invent a public URL.
 
-**Path B — No remote and/or no local Git yet (common after Phase B authoring):** stay in the working tree that already contains `docs/setup/` and `docs/versions.md`. Create the GitLab project in **Step 1.8**; run `git init` and first push in **Step 1.10**. Do not invent a clone URL here.
+Path B — no remote and/or no local Git yet (common after Phase B authoring): stay in the working tree that already contains `docs/setup/` and `docs/versions.md`. Create the GitLab project in Step 1.8; run `git init` and first push in Step 1.10. Do not invent a clone URL here.
 
 ### GUI instructions (if applicable)
 
@@ -97,7 +99,7 @@ Re-clone or `cd` to the correct root. No cloud rollback needed.
 
 ### Best practices
 
-Always run Setup Guide commands from the **repository root** unless a step says otherwise.
+Always run Setup Guide commands from the repository root unless a step says otherwise.
 
 ### Security notes
 
@@ -117,14 +119,14 @@ Topics 03–14 use AWS CLI for identity, EKS kubeconfig, ECR, and orphan audits.
 
 ### Commands
 
-**macOS (Homebrew):**
+macOS (Homebrew):
 
 ```bash
 brew install awscli
 aws --version
 ```
 
-**Linux (official installer pattern):**
+Linux (official installer pattern):
 
 ```bash
 curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
@@ -149,7 +151,7 @@ Version string starting with `aws-cli/2.…` (v2.x).
 aws --version | head -1
 ```
 
-Must report **aws-cli/2**.
+Must report `aws-cli/2`.
 
 ### Common problems
 
@@ -184,7 +186,7 @@ Foundation modules and the S3 backend assume Terraform 1.9+ ([`docs/versions.md`
 
 ### Commands
 
-**macOS (Homebrew):**
+macOS (Homebrew):
 
 ```bash
 brew tap hashicorp/tap
@@ -192,7 +194,7 @@ brew install hashicorp/tap/terraform
 terraform version
 ```
 
-**tfenv (any OS with tfenv):**
+tfenv (any OS with tfenv):
 
 ```bash
 tfenv install 1.9.8
@@ -200,7 +202,7 @@ tfenv use 1.9.8
 terraform version
 ```
 
-Pick any **1.9.x** or newer 1.x that is ≥ 1.9.0. Record the exact version you use in your session notes.
+Pick any 1.9.x or newer 1.x that is ≥ 1.9.0. Record the exact version you use in your session notes.
 
 ### GUI instructions (if applicable)
 
@@ -216,7 +218,7 @@ N/A.
 terraform version -json | jq -r '.terraform_version'
 ```
 
-Confirm the printed version is **≥ 1.9.0**.
+Confirm the printed version is ≥ 1.9.0.
 
 ### Common problems
 
@@ -243,15 +245,15 @@ Install Terraform only from HashiCorp-distributed channels (brew tap, official z
 
 ### Goal
 
-Install cluster clients matching the pin matrix: kubectl **1.31.x**, Helm **3.16.x**.
+Install cluster clients matching the pin matrix: kubectl 1.31.x, Helm 3.16.x.
 
 ### Why this step is required
 
-kubectl should stay within one minor of EKS **1.31**. Helm 3.16.x matches platform chart workflows in later topics.
+kubectl should stay within one minor of EKS 1.31. Helm 3.16.x matches platform chart workflows in later topics.
 
 ### Commands
 
-**macOS (Homebrew) — kubectl:**
+macOS (Homebrew) — kubectl:
 
 ```bash
 brew install kubectl@1.31
@@ -261,7 +263,7 @@ kubectl version --client
 
 If brew does not offer `kubectl@1.31`, download the 1.31.x binary from Kubernetes release artifacts for your OS/arch and place it on `PATH`.
 
-**macOS (Homebrew) — Helm:**
+macOS (Homebrew) — Helm:
 
 ```bash
 brew install helm
@@ -278,9 +280,9 @@ sudo mv /tmp/darwin-arm64/helm /usr/local/bin/helm
 helm version
 ```
 
-Adjust OS/arch and patch version within **3.16.x**.
+Adjust OS/arch and patch version within 3.16.x.
 
-**Linux:** use distribution packages or official release binaries for kubectl 1.31.x and Helm 3.16.x.
+Linux: use distribution packages or official release binaries for kubectl 1.31.x and Helm 3.16.x.
 
 ### GUI instructions (if applicable)
 
@@ -323,7 +325,7 @@ Download kubectl/Helm only from official Kubernetes/Helm release URLs; verify ch
 
 ### Goal
 
-Ensure baseline utilities exist; optionally install Trivy **0.71.0** and cosign **2.4.x** for local experiments (CI will pin them in Topic 10).
+Ensure baseline utilities exist; optionally install Trivy 0.71.0 and cosign 2.4.x for local experiments (CI will pin them in Topic 10).
 
 ### Why this step is required
 
@@ -331,7 +333,7 @@ Validation snippets and smoke curls depend on git/jq/curl. Supply-chain CLIs are
 
 ### Commands
 
-**macOS:**
+macOS:
 
 ```bash
 brew install git jq curl
@@ -340,7 +342,7 @@ jq --version
 curl --version | head -1
 ```
 
-**Optional — Trivy 0.71.0:**
+Optional — Trivy 0.71.0:
 
 ```bash
 # Example: verify after install method of choice
@@ -348,7 +350,7 @@ trivy version
 # Expect Version: 0.71.0
 ```
 
-**Optional — cosign 2.4.x:**
+Optional — cosign 2.4.x:
 
 ```bash
 cosign version
@@ -415,7 +417,7 @@ export AWS_DEFAULT_REGION=eu-central-1
 aws sts get-caller-identity --region eu-central-1
 ```
 
-**Access key profile (if SSO unavailable):**
+Access key profile (if SSO unavailable):
 
 ```bash
 aws configure --profile boutique-pilot
@@ -427,7 +429,7 @@ AWS_PROFILE=boutique-pilot aws sts get-caller-identity
 
 | Element | Content |
 |---------|---------|
-| Platform | **SSO (AWS IAM Identity Center)** **or** IAM console |
+| Platform | SSO (IAM Identity Center) or IAM console |
 | Navigation (SSO) | Your org SSO portal → AWS account → role → **Command line or programmatic access** → copy env vars / profile instructions |
 | Navigation (keys) | IAM → Users → Security credentials → Create access key (**emergency only**) |
 | Permissions | Permission to view account and later create VPC/EKS/IAM (admin recommended for pilot) |
@@ -452,7 +454,7 @@ JSON similar to:
 }
 ```
 
-Record the **Account** ID privately (password manager / notes). **Do not commit** it to Git.
+Record the Account ID privately (password manager / notes). **Do not commit** it to Git.
 
 ### Validation
 
@@ -461,7 +463,7 @@ aws sts get-caller-identity --query Account --output text
 aws sts get-caller-identity --query Arn --output text
 ```
 
-Both must return non-empty values for the **intended** pilot account.
+Both must return non-empty values for the intended pilot account.
 
 ### Common problems
 
@@ -586,7 +588,7 @@ If you are not using `glab`, use the GUI path only.
 
 ### GUI instructions (if applicable)
 
-**Create project (skip if it already exists):**
+Create project (skip if it already exists):
 
 | Element | Content |
 |---------|---------|
@@ -619,7 +621,7 @@ Manual checklist:
 
 - [ ] Project URL recorded privately
 - [ ] Visibility is Private (or org-approved equivalent)
-- [ ] Initialize-with-README was **not** used (avoids divergent first commit)
+- [ ] Initialize-with-README was not used (avoids divergent first commit)
 - [ ] You can open **Settings → General** (Maintainer/Owner) or will request that role in Step 1.9
 
 ### Common problems
@@ -632,7 +634,7 @@ Manual checklist:
 
 ### Recovery
 
-Delete an accidental empty test project only if you own it and nothing depends on it; recreate with Initialize README **off**.
+Delete an accidental empty test project only if you own it and nothing depends on it; recreate with Initialize README off.
 
 ### Best practices
 
@@ -729,7 +731,7 @@ Topic 02 commands assume a real Git root (`git rev-parse --show-toplevel`). Argo
 
 Run from the directory that contains `ROADMAP.md` and `docs/setup/` (Phase B tree).
 
-**A — Already a clone with `origin` set:** verify and skip init:
+A — already a clone with `origin` set: verify and skip init:
 
 ```bash
 git rev-parse --is-inside-work-tree
@@ -737,7 +739,7 @@ git remote -v
 git status
 ```
 
-**B — No `.git/` yet (typical after Phase B authoring on disk):**
+B — no `.git/` yet (typical after Phase B authoring on disk):
 
 ```bash
 cd /path/to/boutique-eks-gitops   # directory with ROADMAP.md
@@ -832,7 +834,7 @@ Confirm an email inbox you control can receive SMTP-authenticated mail for Alert
 
 ### Why this step is required
 
-Observability acceptance requires a real **email** alert path (no PagerDuty). Discovering blocked SMTP at Topic 08 delays Milestone M2.
+Observability acceptance requires a real email alert path (no PagerDuty). Discovering blocked SMTP at Topic 08 delays Milestone 2.
 
 ### Commands
 
@@ -858,7 +860,7 @@ nc -vz <SMTP_HOST> <SMTP_PORT>
 | Element | Content |
 |---------|---------|
 | Platform | Your mail provider admin (Google Workspace, Microsoft 365, Mailgun, Amazon SES, etc.) |
-| Navigation | Provider console → SMTP / App passwords / Sending domains — follow **your** provider’s docs |
+| Navigation | Provider console → SMTP / App passwords / Sending domains — follow your provider’s docs |
 | Permissions | Ability to create SMTP credentials or app password |
 | Verification | You can state host/port/user and have a test inbox |
 
@@ -879,7 +881,7 @@ Checklist:
 - [ ] SMTP host/port known
 - [ ] Credentials stored outside Git
 - [ ] Destination mailbox you can open today
-- [ ] Aware that Topic 08 will send a **test alert email**
+- [ ] Aware that Topic 08 will send a test alert email
 
 ### Common problems
 
@@ -898,7 +900,7 @@ Use a dedicated `alerts@…` mailbox; rate-limit later.
 
 ### Security notes
 
-SMTP passwords are secrets. Topic 07–08 load them via External Secrets — **never** commit to `gitops/` values.
+SMTP passwords are secrets. Topic 07–08 load them via External Secrets — **never commit** to `gitops/` values.
 
 ---
 
@@ -954,7 +956,7 @@ Re-confirm GitLab project (1.8), role (1.9), remote files visible after push (1.
 
 ### Validation
 
-Mark complete only if **all** items pass:
+Mark complete only if all items pass:
 
 - [ ] Repo root + `docs/versions.md` present
 - [ ] AWS CLI 2.x
@@ -988,7 +990,7 @@ Redact secrets and full access keys in chat. Account ID redaction is optional bu
 
 ## Topic validation (end-to-end)
 
-Topic 01 is **complete** when Step 1.12 checklist is fully checked and you have confirmed results with your session partner.
+Topic 01 is complete when Step 1.12 checklist is fully checked and you have confirmed results with your session partner.
 
 **Cost check:** No NAT, EKS, or ALB should exist yet from this topic. If you created resources accidentally, stop and clean them up before Topic 02.
 
@@ -1012,8 +1014,8 @@ Topic 01 is **complete** when Step 1.12 checklist is fully checked and you have 
 
 After you confirm Topic 01 execution (Phase C), continue with:
 
-**[02 — Repo foundation](02-repo-foundation.md)**
+[02 — Repo foundation](02-repo-foundation.md)
 
 Live execution remains one step per turn under `docs/setup/`.
 
-**Phase C:** Resume at the next incomplete Topic 01 step (currently **1.1** unless already confirmed).
+Phase C: resume at the next incomplete Topic 01 step (currently 1.1 unless already confirmed).

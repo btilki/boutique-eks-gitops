@@ -1,15 +1,15 @@
 # Version pin matrix — boutique-eks-gitops
 
-**Audience:** L2 — Implementer / CI author  
-**Authority:** Locked stack from Planning Gate + [implementation plan](implementation/plan.md) §7.11  
-**Setup owner:** Topic 01 (consume) · Topic 02 (align ADRs/README)  
-**Last reviewed:** 2026-07-25
+Audience: L2 — Implementer / CI author  
+Authority: Locked stack from Planning Gate + [implementation plan](implementation/plan.md) §7.11  
+Setup owner: Topic 01 (consume) · Topic 02 (align ADRs/README)  
+Last reviewed: 2026-07-25
 
 Do not drift these pins without an ADR update and Setup Guide revision.
 
 ## What the pins mean on 2026-10-14
 
-These pins describe the closed pilot reviewed on **2026-07-25**. They are the versions the July evidence used. EKS **1.31** extended support runs into **November 2026**, so a rebuild after that date starts by choosing a newer Kubernetes version and updating this matrix. The Kyverno **cluster** chart target is **1.16.x**. The Kyverno **CLI** pin **1.13.4** is the offline `kyverno test` binary in CI. Interview claim: [`pilot-claims.md`](pilot-claims.md).
+These pins describe the closed pilot reviewed on 2026-07-25. They are the versions the July evidence used. EKS 1.31 extended support runs into November 2026, so a rebuild after that date starts by choosing a newer Kubernetes version and updating this matrix. The Kyverno cluster chart target is 1.16.x. The Kyverno CLI pin 1.13.4 is the offline `kyverno test` binary in CI. Interview claim: [`pilot-claims.md`](pilot-claims.md).
 
 ---
 
@@ -19,7 +19,7 @@ These pins describe the closed pilot reviewed on **2026-07-25**. They are the ve
 |------|-----|--------|
 | AWS region | `eu-central-1` | Locked |
 | DNS zone | `biroltilki.art` | Route53 |
-| EKS version | **1.31** | Control plane + kubectl minor match |
+| EKS version | 1.31 | Control plane + kubectl minor match |
 | Node instance | `m6i.large` ×3 (ASG 2–5) | On-Demand; fallback `m7i.large` if capacity fails (document in setup) |
 
 ---
@@ -29,9 +29,9 @@ These pins describe the closed pilot reviewed on **2026-07-25**. They are the ve
 | Tool | Required version | Why |
 |------|------------------|-----|
 | AWS CLI | v2.x (latest stable 2.x) | IAM, EKS kubeconfig, ECR |
-| Terraform | **≥ 1.9** | Backend + module features used in foundation |
-| kubectl | **1.31.x** | Within one minor of EKS 1.31 |
-| Helm | **3.16.x** | Platform chart installs |
+| Terraform | ≥ 1.9 | Backend + module features used in foundation |
+| kubectl | 1.31.x | Within one minor of EKS 1.31 |
+| Helm | 3.16.x | Platform chart installs |
 | git | 2.40+ (any modern) | Repo + digest MRs |
 | jq | 1.6+ | JSON validation snippets |
 | curl | any modern | HTTPS smoke checks |
@@ -40,11 +40,11 @@ These pins describe the closed pilot reviewed on **2026-07-25**. They are the ve
 
 | Tool | Required version | Why |
 |------|------------------|-----|
-| Trivy | **0.71.0** | CRITICAL gate — pin exact in CI image/job |
-| cosign | **2.4.x** | Sigstore keyless sign (GitLab OIDC) |
-| Gitleaks | **8.21.2** | Secret scan (Topic 16) |
-| Checkov | **3.2.334** | Terraform IaC scan (Topic 16; soft-fail default) |
-| Kyverno CLI | **1.13.4** | Offline policy unit tests (Topic 16) |
+| Trivy | 0.71.0 | CRITICAL gate — pin exact in CI image/job |
+| cosign | 2.4.x | Sigstore keyless sign (GitLab OIDC) |
+| Gitleaks | 8.21.2 | Secret scan (Topic 16) |
+| Checkov | 3.2.334 | Terraform IaC scan (Topic 16; soft-fail default) |
+| Kyverno CLI | 1.13.4 | Offline policy unit tests (Topic 16) |
 
 ---
 
@@ -60,20 +60,20 @@ These pins describe the closed pilot reviewed on **2026-07-25**. They are the ve
 
 ## Cluster add-ons & platform (chart / app pins)
 
-Exact chart versions are confirmed when each platform topic is authored. Treat the following as **target pins**; Phase B topics 05–12 must write the concrete `chartVersion` / image tags into GitOps values.
+Exact chart versions are confirmed when each platform topic is authored. Treat the following as target pins; Phase B topics 05–12 must write the concrete `chartVersion` / image tags into GitOps values.
 
 | Component | Target pin | First setup topic |
 |-----------|------------|-------------------|
-| AWS Load Balancer Controller | **v2.11.0** (Helm chart **1.11.0**) | 05 |
-| external-dns | **v0.15.1** (Helm chart **1.15.0**) | 05 |
-| cert-manager | **v1.16.2** (Helm chart **v1.16.2**) | 05 |
-| Argo CD | **v2.14.x** (Helm chart **7.8.14**) | 06 |
-| Kyverno | **1.16.x** (Helm chart **3.3.7**) | 07 |
-| External Secrets Operator | **0.14.x** (Helm chart **0.14.4**) | 07 |
-| kube-prometheus-stack | **chart 69.8.0** (pin at Topic 08) | 08 |
-| Grafana Loki | **chart 6.24.0** (Loki 3.x) | 08 |
-| Argo Rollouts | **v1.8.2** (Helm chart **2.39.5**) | 12 |
-| Falco (optional) | Helm chart **4.19.3** (target; confirm before enable) | 19 |
+| AWS Load Balancer Controller | v2.11.0 (Helm chart 1.11.0) | 05 |
+| external-dns | v0.15.1 (Helm chart 1.15.0) | 05 |
+| cert-manager | v1.16.2 (Helm chart v1.16.2) | 05 |
+| Argo CD | v2.14.x (Helm chart 7.8.14) | 06 |
+| Kyverno | 1.16.x (Helm chart 3.3.7) | 07 |
+| External Secrets Operator | 0.14.x (Helm chart 0.14.4) | 07 |
+| kube-prometheus-stack | chart 69.8.0 (pin at Topic 08) | 08 |
+| Grafana Loki | chart 6.24.0 (Loki 3.x) | 08 |
+| Argo Rollouts | v1.8.2 (Helm chart 2.39.5) | 12 |
+| Falco (optional) | Helm chart 4.19.3 (target; confirm before enable) | 19 |
 | AWS WAFv2 | REGIONAL Web ACL module (optional `enable_waf`) | 19 |
 
 ---
@@ -82,15 +82,15 @@ Exact chart versions are confirmed when each platform topic is authored. Treat t
 
 | Item | Pin |
 |------|-----|
-| Trivy | **0.71.0** |
-| cosign | **2.4.x** |
-| Signing mode | Sigstore **keyless** via GitLab OIDC (`SIGSTORE_ID_TOKEN`) |
-| SBOM format | **CycloneDX** via `trivy image --format cyclonedx` + `cosign attest --type cyclonedx` (Topic 15) |
-| Admission verify | Kyverno `verifyImages` (default **Audit**; Enforce after rebuild) — ADR-0007 |
-| Gitleaks | **8.21.2** (CI + pre-commit) |
-| Checkov | **3.2.334** (`.checkov.yaml` soft_fail until baselined) |
-| Kyverno CLI tests | **1.13.4** (`kyverno test tests/policy/unit`) |
-| Image references in Git | **digest only** (`image.digest`); never `:latest` |
+| Trivy | 0.71.0 |
+| cosign | 2.4.x |
+| Signing mode | Sigstore keyless via GitLab OIDC (`SIGSTORE_ID_TOKEN`) |
+| SBOM format | CycloneDX via `trivy image --format cyclonedx` + `cosign attest --type cyclonedx` (Topic 15) |
+| Admission verify | Kyverno `verifyImages` (default Audit; **Enforce** after rebuild) — ADR-0007 |
+| Gitleaks | 8.21.2 (CI + pre-commit) |
+| Checkov | 3.2.334 (`.checkov.yaml` soft_fail until baselined) |
+| Kyverno CLI tests | 1.13.4 (`kyverno test tests/policy/unit`) |
+| Image references in Git | digest only (`image.digest`); never `:latest` |
 
 ---
 
@@ -115,4 +115,4 @@ git --version
 jq --version
 ```
 
-Expected: kubectl client reports **1.31.x**; Helm **v3.16.x**; Terraform **v1.9+**.
+Expected: kubectl client reports 1.31.x; Helm v3.16.x; Terraform v1.9+.

@@ -10,7 +10,7 @@ Related ADRs: None (operational bootstrap) · Pins: [docs/versions.md](../versio
 
 ## Topic goal
 
-Bootstrap durable, locked Terraform remote state so Topic 04 (and later) applies are safe across sessions and do not rely on local `terraform.tfstate` files. State lives in **S3 (Simple Storage Service)** with a DynamoDB lock table.
+Bootstrap durable, locked Terraform remote state so Topic 04 (and later) applies are safe across sessions and do not rely on local `terraform.tfstate` files. State lives in S3 with a DynamoDB lock table.
 
 ## Why this topic is required
 
@@ -19,13 +19,13 @@ Without remote state + locking, concurrent applies and laptop loss corrupt infra
 ## Before you begin
 
 - Topics 01–02 complete (`make docs-check` passes).
-- AWS credentials for the **pilot account** (`aws sts get-caller-identity` works in `eu-central-1`).
+- AWS credentials for the pilot account (`aws sts get-caller-identity` works in `eu-central-1`).
 - IAM permission to create S3 buckets, DynamoDB tables, and use them for state (typically admin for the pilot).
 - Phase B files for this topic present in the repo (partner delivery).
-- **Cost impact (low):** empty S3 bucket + small DynamoDB table — still destroy in Topic 14.
-- **Do not** create VPC/EKS in this topic.
+- Cost impact (low): empty S3 bucket + small DynamoDB table — **destroy in Topic 14**.
+- **Do not** create VPC or EKS in this topic.
 
-**Idempotent notes:** Re-running `aws s3api create-bucket` / `create-table` fails if names exist — that is OK if you intentionally reuse; validate instead of recreate.
+Idempotent notes: re-running `aws s3api create-bucket` / `create-table` fails if names exist — that is OK if you intentionally reuse; validate instead of recreate.
 
 ---
 
@@ -155,7 +155,7 @@ aws s3api put-bucket-policy \
   }"
 ```
 
-**Cost impact:** S3 storage for state objects (small) + versioning storage — low.
+Cost impact: S3 storage for state objects (small) + versioning storage — low.
 
 ### GUI instructions (if applicable)
 
@@ -201,7 +201,7 @@ Expect: `Status=Enabled` versioning; `AES256` rule; all public-access flags `tru
 
 ### Recovery
 
-If you created a wrongly configured bucket: fix versioning/encryption/public access with the `put-*` commands above. If wrong name/region: empty and delete bucket, recreate (only safe **before** state objects exist).
+If you created a wrongly configured bucket: fix versioning/encryption/public access with the `put-*` commands above. If wrong name/region: empty and delete bucket, recreate (only safe before state objects exist).
 
 ```bash
 # ONLY if bucket is empty / unused — destructive
@@ -244,7 +244,7 @@ aws dynamodb create-table \
 aws dynamodb wait table-exists --table-name "${TF_LOCK_TABLE}" --region eu-central-1
 ```
 
-**Cost impact:** On-demand DynamoDB — pennies at pilot scale.
+Cost impact: on-demand DynamoDB — pennies at pilot scale.
 
 ### GUI instructions (if applicable)
 
@@ -302,7 +302,7 @@ Restrict `dynamodb:PutItem`/`DeleteItem`/`GetItem` on this table to operators ru
 
 ### Goal
 
-Confirm repo backend files exist; create **local** `terraform/backend.hcl` from the example (never commit it).
+Confirm repo backend files exist; create local `terraform/backend.hcl` from the example (**never commit** it).
 
 ### Why this step is required
 
@@ -331,7 +331,7 @@ grep -E 'bucket|dynamodb_table|region|key' terraform/backend.hcl
 grep -q 'backend.hcl' .gitignore && echo "gitignore: OK"
 ```
 
-Confirm `terraform/backend.hcl` is **untracked**:
+Confirm `terraform/backend.hcl` is untracked:
 
 ```bash
 git check-ignore -v terraform/backend.hcl || git status --short terraform/backend.hcl
@@ -502,7 +502,7 @@ Checklist:
 - [ ] Bucket names chosen and recorded (3.1)
 - [ ] S3: versioning + encryption + public access block (3.2)
 - [ ] DynamoDB lock table `LockID` ACTIVE (3.3)
-- [ ] `terraform/backend.hcl` present, placeholders gone, **gitignored** (3.4)
+- [ ] `terraform/backend.hcl` present, placeholders gone, gitignored (3.4)
 - [ ] Repo files `backend.hcl.example`, `backend.tf`, `versions.tf` present
 - [ ] `terraform init` succeeds (3.5)
 - [ ] No VPC/EKS created yet
@@ -546,6 +546,6 @@ Topic 03 is complete when Step 3.6 checklist passes.
 
 ## Next step
 
-**[04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md)** (Phase B authoring next).
+[04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) (Phase B authoring next).
 
 Do not run foundation `terraform apply` until Topic 04 guide and modules are approved and you execute that topic’s steps.

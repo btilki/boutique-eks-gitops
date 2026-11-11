@@ -1,5 +1,7 @@
 # 07 — Security architecture
 
+Trust boundaries from the internet through CI, the cluster edge, and secrets stores.
+
 ## Trust zones
 
 | Zone | Trust | Controls |
@@ -9,7 +11,7 @@
 | App namespaces | Tenant-trusted | NetworkPolicy, PSA baseline, Kyverno |
 | Platform namespaces | Higher trust | Restricted RBAC; IRSA-scoped controllers |
 | EKS control plane | Highly trusted | Public and private API. `endpoint_public_access_cidrs` defaults to `0.0.0.0/0` in `terraform/modules/eks/main.tf`. IAM auth |
-| CI identity | Privileged but scoped | OIDC→IAM: ECR push + MR token only — **no** `eks:*` deploy |
+| CI identity | Privileged but scoped | OIDC→IAM: ECR push + MR token only — **CI never deploys** (`eks:*` denied) |
 | Data / secrets | Restricted | SM/SSM; ESO IRSA read. The EKS cluster resource has no `encryption_config`, so Kubernetes Secret encryption uses the EKS default, not a customer-managed key in this module |
 
 ```mermaid
@@ -54,7 +56,7 @@ flowchart LR
 | Terraform state | S3 encryption + IAM | Remote backend |
 | Cosign | Sigstore keyless (GitLab OIDC) | Fulcio/Rekor; identity-bound signatures |
 | Bootstrap images | One-time ECR digest push in Phase 7 | Unblocks GitOps before first CI |
-| Post-test | Immediate Phase 11 teardown | No keep-alive after validation |
+| Post-test | Immediate Phase 11 teardown | **No keep-alive** after validation |
 
 **Never** commit secrets or long-lived cloud keys to Git.
 
@@ -67,7 +69,7 @@ flowchart LR
 | SBOM | CycloneDX via Trivy + `cosign attest` (Topic 15) |
 | Registry | ECR scan-on-push |
 | Admission | Kyverno: digest required, deny `:latest`, ECR allowlist |
-| Admission (Phase 12) | Signature + SBOM verify **Audit** → Enforce after rebuild (ADR-0007) |
+| Admission (Phase 12) | Signature + SBOM verify Audit → Enforce after rebuild (ADR-0007) |
 | Prod path | CODEOWNERS `@btilki` |
 | Edge / runtime (optional) | WAFv2 + Falco stubs (Topic 19; off by default) |
 
@@ -81,4 +83,4 @@ flowchart LR
 | Kyverno bypass / misconfig | Policy ineffective | Policy tests; audit mode first |
 | Shared cluster | Cross-env if NP fails | Manual prod sync + CODEOWNERS still limit Git |
 
-**Honest limit:** namespace isolation ≠ account isolation.
+Honest limit: namespace isolation ≠ account isolation.

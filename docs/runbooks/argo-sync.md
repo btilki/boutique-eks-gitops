@@ -1,7 +1,7 @@
 # Runbook — Argo CD sync stuck / OutOfSync
 
-**Audience:** L2 — Operator  
-**Setup:** Topic 06 · **GitOps:** [`../../gitops/README.md`](../../gitops/README.md)
+Audience: L2 — Operator  
+Setup: Topic 06 · GitOps: [`../../gitops/README.md`](../../gitops/README.md)
 
 ## Purpose
 
@@ -12,7 +12,7 @@ Restore Git → cluster reconciliation without bypassing Git as source of truth.
 | Do | Do not |
 |----|--------|
 | Fix Git, then sync | `kubectl apply` permanent fixes that drift from Git |
-| Manual sync **prod** only when intended | Enable automated sync on prod “temporarily” |
+| Manual sync prod only when intended | Enable automated sync on prod “temporarily” |
 | Read Application conditions / events | Force replace without understanding hooks/waves |
 
 ## Quick triage

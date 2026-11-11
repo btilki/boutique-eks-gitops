@@ -1,8 +1,10 @@
 # DNS and TLS — boutique-eks-gitops
 
-**Audience:** L2 — Implementer  
-**ADRs:** [0003 ACM+ALB](adr/0003-tls-acm-alb.md) · [0004 hostname scheme](adr/0004-dns-hostname-scheme.md)  
-**Setup:** Topic 05 · Terraform ACM: Topic 04 `module.dns`
+Audience: Implementer  
+ADRs: [0003 ACM+ALB](adr/0003-tls-acm-alb.md) · [0004 hostname scheme](adr/0004-dns-hostname-scheme.md)  
+Setup: Topic 05 · Terraform ACM: Topic 04 `module.dns`
+
+> Hostnames below are the locked scheme for this project. Pilot ACM / ALB / Route53 records were removed at teardown — on a rebuild you recreate them via Topics 04–05, not by assuming existing DNS.
 
 ## Locked hostnames
 
@@ -13,9 +15,9 @@
 | `dev-boutique.biroltilki.art` | Boutique storefront (dev) | ACM on ALB |
 | `stage-boutique.biroltilki.art` | Boutique storefront (stage) | ACM on ALB |
 | `boutique.biroltilki.art` | Boutique storefront (prod) | ACM on ALB |
-| `smoke.boutique.biroltilki.art` | Temporary M1 smoke (Topic 05) | ACM on ALB |
+| `smoke.boutique.biroltilki.art` | Temporary Milestone 1 smoke (Topic 05) | ACM on ALB |
 
-Zone: **`biroltilki.art`** (Route53 public).
+Zone: `biroltilki.art` (Route53 public).
 
 ## Certificate inventory
 
@@ -37,13 +39,13 @@ alb.ingress.kubernetes.io/certificate-arn: <ACM_CERTIFICATE_ARN>
 
 ## DNS automation
 
-**external-dns** (IRSA) watches Ingress/Service annotations and upserts records in the hosted zone.
+external-dns (IRSA) watches Ingress/Service annotations and upserts records in the hosted zone.
 
 Owner ID: `boutique-eks-gitops` (TXT registry) — do not run a second external-dns with the same owner against this zone.
 
 ## cert-manager role
 
-Installed in Topic 05 for platform readiness. **Not** used for public boutique/platform TLS in v1 (ACM is primary). Optional in-cluster issuers may be added later without changing public hostname TLS.
+Installed in Topic 05 for platform readiness. Not used for public boutique/platform TLS in v1 (ACM is primary). Optional in-cluster issuers may be added later without changing public hostname TLS.
 
 ## Ingress annotations (reference)
 
@@ -57,7 +59,7 @@ external-dns.alpha.kubernetes.io/hostname: "<HOSTNAME>"
 
 IngressClass: `alb` (AWS Load Balancer Controller).
 
-## Milestone M1 proof
+## Milestone 1 proof
 
 ```bash
 curl -I https://smoke.boutique.biroltilki.art

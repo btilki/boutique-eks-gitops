@@ -1,19 +1,19 @@
 # 19 — Postmortem checklist
 
-**Audience:** L3 — Operator  
-**Applies to:** SEV-1 / SEV-2  
-**Prerequisites:** Incident resolved or mitigated  
-**Estimated time:** 30–90 min  
-**Risk level:** Low  
+Audience: Operator  
+Applies to: SEV-1 / SEV-2  
+Prerequisites: Incident resolved or mitigated  
+Estimated time: 30–90 min  
+Risk level: Low  
 
 ## Purpose
 
-Run a **blameless** postmortem so the same failure is less likely — even on a solo pilot.
+Run a blameless postmortem so the same failure is less likely — even on a solo pilot.
 
 ## When to use / When not to use
 
-**Use** after SEV-1/2 within ~48 hours.  
-**Do not** skip for “just a pilot” if teardown is delayed and lessons apply to the next rebuild.
+Use after SEV-1/2 within ~48 hours.  
+Do not skip for “just a pilot” if teardown is delayed and lessons apply to the next rebuild.
 
 ## Prerequisites
 
@@ -44,13 +44,13 @@ IC:
 ## Rollback / DR effectiveness
 ```
 
-**Validation:** At least one preventive action item filed (GitLab issue or ROADMAP note).
+Validation: At least one preventive action item filed (GitLab issue or ROADMAP note).
 
-**Expected outcome:** Shared understanding; no blame language.
+Expected outcome: Shared understanding; no blame language.
 
-**Recovery steps:** N/A.
+Recovery steps: N/A.
 
-**Best practices:** Separate “trigger” from “root cause”; link Security/Testing follow-ups.
+Best practices: Separate “trigger” from “root cause”; link Security/Testing follow-ups.
 
 ## End-to-end validation
 

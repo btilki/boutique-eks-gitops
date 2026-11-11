@@ -5,17 +5,17 @@ Estimated time: 1.5–2 hours
 Prerequisites: [06 — Argo CD bootstrap](06-argocd-bootstrap.md) complete  
 Creates: Kyverno + ClusterPolicies; External Secrets Operator + ClusterSecretStore; NetworkPolicies for `dev`/`stage`/`prod`; sample ExternalSecret + deny-test fixture  
 Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [SECURITY.md](../../SECURITY.md)  
-Pins: Kyverno chart **3.3.7** · ESO chart **0.14.4** ([docs/versions.md](../versions.md))
+Pins: Kyverno chart 3.3.7 · ESO chart 0.14.4 ([docs/versions.md](../versions.md))
 
 ---
 
 ## Topic goal
 
-Enforce digest-only / ECR-only admission for Boutique namespaces, enable secrets sync from AWS via **ESO (External Secrets Operator)**, and apply the NetworkPolicy baseline in [`gitops/platform/network-policies/`](../../gitops/platform/network-policies/README.md) — before observability secrets (SMTP) and app images land. Kyverno provides the admission policies.
+Enforce digest-only / ECR-only admission for Boutique namespaces, enable secrets sync from AWS via ESO, and apply the NetworkPolicy baseline in [`gitops/platform/network-policies/`](../../gitops/platform/network-policies/README.md) — before observability secrets (SMTP) and app images land. Kyverno provides the admission policies.
 
 ## Why this topic is required
 
-Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO, Topic 08 cannot deliver SMTP credentials safely. Without this NetworkPolicy baseline, any pod in the cluster can reach Boutique pods. The baseline denies other namespaces, then allows all ports inside the namespace, ingress from `10.0.0.0/16`, and egress TCP 80 and 443 except `169.254.169.254/32`.
+Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO, Topic 08 cannot deliver SMTP credentials safely. Without this NetworkPolicy baseline, any pod in the cluster can reach Boutique pods. The baseline denies other namespaces, allows all ports inside the namespace, permits ingress from `10.0.0.0/16`, and egress TCP 80/443 except `169.254.169.254/32`.
 
 ## Before you begin
 
@@ -24,7 +24,7 @@ Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO
 - Ability to create a short-lived secret in AWS Secrets Manager for the ESO smoke test.
 - Phase B Topic 07 files present on `main` (push before sync).
 
-**Idempotent:** Re-syncing Argo apps is safe. Negative kubectl tests are expected to **fail admission**.
+Idempotent: re-syncing Argo apps is safe. Negative kubectl tests are expected to fail admission.
 
 ---
 
@@ -120,13 +120,13 @@ kubectl get clusterpolicy deny-latest-tag require-image-digest ecr-registry-allo
 |---------|---------|
 | Platform | Argo CD UI |
 | Navigation | **kyverno-policies** → Synced/Healthy |
-| Verification | At least three **Enforce** ClusterPolicies (digest/latest/ECR); Topic 15 may add two **Audit** verify policies |
+| Verification | At least three Enforce ClusterPolicies (digest/latest/ECR); Topic 15 may add two Audit verify policies |
 
 Optional audit-first (only if enforce breaks platform unexpectedly): temporarily set `validationFailureAction: Audit` in Git, sync, observe, then return to `Enforce`. Prefer staying on Enforce for this pilot once Kyverno is healthy.
 
 ### Expected output
 
-Three **Enforce** ClusterPolicies for Topic 07 (`deny-latest-tag`, `require-image-digest`, `ecr-registry-allowlist`). If Phase 12 files are on `main`, also expect `verify-image-signatures` and `verify-sbom-attestation` in **Audit** (Topic 15) — do not treat Audit as Enforce.
+Three Enforce ClusterPolicies for Topic 07 (`deny-latest-tag`, `require-image-digest`, `ecr-registry-allowlist`). If Phase 12 files are on `main`, also expect `verify-image-signatures` and `verify-sbom-attestation` in Audit (Topic 15) — **do not treat Audit as Enforce**.
 
 ### Validation
 
@@ -159,7 +159,7 @@ Do not exempt Boutique namespaces from digest rules for convenience.
 
 ### Goal
 
-Apply the negative test Pod and confirm Kyverno **blocks** it.
+Apply the negative test Pod and confirm Kyverno blocks it.
 
 ### Why this step is required
 
@@ -180,7 +180,7 @@ N/A.
 
 ### Expected output
 
-Admission error mentioning `deny-latest-tag` and/or `require-image-digest` / `ecr-registry-allowlist`. Pod is **not** created.
+Admission error mentioning `deny-latest-tag` and/or `require-image-digest` / `ecr-registry-allowlist`. Pod is not created.
 
 ### Validation
 
@@ -325,7 +325,7 @@ kubectl -n dev get secret eso-smoke-secret -o yaml
 
 ### Expected output
 
-ExternalSecret **SecretSynced**; Kubernetes Secret `eso-smoke-secret` present in `dev`.
+ExternalSecret SecretSynced; Kubernetes Secret `eso-smoke-secret` present in `dev`.
 
 ### Validation
 
@@ -456,7 +456,7 @@ All checklist items pass.
 ### Validation
 
 - [ ] Kyverno Healthy (7.1)
-- [ ] Three ClusterPolicies **Enforce** for digest/latest/ECR (7.2); optional Topic 15 Audit verify policies OK
+- [ ] Three ClusterPolicies Enforce for digest/latest/ECR (7.2); optional Topic 15 Audit verify policies OK
 - [ ] `:latest` Pod denied (7.3) — evidence saved
 - [ ] ESO + ClusterSecretStore Ready (7.4)
 - [ ] Sample ExternalSecret synced once (7.5)
@@ -485,7 +485,7 @@ Confirm GitLab CI role still cannot deploy to the cluster.
 
 Topic 07 is complete when Step 7.7 checklist passes.
 
-**Cost check:** Negligible incremental AWS cost (Secrets Manager secret if retained).
+**Cost check:** Negligible incremental cost (Secrets Manager secret if retained).
 
 ---
 
@@ -502,6 +502,6 @@ Topic 07 is complete when Step 7.7 checklist passes.
 
 ## Next step
 
-**[08 — Observability](08-observability.md)** (Phase B next).
+[08 — Observability](08-observability.md) (Phase B next).
 
 Use ESO for Alertmanager SMTP; keep Prometheus/Loki/Grafana in non-app namespaces so Kyverno digest rules do not block chart images.

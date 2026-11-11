@@ -1,15 +1,17 @@
 # 09 — Observability
 
+v1 is metrics, logs, and email alerts on-cluster — no SaaS paging or CloudWatch.
+
 ## Scope (v1)
 
 | Signal | Included | Tool |
 |--------|----------|------|
 | Metrics | Yes | Prometheus (kube-prometheus-stack) |
 | Logs | Yes | Grafana Loki |
-| Alerts | Yes | Alertmanager → **email** |
-| Traces | **No** | OTel/Tempo deferred |
-| CloudWatch | **No** | Cost |
-| PagerDuty | **No** | Email instead |
+| Alerts | Yes | Alertmanager → email |
+| Traces | No | OTel/Tempo deferred |
+| CloudWatch | No | Cost |
+| PagerDuty | No | Email instead |
 
 ## Metrics
 
@@ -19,7 +21,7 @@
 | ServiceMonitors | Boutique + platform where useful | Same |
 | Ingress / ALB metrics via exporters if enabled | 5xx, targets | Same |
 
-**Guardrail:** Limit high-cardinality labels; set resource requests/limits on Prom/Loki.
+Guardrail: limit high-cardinality labels; set resource requests/limits on Prom/Loki.
 
 ## Logs
 
@@ -27,7 +29,7 @@
 Pods → Loki agent/daemonset or chart default → Loki → Grafana Explore
 ```
 
-Retention ~**7 days** for pilot cost/disk.
+Retention ~7 days for pilot cost/disk.
 
 ## Alerting
 
@@ -36,7 +38,7 @@ Retention ~**7 days** for pilot cost/disk.
 | Shop / frontend ingress down (prod host) | Critical | Email via Alertmanager | User-facing availability |
 | Optional: Argo app degraded | Warning | Email | GitOps health |
 
-SMTP credentials via **ESO** from Secrets Manager — not in Git.
+SMTP credentials via ESO from Secrets Manager — **not in Git**.
 
 ## Dashboards
 

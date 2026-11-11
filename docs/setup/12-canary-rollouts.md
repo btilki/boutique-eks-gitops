@@ -5,13 +5,13 @@ Estimated time: 1.5–2.5 hours
 Prerequisites: [11 — Promotion](11-promotion.md) complete (stage/prod digests promotable)  
 Creates: [`gitops/platform/argo-rollouts/`](../../gitops/platform/argo-rollouts/), frontend `Rollout` + ALB services, stage/prod canary values  
 Related: [deployment flow](../architecture/05-deployment-flow.md) · [rollback.md](../rollback.md) · FR-09  
-**Pin:** Argo Rollouts **v1.8.2** · Helm chart **2.39.5** ([`docs/versions.md`](../versions.md))
+Pins: Argo Rollouts v1.8.2 · Helm chart 2.39.5 ([`docs/versions.md`](../versions.md))
 
 ---
 
 ## Topic goal
 
-Install Argo Rollouts and run **frontend** progressive delivery with **ALB traffic splitting** on **stage and prod** (dev stays Deployment).
+Install Argo Rollouts and run frontend progressive delivery with ALB traffic splitting on stage and prod (dev stays on Deployment).
 
 ## Why this topic is required
 
@@ -19,7 +19,7 @@ FR-09 requires canary on stage **and** prod. Without Rollouts + ALB weights, dig
 
 ## Before you begin
 
-- Topics 09–11 complete: Boutique charts synced; promotion/CODEOWNERS working; prod **manual** sync discipline.
+- Topics 09–11 complete: Boutique charts synced; promotion/CODEOWNERS working; **prod manual sync discipline** in place.
 - AWS LB Controller healthy (Topic 05); Ingress `target-type: ip` already set on frontend.
 - Phase B Topic 12 files on `main` (this guide + repo files).
 - Optional: install `kubectl-argo-rollouts` plugin for status/abort UX.
@@ -34,7 +34,7 @@ FR-09 requires canary on stage **and** prod. Without Rollouts + ALB weights, dig
 
 ### Goal
 
-Install the Rollouts controller (CRDs + controller) via ApplicationSet wave **25**.
+Install the Rollouts controller (CRDs + controller) via ApplicationSet wave 25.
 
 ### Why this step is required
 
@@ -61,7 +61,7 @@ Expected duration: 1–3 minutes.
 | Element | Content |
 |---------|---------|
 | Platform | Argo CD UI |
-| Navigation | Application **argo-rollouts** → SYNC if needed |
+| Navigation | Application argo-rollouts → SYNC if needed |
 | Verification | Healthy; pods Ready in `argo-rollouts` |
 
 ### Expected output
@@ -205,7 +205,7 @@ watch -n5 'kubectl -n stage get rollout frontend -o jsonpath="{.status.canary.we
 curl -I https://stage-boutique.biroltilki.art
 ```
 
-To **exercise** canary without a full CI cycle: open a promote MR that changes **only** `image.digest` under `gitops/envs/stage/values/frontend.yaml` to a known-good newer digest (Topic 11 rules).
+To exercise canary without a full CI cycle: open a promote MR that changes only `image.digest` under `gitops/envs/stage/values/frontend.yaml` to a known-good newer digest (Topic 11 rules).
 
 ### GUI instructions (if applicable)
 
@@ -256,7 +256,7 @@ Stage is still non-prod — use it to validate Kyverno + Rollouts coexistence.
 
 ### Goal
 
-Apply prod frontend Rollout/canary via **manual** Argo sync after CODEOWNERS-approved MR.
+Apply prod frontend Rollout/canary via manual Argo sync after CODEOWNERS-approved MR.
 
 ### Why this step is required
 
@@ -283,7 +283,7 @@ Prod canary steps are slower/safer (10 → 30 → 50 → 100 with 120s pauses) t
 | Element | Content |
 |---------|---------|
 | Platform | Argo CD UI |
-| Navigation | Prod frontend Application → **SYNC** (manual) |
+| Navigation | Prod frontend Application → SYNC (manual) |
 | Verification | Rollout Progressing → Healthy; shop HTTPS OK |
 
 ### Expected output
@@ -324,7 +324,7 @@ CODEOWNERS `@btilki` still gates prod path merges — canary does not bypass rev
 
 ### Goal
 
-Document and practice abort: prefer **Git revert** of the digest; optionally abort the Rollout immediately.
+Document and practice abort: prefer Git revert of the digest; optionally abort the Rollout immediately.
 
 ### Why this step is required
 
@@ -392,7 +392,7 @@ Prod revert MRs still need CODEOWNERS when touching `gitops/envs/prod/**`.
 
 ### Goal
 
-Prove FR-09: Rollouts installed; stage **and** prod frontend canaries observed; abort path known.
+Prove FR-09: Rollouts installed; stage and prod frontend canaries observed; abort path known.
 
 ### Why this step is required
 
@@ -417,7 +417,7 @@ grep -q 'enabled: true' gitops/envs/prod/values/frontend.yaml
 
 - [ ] `argo-rollouts` Application Healthy; CRD present
 - [ ] Stage frontend is a `Rollout` with ALB canary services
-- [ ] Prod frontend is a `Rollout`; sync remains **manual**
+- [ ] Prod frontend is a `Rollout`; sync remains manual
 - [ ] At least one canary weight progression observed on stage
 - [ ] Prod canary exercised (or ready) after manual sync
 - [ ] Abort = Rollout abort + Git revert documented
@@ -472,8 +472,8 @@ Confirm no `:latest` and digests still enforced under canary pods.
 
 ## What you achieved
 
-- Argo Rollouts **v1.8.2** on the cluster (wave 25)
-- Frontend progressive delivery on **stage and prod** via ALB weights
+- Argo Rollouts v1.8.2 on the cluster (wave 25)
+- Frontend progressive delivery on stage and prod via ALB weights
 - Dev unchanged (Deployment) for fast digest feedback
 - Abort path tied to Git revert
 

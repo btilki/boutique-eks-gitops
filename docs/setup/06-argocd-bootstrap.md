@@ -2,16 +2,16 @@
 
 Audience: L2 — Implementer  
 Estimated time: 1.5–2 hours  
-Prerequisites: [05 — Ingress, DNS, TLS](05-ingress-dns-tls.md) complete (**M1** HTTPS path working)  
+Prerequisites: [05 — Ingress, DNS, TLS](05-ingress-dns-tls.md) complete (M1 HTTPS path working)  
 Creates: Argo CD in `argocd` namespace; UI at `argocd.boutique.biroltilki.art`; root app-of-apps; platform + workload ApplicationSets; env namespace scaffolding under `gitops/envs/*`  
 Related ADRs: [0001](../adr/0001-digest-only-gitops.md)  
-Pins: Argo CD **v2.14.x** / Helm chart **7.8.14** ([docs/versions.md](../versions.md))
+Pins: Argo CD v2.14.x / Helm chart 7.8.14 ([docs/versions.md](../versions.md))
 
 ---
 
 ## Topic goal
 
-Make Git the deploy authority — **GitOps (Git as the deploy authority)**: install Argo CD, connect the GitLab repo, and wire app-of-apps so platform components and env namespaces are reconciled — with **prod manual sync only**.
+Install Argo CD as the GitOps reconciler: connect the GitLab repo and wire app-of-apps so platform components and env namespaces sync from Git — with **prod manual sync only**.
 
 ## Why this topic is required
 
@@ -24,7 +24,7 @@ Topics 07–14 assume Argo reconciles desired state from this repository. Withou
 - You have a GitLab Project Access Token or Deploy Token with `read_repository` (and `write` only if you choose HTTPS write — read is enough for Argo pull).
 - Phase B files for Topic 06 present.
 
-**Idempotent:** Helm upgrade and re-applying Applications are safe. Changing sync policy on prod to automated is **not** allowed.
+Idempotent: Helm upgrade and re-applying Applications are safe. **Do not** enable automated sync on prod.
 
 ---
 
@@ -32,7 +32,7 @@ Topics 07–14 assume Argo reconciles desired state from this repository. Withou
 
 ### Goal
 
-Install Argo CD via Helm using `gitops/bootstrap/argocd/values.yaml` (chart **7.8.14**).
+Install Argo CD via Helm using `gitops/bootstrap/argocd/values.yaml` (chart 7.8.14).
 
 ### Why this step is required
 
@@ -110,7 +110,7 @@ Reach https://argocd.boutique.biroltilki.art and log in as `admin`.
 
 ### Why this step is required
 
-Operators need UI/CLI access for prod **manual** sync later.
+Operators need UI/CLI access for prod manual sync later.
 
 ### Commands
 
@@ -190,7 +190,7 @@ Root app and ApplicationSets cannot sync private repos without credentials.
 
 ### Commands
 
-**CLI option (HTTPS):**
+CLI option (HTTPS):
 
 ```bash
 # Create a GitLab Project Access Token: role Reporter+, scopes read_repository
@@ -225,7 +225,7 @@ Unset token when done: `unset GITLAB_TOKEN`.
 | Password | Project Access Token (`read_repository`) | Pull only |
 | Name | optional label | Operator clarity |
 
-**Create token in GitLab:**
+Create token in GitLab:
 
 | Element | Content |
 |---------|---------|
@@ -269,7 +269,7 @@ Prefer project access tokens over personal tokens; document rotation owner.
 
 ### Security notes
 
-**Never** commit tokens, `repocreds` manifests with secrets, or put PATs in `values.yaml`.
+**Never commit** tokens, `repocreds` manifests with secrets, or PATs in `values.yaml`.
 
 ---
 
@@ -305,9 +305,9 @@ kubectl apply -f /tmp/root-app.yaml
 argocd app get root --grpc-web || kubectl -n argocd get app root
 ```
 
-**Required:** set `directory.recurse: true` on the root Application so nested ApplicationSets under `gitops/apps/*/ ` are discovered (Argo directory apps do not recurse by default).
+**Required:** set `directory.recurse: true` on the root Application so nested ApplicationSets under `gitops/apps/*/` are discovered (Argo directory apps do not recurse by default).
 
-Ensure `<GITLAB_REPO_URL>` is replaced **in the Git revision Argo tracks** for ApplicationSets (push to `main`). Then hard-refresh root so it is not stuck on an old commit:
+Ensure `<GITLAB_REPO_URL>` is replaced in the Git revision Argo tracks for ApplicationSets (push to `main`). Then hard-refresh root so it is not stuck on an old commit:
 
 ```bash
 kubectl -n argocd annotate app root argocd.argoproj.io/refresh=hard --overwrite
@@ -367,7 +367,7 @@ Platform Helm releases move under Argo; env namespaces become GitOps-managed.
 
 ### Phase 12 AppProjects (required on rebuild)
 
-Child Applications use named projects **`boutique-platform`** / **`boutique-workloads`** (Topic 17). Those AppProjects must exist **before** other apps reconcile, or Argo reports invalid project.
+Child Applications use named projects `boutique-platform` / `boutique-workloads` (Topic 17). Those AppProjects must exist before other apps reconcile, or Argo reports invalid project.
 
 ```bash
 # Sync AppProjects first (wave 5) — or apply from Git:
@@ -401,7 +401,7 @@ kubectl -n argocd describe applicationset platform-apps
 kubectl -n argocd describe applicationset workload-apps
 ```
 
-**Helm ownership note:** First Argo sync may adopt existing Helm releases (Topic 05). If conflict occurs, use `ServerSideApply` (already set) or temporarily `helm uninstall` only after Argo app is ready to recreate — prefer adopt/sync carefully; ask partner if unsure.
+Helm ownership note: first Argo sync may adopt existing Helm releases (Topic 05). If conflict occurs, use `ServerSideApply` (already set) or temporarily `helm uninstall` only after Argo app is ready to recreate — prefer adopt/sync carefully; ask partner if unsure.
 
 ### GUI instructions (if applicable)
 
@@ -409,7 +409,7 @@ kubectl -n argocd describe applicationset workload-apps
 |---------|---------|
 | Platform | Argo CD UI |
 | Navigation | **Applications** → filter platform / boutique-* |
-| Verification | Platform apps Healthy; `boutique-dev-ns`/`boutique-stage-ns` Synced; `boutique-prod-ns` may be Unknown/OutOfSync until **manual** sync |
+| Verification | Platform apps Healthy; `boutique-dev-ns`/`boutique-stage-ns` Synced; `boutique-prod-ns` may be Unknown/OutOfSync until manual sync |
 
 ### Expected output
 
@@ -435,7 +435,7 @@ kubectl get ns dev stage prod
 
 ### Recovery
 
-Fix Git; refresh apps; sync **AppProjects first**, then platform (wave 10), then workloads (wave 40).
+Fix Git; refresh apps; sync AppProjects first, then platform (wave 10), then workloads (wave 40).
 
 ### Best practices
 
@@ -488,7 +488,7 @@ argocd app sync boutique-prod-ns --grpc-web
 
 ### Expected output
 
-dev/stage show automated prune/selfHeal; prod automated **absent**. Manual sync creates `prod` namespace.
+dev/stage show automated prune/selfHeal; prod automated absent. Manual sync creates `prod` namespace.
 
 ### Validation
 
@@ -513,7 +513,7 @@ Screenshot or save jsonpath output as evidence for Topic 13 checklist.
 
 ### Security notes
 
-Enabling prod auto-sync is a **severity** incident for this pilot — treat as config error.
+Enabling prod auto-sync is a severity incident for this pilot — **treat as a config error**.
 
 ---
 
@@ -552,7 +552,7 @@ Checklist below all pass.
 - [ ] GitLab repo credential Successful (6.3)
 - [ ] `root` Application Synced (6.4)
 - [ ] Platform apps Healthy (6.5)
-- [ ] `boutique-dev-ns` / `boutique-stage-ns` automated; **`boutique-prod-ns` manual** (6.6)
+- [ ] `boutique-dev-ns` / `boutique-stage-ns` automated; `boutique-prod-ns` manual (6.6)
 - [ ] Namespaces `dev`/`stage`/`prod` exist
 - [ ] No GitLab token in Git history
 
@@ -570,7 +570,7 @@ Commit ApplicationSet URL substitutions on `main` so clones match cluster.
 
 ### Security notes
 
-Confirm CI still has **no** kubeconfig deploy path (ADR-0001).
+Confirm CI still has no kubeconfig deploy path (ADR-0001).
 
 ---
 
@@ -595,6 +595,6 @@ Topic 06 is complete when Step 6.7 checklist passes.
 
 ## Next step
 
-**[07 — Security baseline](07-security-baseline.md)** (Phase B next).
+[07 — Security baseline](07-security-baseline.md) (Phase B next).
 
-Add Kyverno, External Secrets, and NetworkPolicies under `gitops/platform/` and extend `platform-apps` ApplicationSet (wave **20**).
+Add Kyverno, External Secrets, and NetworkPolicies under `gitops/platform/` and extend `platform-apps` ApplicationSet (wave 20).

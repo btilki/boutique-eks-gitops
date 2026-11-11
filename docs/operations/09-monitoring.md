@@ -1,10 +1,10 @@
 # 09 — Monitoring
 
-**Audience:** L3 — Operator  
-**Applies to:** Cluster-wide (`monitoring` ns)  
-**Prerequisites:** Grafana admin password from Secret (rotated); kubectl  
-**Estimated time:** 15 min  
-**Risk level:** Low  
+Audience: Operator  
+Applies to: Cluster-wide (`monitoring` ns)  
+Prerequisites: Grafana admin password from Secret (rotated); kubectl  
+Estimated time: 15 min  
+Risk level: Low  
 
 ## Purpose
 
@@ -12,8 +12,8 @@ Use on-cluster Prometheus / Grafana / Loki to observe golden signals for Boutiqu
 
 ## When to use / When not to use
 
-**Use** during incidents and after deploys.  
-**Do not** expect CloudWatch/PagerDuty/OTel — out of v1 scope ([ADR-0005](../adr/0005-observability-on-cluster.md)).
+Use during incidents and after deploys.  
+Do not expect CloudWatch/PagerDuty/OTel — out of v1 scope ([ADR-0005](../adr/0005-observability-on-cluster.md)).
 
 ## Prerequisites
 
@@ -24,20 +24,20 @@ Use on-cluster Prometheus / Grafana / Loki to observe golden signals for Boutiqu
 
 ### Step 1: Open Grafana
 
-**GUI:** Browser → `https://grafana.boutique.biroltilki.art` → login `admin` / password from:
+GUI: Browser → `https://grafana.boutique.biroltilki.art` → login `admin` / password from:
 
 ```bash
 kubectl -n monitoring get secret kube-prometheus-stack-grafana \
   -o jsonpath='{.data.admin-password}' | base64 -d; echo
 ```
 
-**Validation:** Home dashboard loads.
+Validation: Home dashboard loads.
 
-**Expected outcome:** Datasources Prometheus + Loki present.
+Expected outcome: Datasources Prometheus + Loki present.
 
-**Recovery steps:** Re-sync monitoring Argo app; [argo-sync](../runbooks/argo-sync.md).
+Recovery steps: Re-sync monitoring Argo app; [argo-sync](../runbooks/argo-sync.md).
 
-**Best practices:** Rotate admin password after bootstrap; store in password manager — never Git.
+Best practices: Rotate admin password after bootstrap; store in password manager — **never in Git**.
 
 ### Step 2: Golden signals (frontend)
 
@@ -48,7 +48,7 @@ kubectl -n monitoring get secret kube-prometheus-stack-grafana \
 | Latency | App metrics if exported; else synthetic curl timing |
 | Saturation | `kubectl top nodes/pods`; node memory |
 
-**Validation:** Can explain current prod frontend health in one sentence.
+Validation: Can explain current prod frontend health in one sentence.
 
 ## End-to-end validation
 

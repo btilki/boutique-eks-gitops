@@ -11,7 +11,7 @@ Pins: Argo Rollouts **v1.8.2** / chart **2.39.5** ([docs/versions.md](../version
 
 ## Topic goal
 
-Add **AnalysisTemplates** so frontend canaries can **auto-abort** on failed HTTP smoke checks and/or Prometheus Ready-pod signals — while keeping timed pauses as the default until you opt in.
+Add AnalysisTemplates so frontend canaries can auto-abort on failed HTTP smoke checks and/or Prometheus Ready-pod signals — while keeping timed pauses as the default until you opt in.
 
 ## Why this topic is required
 
@@ -28,7 +28,7 @@ Timed `pause` alone never fails a bad digest. Analysis closes the progressive-de
 - Rollouts controller healthy; frontend Rollout on stage/prod.
 - Prometheus Service reachable at `monitoring-prometheus.monitoring.svc:9090` (for pod-ready template). Smoke Job uses digest-pinned `curlimages/curl` and is excluded from the ECR allowlist via label `boutique.analysis=frontend-http-smoke`.
 
-**Idempotent:** Syncing ClusterAnalysisTemplates is safe. Enabling analysis changes Rollout steps — test on **stage** first.
+**Idempotent:** Syncing ClusterAnalysisTemplates is safe. **Enabling analysis changes Rollout steps — test on stage first.**
 
 ---
 
@@ -121,7 +121,7 @@ kubectl -n stage get rollout frontend -o yaml | grep -A30 'strategy:'
 kubectl argo rollouts get rollout frontend -n stage   # optional plugin
 ```
 
-Prod: same using `frontend-analysis.example.yaml` + **manual** Argo sync.
+Prod: same using `frontend-analysis.example.yaml` + manual Argo sync.
 
 ### Validation
 
@@ -166,7 +166,7 @@ make docs-check
 |-------|----------|---------------|
 | ClusterAnalysisTemplates in Git | Required | Synced |
 | Chart supports analysis | Required | — |
-| Live envs analysis **off** | Required | Enable via example |
+| Live envs analysis off | Required | Enable via example |
 | ADR-0009 | Required | — |
 
 ---

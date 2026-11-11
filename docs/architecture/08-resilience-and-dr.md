@@ -1,5 +1,7 @@
 # 08 — Resilience, scalability, and DR
 
+What breaks, how you notice, and what you accept on a single-cluster pilot.
+
 ## Failure scenarios
 
 | Scenario | Impact | Detection | Mitigation | Recovery |
@@ -18,32 +20,32 @@
 | Concern | Approach |
 |---------|----------|
 | Horizontal pods | Start replicas=1 nonprod; frontend prod 2; HPA later if needed |
-| Cluster capacity | ASG **min 2 / desired 3 / max 5** × `m6i.large` |
+| Cluster capacity | ASG min 2 / desired 3 / max 5 × `m6i.large` |
 | Vertical | Bump to `m6i.xlarge` if Loki/Prom pressure |
 | Logs/metrics growth | Loki ~7d; Prom ~7–15d; drop high-cardinality labels |
 | Multi-tenancy | Namespaces + quotas (add ResourceQuota in platform phase if contended) |
 
 ### Top bottlenecks
 
-1. **Prometheus/Loki memory** on 8 GiB nodes → retention + limits  
-2. **Single NAT throughput/cost** → endpoints; later second NAT  
-3. **ALB + canary complexity** → validate on stage before prod weight steps  
+1. Prometheus/Loki memory on 8 GiB nodes → retention + limits  
+2. Single NAT throughput/cost → endpoints; later second NAT  
+3. ALB + canary complexity → validate on stage before prod weight steps  
 
-## Disaster recovery (production pilot)
+## DR stance (production pilot — cluster no longer running)
 
 | Item | Stance |
 |------|--------|
 | RTO | Hours (rebuild from Git + Terraform), not multi-region minutes |
 | RPO | Git history ≈ desired cluster state; TF state versioning for infra |
-| Multi-region | **Out of scope** |
+| Multi-region | Out of scope |
 | etcd backup | Rely on EKS; rebuild apps from Git if cluster lost |
 | Stateful data | Redis ephemeral OK for pilot; no customer DB in scope |
 | Grafana dashboards | Prefer Git-provisioned dashboards where possible |
 | Rebuild order | Remote state → TF apply → ingress → Argo bootstrap → platform waves → envs → verify DNS/TLS |
 
-**Primary recovery:** Git + Terraform are sources of truth — not AMI bakefiles.
+Primary recovery: **Git is the only authority** for app desired state; Terraform for infra — not AMI bakefiles.
 
 ## Teardown vs DR
 
-- **DR:** restore capability after failure while intending to keep running.  
-- **Teardown (FR-11):** intentional destroy for cost — see [10-cost-model.md](10-cost-model.md) and Setup topic `14-teardown`.
+- DR: restore capability after failure while intending to keep running.  
+- Teardown (FR-11): intentional destroy for cost — see [10-cost-model.md](10-cost-model.md) and Setup topic `14-teardown`.

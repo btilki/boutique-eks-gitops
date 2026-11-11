@@ -1,10 +1,10 @@
 # 18 — Recovery procedures
 
-**Audience:** L3 — Operator  
-**Applies to:** Major failure classes  
-**Prerequisites:** [07](07-incident-response.md), [17](17-common-incidents.md)  
-**Estimated time:** 30 min – hours  
-**Risk level:** High  
+Audience: Operator  
+Applies to: Major failure classes  
+Prerequisites: [07](07-incident-response.md), [17](17-common-incidents.md)  
+Estimated time: 30 min – hours  
+Risk level: High  
 
 ## Purpose
 
@@ -12,8 +12,8 @@ Ordered recovery sequences when multiple systems fail together.
 
 ## When to use / When not to use
 
-**Use** for SEV-1 cascades.  
-**Do not** skip health validation between layers.
+Use for SEV-1 cascades.  
+Do not skip health validation between layers.
 
 ## Prerequisites
 
@@ -26,19 +26,19 @@ Ordered recovery sequences when multiple systems fail together.
 
 Restore public HTTPS ([ingress](../runbooks/ingress.md), [14](14-certificate-rotation.md)).
 
-**Validation:** `curl -I https://boutique.biroltilki.art` → 200/302.
+Validation: `curl -I https://boutique.biroltilki.art` → 200/302.
 
 ### Step 2: GitOps control plane
 
 Argo API/UI healthy; root app syncing ([argo-sync](../runbooks/argo-sync.md)).
 
-**Validation:** `kubectl -n argocd get app | head`
+Validation: `kubectl -n argocd get app | head`
 
 ### Step 3: Application desired state
 
 Ensure Git digests are known-good ([03](03-rollback.md)); sync prod manually.
 
-**Validation:** Pods Running; Rollout Healthy.
+Validation: Pods Running; Rollout Healthy.
 
 ### Step 4: Data plane capacity
 

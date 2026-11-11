@@ -1,10 +1,10 @@
 # 11 — Logging
 
-**Audience:** L3 — Operator  
-**Applies to:** All namespaces  
-**Prerequisites:** Grafana + Loki datasource  
-**Estimated time:** 10 min  
-**Risk level:** Low  
+Audience: Operator  
+Applies to: All namespaces  
+Prerequisites: Grafana + Loki datasource  
+Estimated time: 10 min  
+Risk level: Low  
 
 ## Purpose
 
@@ -12,8 +12,8 @@ Query application and platform logs via Loki (on-cluster, short retention).
 
 ## When to use / When not to use
 
-**Use** for CrashLoop, 5xx, SMTP/AM failures.  
-**Do not** expect long retention or centralized SIEM — pilot retention ~7d.
+Use for CrashLoop, 5xx, SMTP/AM failures.  
+Do not expect long retention or centralized SIEM — pilot Loki retention ~7d.
 
 ## Prerequisites
 
@@ -24,9 +24,9 @@ Query application and platform logs via Loki (on-cluster, short retention).
 
 ### Step 1: Explore logs
 
-**GUI:** Grafana → Explore → Loki
+GUI: Grafana → Explore → Loki
 
-**Example queries:**
+Example queries:
 
 ```logql
 {namespace="prod"} |= "error"
@@ -34,13 +34,13 @@ Query application and platform logs via Loki (on-cluster, short retention).
 {namespace="monitoring"} |= "alertmanager"
 ```
 
-**Validation:** Query returns recent lines for running pods.
+Validation: Query returns recent lines for running pods.
 
-**Expected outcome:** Logs visible within minutes of events.
+Expected outcome: Logs visible within minutes of events.
 
-**Recovery steps:** Check Promtail/Loki pods; PVC/`gp2` storage; re-sync Loki app.
+Recovery steps: Check Promtail/Loki pods; PVC/`gp2` storage; re-sync Loki app.
 
-**Best practices:** Avoid high-cardinality labels; prefer namespace + app.
+Best practices: Avoid high-cardinality labels; prefer namespace + app.
 
 ## End-to-end validation
 

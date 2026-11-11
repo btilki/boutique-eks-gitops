@@ -1,7 +1,7 @@
 # Runbook — Kyverno policy block
 
-**Audience:** L2 — Operator  
-**Setup:** Topic 07 · Policies: [`../../gitops/platform/kyverno/policies/`](../../gitops/platform/kyverno/policies/)
+Audience: L2 — Operator  
+Setup: Topic 07 · Policies: [`../../gitops/platform/kyverno/policies/`](../../gitops/platform/kyverno/policies/)
 
 ## Purpose
 
@@ -14,8 +14,8 @@ Unblock legitimate workloads blocked by admission policy — without weakening d
 | `deny-latest-tag` | Blocks `:latest` |
 | `require-image-digest` | Requires `@sha256:…` |
 | `ecr-registry-allowlist` | ECR `eu-central-1` only |
-| `verify-image-signatures` | Cosign keyless (Topic 15; default **Audit**) |
-| `verify-sbom-attestation` | CycloneDX attest (Topic 15; default **Audit**) |
+| `verify-image-signatures` | Cosign keyless (Topic 15; default Audit) |
+| `verify-sbom-attestation` | CycloneDX attest (Topic 15; default Audit) |
 
 ## Quick triage
 

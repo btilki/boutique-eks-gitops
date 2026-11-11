@@ -1,11 +1,13 @@
 # 14 — Teardown
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1–2 hours (EKS destroy often 15–30+ minutes)  
-Prerequisites: [13 — Production readiness](13-production-readiness.md) **PASS**, **or** early abort after any billable topic  
+Prerequisites: [13 — Production-pilot checklist](13-production-readiness.md) PASS, or early abort after any billable topic  
 Creates / owns: [`docs/runbooks/teardown.md`](../runbooks/teardown.md); fills [`PRODUCTION_CHECKLIST`](../PRODUCTION_CHECKLIST.md) Appendix T; ROADMAP Phase 11 ✅  
-**Milestone:** **M4 — Clean teardown**  
-**Related:** [cost model](../architecture/10-cost-model.md)
+Milestone 4 — Clean teardown  
+Related: [cost model](../architecture/10-cost-model.md) · [Setup guide](README.md) · [Runbook](../runbooks/teardown.md)
+
+> Pilot already torn down. Topic 14 was executed; AWS billables from this pilot are gone. Use this topic on a new rebuild after Milestone 3 (or when aborting an in-flight run). Live step order: [runbook](../runbooks/teardown.md). Evidence: [PRODUCTION_CHECKLIST Appendix T](../PRODUCTION_CHECKLIST.md#appendix-t--teardown-evidence-topic-14).
 
 ---
 
@@ -15,20 +17,20 @@ Decommission the pilot in a fixed order so **no orphan billables** remain: GitOp
 
 ## Why this topic is required
 
-FR-11 / cost guardrail: short pilots must destroy **immediately after tests**. Leaving EKS + NAT + ALBs running is the largest cost and attack-surface failure mode.
+FR-11 / cost guardrail: short pilots must destroy immediately after tests. **Leaving EKS + NAT + ALBs running** is the largest cost and attack-surface failure mode.
 
 ## Before you begin
 
-- M3 complete **or** you are aborting early (still use this order from the furthest topic reached).
+- Milestone 3 complete, or you are aborting early (still use this order from the furthest topic reached).
 - AWS admin credentials; `terraform/backend.hcl` and `terraform/envs/prod/terraform.tfvars` available locally.
-- Argo / kubeconfig still work **until** cluster destroy (keep a terminal ready).
+- Argo / kubeconfig still work until cluster destroy (keep a terminal ready).
 - Read [`docs/runbooks/teardown.md`](../runbooks/teardown.md) once end-to-end.
 
-**Destructive:** This topic deletes the cluster and network. Repo docs remain; rebuild = re-apply from Topic 03/04.
+Destructive: this topic deletes the cluster and network. Repo docs remain; rebuild = re-apply from Topic 03/04.
 
-**Cost:** Goal is **stop** hourly EKS/NAT/ALB charges. Confirm next-day bill if needed.
+Cost: goal is to stop hourly EKS / NAT / ALB charges. Confirm next-day bill if needed.
 
-**Idempotent:** Re-running destroy on empty state should plan zero resources; safe to re-audit.
+Idempotent: re-running destroy on empty state should plan zero resources; safe to re-audit.
 
 ---
 
@@ -36,7 +38,7 @@ FR-11 / cost guardrail: short pilots must destroy **immediately after tests**. L
 
 ### Goal
 
-Disable schedules that recreate load; delete Boutique + platform Ingress paths so AWS Load Balancers and Target Groups release **before** Terraform destroy.
+Disable schedules that recreate load; delete Boutique + platform Ingress paths so AWS Load Balancers and Target Groups release **before `terraform destroy`**.
 
 ### Why this step is required
 
@@ -77,7 +79,7 @@ kubectl -n argocd get applications
 kubectl get ingress -A
 ```
 
-Expected duration: **3–15 minutes** for ALB deletion after Ingress removal.
+Expected duration: 3–15 minutes for ALB deletion after Ingress removal.
 
 ### GUI instructions (if applicable)
 
@@ -149,7 +151,7 @@ aws ec2 describe-network-interfaces --region "$AWS_REGION" \
   --output table
 ```
 
-If ALBs still `active`, delete them (and dependent TGs) in Console or CLI **after** confirming they belong to this pilot.
+If ALBs still `active`, delete them (and dependent TGs) in Console or CLI after confirming they belong to this pilot.
 
 ### GUI instructions (if applicable)
 
@@ -218,7 +220,7 @@ terraform apply destroy.tfplan
 echo "destroy exit: $?"
 ```
 
-Expected duration: **15–40 minutes**. Do not interrupt mid-apply casually.
+Expected duration: 15–40 minutes. **Do not interrupt** mid-apply casually.
 
 ### GUI instructions (if applicable)
 
@@ -230,7 +232,7 @@ Expected duration: **15–40 minutes**. Do not interrupt mid-apply casually.
 
 ### Expected output
 
-`Apply complete` / destroy finished with **0** errored resources (or only documented manual leftovers).
+`Apply complete` / destroy finished with zero errored resources (or only documented manual leftovers).
 
 ### Validation
 
@@ -267,7 +269,7 @@ Destroy removes IRSA/CI roles — expected. Rotate any SMTP secrets used for the
 
 ### Goal
 
-Choose **retain empty backend** vs **delete bucket + DynamoDB table**. Never do this before Step 14.3 succeeds.
+Choose retain empty backend vs delete bucket + DynamoDB table. **Never do this before Step 14.3 succeeds.**
 
 ### Why this step is required
 
@@ -296,7 +298,7 @@ echo "Retaining TF state backend — document in Appendix T"
 |---------|---------|
 | Platform | S3 + DynamoDB consoles |
 | Navigation | Confirm bucket empty before delete |
-| Verification | Bucket/table gone **or** retained noted |
+| Verification | Bucket/table gone or retained noted |
 
 ### Expected output
 
@@ -339,7 +341,7 @@ Prove no EKS cluster, no pilot NAT, no stray ALBs, no running node instances; do
 
 ### Why this step is required
 
-M4 validation criteria require explicit AWS checks, not “terraform said ok”.
+Milestone 4 validation criteria require explicit AWS checks, not “terraform said ok”.
 
 ### Commands
 
@@ -397,7 +399,7 @@ Checklist Appendix T rows all addressed.
 
 ### Recovery
 
-Document and clear leftovers before M4 PASS.
+Document and clear leftovers before Milestone 4 is complete.
 
 ### Best practices
 
@@ -409,15 +411,15 @@ Remove unused ACM certs only if unused elsewhere; do not delete certs for other 
 
 ---
 
-## Step 14.6: Topic validation — M4 sign-off
+## Step 14.6: Topic validation — Milestone 4 sign-off
 
 ### Goal
 
-Complete Appendix T; mark ROADMAP **Phase 11 ✅**; declare pilot **closed** (bill stopped / residuals documented).
+Complete Appendix T; mark ROADMAP Phase 11 ✅; declare pilot closed (bill stopped / residuals documented).
 
 ### Why this step is required
 
-Closes FR-11 and Milestone M4.
+Closes FR-11 and Milestone 4.
 
 ### Commands
 
@@ -454,7 +456,7 @@ test -f docs/setup/14-teardown.md
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Soft PASS with orphans | Time pressure | FAIL M4 until audit clean |
+| Soft PASS with orphans | Time pressure | FAIL Milestone 4 until audit clean |
 
 ### Recovery
 
@@ -496,18 +498,18 @@ Revoke temporary AWS keys used for the pilot if any were created (prefer SSO/OID
 
 ## Early abort path
 
-If stopping after Topics 04–12 without M3: **still** run Steps 14.1→14.6 from the furthest resources created. Skip checklist M3; still fill Appendix T.
+If stopping after Topics 04–12 without Milestone 3: **still run Steps 14.1→14.6** from the furthest resources created. Skip checklist Milestone 3; still fill Appendix T.
 
 ---
 
 ## What you achieved
 
 - Ordered decommission without orphan billables
-- M4 evidence in Appendix T
+- Milestone 4 evidence in Appendix T
 - Pilot closed (repo retained for rebuild)
 
 ## Next
 
-**Phase B complete** after this topic’s approval.  
-**Phase C:** live bootstrap starting at [`01-prerequisites.md`](01-prerequisites.md) Step **1.1** (one step per turn).  
-If the cluster was just destroyed after a successful pilot, Phase C is only needed for a **rebuild**.
+Phase B complete after this topic’s approval.  
+Phase C: live bootstrap starting at [`01-prerequisites.md`](01-prerequisites.md) Step 1.1 (one step per turn).  
+If the cluster was just destroyed after a successful pilot, Phase C is only needed for a rebuild.

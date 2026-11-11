@@ -1,19 +1,19 @@
 # 16 — Troubleshooting
 
-**Audience:** L3 — Operator  
-**Applies to:** All  
-**Prerequisites:** [08-health-checks](08-health-checks.md)  
-**Estimated time:** 10–60 min  
-**Risk level:** Low–Medium  
+Audience: Operator  
+Applies to: All  
+Prerequisites: [08-health-checks](08-health-checks.md)  
+Estimated time: 10–60 min  
+Risk level: Low–Medium  
 
 ## Purpose
 
-Route symptoms to the right runbook without duplicating long diagnostic trees.
+Route symptoms to the right runbook without duplicating long diagnostic trees. Start with [08](08-health-checks.md), then pick one primary guide below.
 
 ## When to use / When not to use
 
-**Use** at the start of any unclear failure.  
-**Do not** invent parallel procedures that contradict [`docs/runbooks/`](../runbooks/).
+Use at the start of any unclear failure.  
+Do not invent parallel procedures that contradict [`docs/runbooks/`](../runbooks/).
 
 ## Prerequisites
 
@@ -49,13 +49,13 @@ Cluster must die (cost / unrecoverable)?
   → docs/runbooks/teardown.md
 ```
 
-**Validation:** You opened exactly one primary runbook.
+Validation: You opened exactly one primary runbook.
 
-**Expected outcome:** Mitigate via that doc’s Validation section.
+Expected outcome: Mitigate via that doc’s Validation section.
 
-**Recovery steps:** Escalate SEV per [07](07-incident-response.md).
+Recovery steps: Escalate SEV per [07](07-incident-response.md).
 
-**Best practices:** Capture `kubectl describe` / Argo conditions before changing Git.
+Best practices: Capture `kubectl describe` / Argo conditions before changing Git.
 
 ## End-to-end validation
 

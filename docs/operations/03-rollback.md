@@ -1,19 +1,19 @@
 # 03 — Rollback
 
-**Audience:** L3 — Operator  
-**Applies to:** `stage` / `prod` (and `dev` if needed)  
-**Prerequisites:** Git push + MR rights; prod CODEOWNERS if touching prod  
-**Estimated time:** 15–40 min  
-**Risk level:** Medium  
+Audience: Operator  
+Applies to: `stage` / `prod` (and `dev` if needed)  
+Prerequisites: Git push + MR rights; prod CODEOWNERS if touching prod  
+Estimated time: 15–40 min  
+Risk level: Medium  
 
 ## Purpose
 
-Return environments to a known-good digest set using **Git**, not imperative cluster edits.
+Return environments to a known-good digest set via Git — **not** imperative cluster edits.
 
 ## When to use / When not to use
 
-**Use** when promote/canary causes errors, 5xx, or CrashLoop.  
-**Do not** leave a bad digest and “fix forward” on SEV-1 without a time box.
+Use when promote/canary causes errors, 5xx, or CrashLoop.  
+Do not leave a bad digest and “fix forward” on SEV-1 without a time box.
 
 ## Prerequisites
 
@@ -24,23 +24,23 @@ Return environments to a known-good digest set using **Git**, not imperative clu
 
 ### Step 1: Git revert
 
-Follow **[docs/rollback.md](../rollback.md)** (`git revert` / restore prior digests MR).
+Follow [docs/rollback.md](../rollback.md) (`git revert` / restore prior digests MR).
 
-**Validation:** MR restores previous digests only.
+Validation: MR restores previous digests only.
 
-**Expected outcome:** Merged to `main`.
+Expected outcome: Merged to `main`.
 
-**Recovery steps:** If revert conflicts, open explicit digest-restore MR (as in C6 rehearsal).
+Recovery steps: If revert conflicts, open explicit digest-restore MR (as in C6 rehearsal).
 
-**Best practices:** Prefer revert of the promote merge commit.
+Best practices: Prefer revert of the promote merge commit.
 
 ### Step 2: Sync and canary
 
 - Auto-sync envs: wait for Rollout  
-- Prod: **manual** Argo sync  
+- Prod: **manual Argo sync**  
 - If canary mid-flight: abort per [runbooks/canary](../runbooks/canary.md), then ensure Git matches desired stable digest
 
-**Validation:** [08-health-checks](08-health-checks.md); Rollout `Healthy`.
+Validation: [08-health-checks](08-health-checks.md); Rollout `Healthy`.
 
 ## End-to-end validation
 

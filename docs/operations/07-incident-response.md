@@ -1,19 +1,19 @@
 # 07 — Incident response
 
-**Audience:** L3 — Operator  
-**Applies to:** All envs  
-**Prerequisites:** Access to email alerts, kubectl, GitLab, AWS console  
-**Estimated time:** Triage 5–15 min; mitigation varies  
-**Risk level:** Medium–High (depends on SEV)  
+Audience: Operator  
+Applies to: All envs  
+Prerequisites: Access to email alerts, kubectl, GitLab, AWS console  
+Estimated time: Triage 5–15 min; mitigation varies  
+Risk level: Medium–High (depends on SEV)  
 
 ## Purpose
 
-Classify and handle incidents consistently for this solo pilot (email-based, no PagerDuty).
+Classify and handle incidents consistently on this solo pilot: Alertmanager → email, no PagerDuty, you are IC and operator.
 
 ## When to use / When not to use
 
-**Use** on alert email, user report, or failed health check.  
-**Do not use** for planned maintenance (use [12](12-maintenance.md)) or routine promotes ([02](02-deployment.md)).
+Use on alert email, user report, or failed health check.  
+Do not use for planned maintenance (use [12](12-maintenance.md)) or routine promotes ([02](02-deployment.md)).
 
 ## Prerequisites
 
@@ -24,31 +24,31 @@ Classify and handle incidents consistently for this solo pilot (email-based, no 
 
 | Severity | Definition | Response time | Example |
 |----------|------------|---------------|---------|
-| **SEV-1** | Total outage or data/account risk | Immediate | Prod shop down; EKS API unreachable; suspected credential leak |
-| **SEV-2** | Major degradation | < 30 min | Error rate high; GitOps stalled for all envs; canary serving bad digest |
-| **SEV-3** | Minor impact | < 4 hours | Single non-critical pod CrashLoop in stage |
-| **SEV-4** | Low / cosmetic | Next business day | Dashboard gap; docs drift |
+| SEV-1 | Total outage or data/account risk | Immediate | Prod shop down; EKS API unreachable; suspected credential leak |
+| SEV-2 | Major degradation | < 30 min | Error rate high; GitOps stalled for all envs; canary serving bad digest |
+| SEV-3 | Minor impact | < 4 hours | Single non-critical pod CrashLoop in stage |
+| SEV-4 | Low / cosmetic | Next business day | Dashboard gap; docs drift |
 
 ## Procedure
 
 ### Step 1: Triage
 
-**Commands:** Follow [08-health-checks](08-health-checks.md) (nodes, Argo, curl hosts).
+Commands: Follow [08-health-checks](08-health-checks.md) (nodes, Argo, curl hosts).
 
 ```bash
 date -u
 kubectl get nodes
 ```
 
-Assign SEV from the table. **Incident commander = You.**
+Assign SEV from the table. Incident commander = you (solo pilot).
 
-**Validation:** SEV written in notes (chat/issue).
+Validation: SEV written in notes (chat/issue).
 
-**Expected outcome:** Clear severity before changing systems.
+Expected outcome: Clear severity before changing systems.
 
-**Recovery steps:** If unsure, treat as SEV-2 until proven lower.
+Recovery steps: If unsure, treat as SEV-2 until proven lower.
 
-**Best practices:** Prefer mitigate (rollback) over deep root-cause during SEV-1/2.
+Best practices: Prefer mitigate (rollback) over deep root-cause during SEV-1/2.
 
 ### Step 2: Mitigate
 
@@ -63,7 +63,7 @@ Typical SEV-1/2 mitigations:
 | Canary bad | Abort + Git revert ([canary](../runbooks/canary.md)) |
 | Cluster unrecoverable | [teardown](../runbooks/teardown.md) then rebuild if needed |
 
-**Validation:** Health checks ([08](08-health-checks.md)) green or degraded-stable.
+Validation: Health checks ([08](08-health-checks.md)) green or degraded-stable.
 
 ### Step 3: Communicate
 
@@ -73,7 +73,7 @@ Solo pilot: note start/end UTC, SEV, actions in GitLab issue or personal log. No
 
 - SEV-1/2 → schedule [19-postmortem](19-postmortem-checklist.md) within 48h  
 - Disable long silences; fix alert noise  
-- If pilot goal met → **Topic 14 teardown** rather than endless keep-alive
+- If pilot goal met → **Topic 14 teardown immediately** rather than endless keep-alive
 
 ```mermaid
 flowchart TD

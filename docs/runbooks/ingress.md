@@ -1,7 +1,7 @@
 # Runbook — Ingress / ALB / DNS down
 
-**Audience:** L2 — Operator  
-**Setup:** Topics 05, 09 · **DNS/TLS:** [`../dns-and-tls.md`](../dns-and-tls.md)
+Audience: L2 — Operator  
+Setup: Topics 05, 09 · DNS/TLS: [`../dns-and-tls.md`](../dns-and-tls.md)
 
 ## Purpose
 

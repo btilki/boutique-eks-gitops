@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Financial awareness for a **production pilot** that may run only ~2 days.
+What this pilot costs if you leave it up — and why teardown matters. A typical validation run is ~2 days; AWS for this project has already been torn down after the pilot closed.
 
 ## Estimate bands (`eu-central-1`, list-price style)
 
@@ -16,13 +16,13 @@ Financial awareness for a **production pilot** that may run only ~2 days.
 | NAT Gateway ×1 | ~$35+ | Hourly + GB | Single NAT; ECR/S3 endpoints |
 | ALB | ~$20–40 | Hourly + LCU | Share ALB where possible |
 | ECR / SM / Route53 / state | ~$5–15 | Storage + API | Lifecycle policies on ECR |
-| **Total** | **~$350–500** | | Teardown if unused |
+| Total | ~$350–500 | | Teardown if unused |
 
 ### 2-day pilot (48h) with teardown
 
 | Band | Est. |
 |------|------|
-| Typical | **~$35–45** |
+| Typical | ~$35–45 |
 | Lean | ~$28–35 |
 | Heavy pulls / extras | ~$50–70 |
 
@@ -36,7 +36,7 @@ Financial awareness for a **production pilot** that may run only ~2 days.
 | Log/metric retention | ≤15 days Prom; ≤7 days Loki |
 | No CloudWatch Logs ingestion | On-cluster only |
 | ECR endpoints | Enabled to cut NAT GB |
-| Always run Phase 11 **immediately after all tests** | Mandatory — no keep-alive |
+| Always run Phase 11 immediately after all tests | **No keep-alive** after validation |
 
 ## Teardown reference
 
@@ -47,8 +47,8 @@ Ordered destroy (details in Setup `14-teardown` / `docs/runbooks/teardown.md`):
 3. Confirm ELBv2/ENI cleanup  
 4. `terraform destroy` foundation  
 5. Handle ECR empty/delete  
-6. Destroy or retain empty state backend **last**  
-7. Verify no EKS cluster / NAT / stray ALBs  
+6. Destroy or retain empty state backend last (after resources are gone)  
+7. Verify **no orphan billables** (no EKS cluster / NAT / stray ALBs)  
 
 **Do not** destroy Terraform state while resources still exist.
 

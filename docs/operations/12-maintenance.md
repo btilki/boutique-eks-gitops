@@ -1,10 +1,10 @@
 # 12 — Maintenance
 
-**Audience:** L3 — Operator  
-**Applies to:** Nodes / platform  
-**Prerequisites:** kubectl drain rights; change note  
-**Estimated time:** 30–90 min  
-**Risk level:** Medium  
+Audience: Operator  
+Applies to: Nodes / platform  
+Prerequisites: kubectl drain rights; change note  
+Estimated time: 30–90 min  
+Risk level: Medium  
 
 ## Purpose
 
@@ -12,8 +12,8 @@ Perform planned node or platform maintenance with minimal shop downtime.
 
 ## When to use / When not to use
 
-**Use** for node replacement, AMI refresh, or short freezes.  
-**Do not** start long maintenance if the pilot should be torn down — prefer Topic 14.
+Use for node replacement, AMI refresh, or short freezes.  
+Do not start long maintenance if the pilot should end — prefer **Topic 14 teardown**.
 
 ## Prerequisites
 
@@ -29,19 +29,19 @@ kubectl cordon <node>
 kubectl drain <node> --ignore-daemonsets --delete-emptydir-data --grace-period=60
 ```
 
-**Validation:** Pods rescheduled elsewhere; storefront 200.
+Validation: Pods rescheduled elsewhere; storefront 200.
 
-**Expected outcome:** Node `SchedulingDisabled`, drained.
+Expected outcome: Node `SchedulingDisabled`, drained.
 
-**Recovery steps:** `kubectl uncordon <node>` if drain aborted early.
+Recovery steps: `kubectl uncordon <node>` if drain aborted early.
 
-**Best practices:** Drain one node at a time; watch Argo health.
+Best practices: Drain one node at a time; watch Argo health.
 
 ### Step 2: Return capacity
 
 Replace/terminate instance per ASG; wait for Ready; `uncordon` if reused.
 
-**Validation:** [08-health-checks](08-health-checks.md).
+Validation: [08-health-checks](08-health-checks.md).
 
 ## End-to-end validation
 

@@ -11,7 +11,7 @@ Pins: Trivy **0.71.0** · cosign **2.4.x** · Kyverno chart **3.3.7** ([docs/ver
 
 ## Topic goal
 
-Close the supply-chain loop: CI still signs images (Topic 10) and now also emits a **SBOM (Software Bill of Materials)** as CycloneDX + `cosign attest`; Kyverno **audits** (then later **enforces**) Sigstore keyless signatures and SBOM attestations at admission — without changing the digest-only GitOps contract.
+Close the supply-chain loop: CI still signs images (Topic 10) and now also emits an SBOM as CycloneDX plus `cosign attest`; Kyverno audits (then later enforces) Sigstore keyless signatures and SBOM attestations at admission — **without changing the digest-only GitOps contract**.
 
 ## Why this topic is required
 
@@ -30,7 +30,7 @@ Signing without admission verify lets unsigned digests run if they pass digest/E
 - At least one CI-signed digest in ECR for a Boutique service.
 - Cluster egress to Fulcio/Rekor (Sigstore) from Kyverno pods (same as cosign verify needs).
 
-**Idempotent:** Re-syncing Audit policies is safe. Flipping to Enforce before signed digests exist will block Boutique pods.
+**Idempotent:** Re-syncing Audit policies is safe. **Flipping to Enforce before signed digests exist will block Boutique pods.**
 
 ---
 
@@ -62,7 +62,7 @@ grep -E 'validationFailureAction: Audit' \
 
 ### Expected output
 
-All `test`/`grep` commands exit 0. Both ClusterPolicies show **Audit**.
+All `test`/`grep` commands exit 0. Both ClusterPolicies show Audit.
 
 ### Validation
 
@@ -301,8 +301,8 @@ All checks pass. `make docs-check` OK.
 | Policies in Git (Audit) | Required | Synced |
 | CI `sbom` stage defined | Required | Jobs green |
 | ADR-0007 present | Required | — |
-| Signature **Enforce** | Deferred | After Step 15.4 |
-| SBOM **Enforce** | Deferred | Optional later |
+| Signature Enforce | Deferred | After Step 15.4 |
+| SBOM Enforce | Deferred | Optional later |
 
 ---
 

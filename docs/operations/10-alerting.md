@@ -1,19 +1,19 @@
 # 10 — Alerting
 
-**Audience:** L3 — Operator  
-**Applies to:** `monitoring`  
-**Prerequisites:** SMTP secret via ESO; inbox access  
-**Estimated time:** 20 min  
-**Risk level:** Low  
+Audience: Operator  
+Applies to: `monitoring`  
+Prerequisites: SMTP secret via ESO; inbox access  
+Estimated time: 20 min  
+Risk level: Low  
 
 ## Purpose
 
-Operate Alertmanager → **email** and keep rules honest (no always-firing test noise).
+Operate Alertmanager → email and keep rules honest (no always-firing test noise).
 
 ## When to use / When not to use
 
-**Use** when proving email path, silencing carefully, or fixing missing alerts.  
-**Do not** leave `AlertmanagerEmailTest` firing in steady state.
+Use when proving email path, silencing carefully, or fixing missing alerts.  
+Do not leave `AlertmanagerEmailTest` firing in steady state.
 
 ## Prerequisites
 
@@ -23,18 +23,18 @@ Operate Alertmanager → **email** and keep rules honest (no always-firing test 
 
 ### Step 1: Confirm pipeline
 
-Follow **[runbooks/alerting](../runbooks/alerting.md)** (Secret, AM config, inbox).
+Follow [runbooks/alerting](../runbooks/alerting.md) (Secret, AM config, inbox).
 
-**Validation:** Test email received once historically; test rule `expr: vector(0)`.
+Validation: Test email received once historically; test rule `expr: vector(0)`.
 
 ### Step 2: Rule inventory
 
 | Alert | File | Notes |
 |-------|------|-------|
 | `AlertmanagerEmailTest` | `gitops/platform/monitoring/manifests/prometheusrule-boutique.yaml` | Must stay disabled (`vector(0)`) |
-| `BoutiqueIngressDown` | same | **Placeholder expr** — replace with blackbox/ALB probe before relying on it |
+| `BoutiqueIngressDown` | same | Placeholder expr — replace with blackbox/ALB probe before relying on it |
 
-**Recommended annotation** (add in a follow-up MR):
+Recommended annotation (add in a follow-up MR):
 
 ```yaml
 annotations:
@@ -42,13 +42,13 @@ annotations:
   summary: "Boutique ingress missing/down (prod)"
 ```
 
-**Validation:** `kubectl -n monitoring get prometheusrule boutique-alerting -o yaml | head`
+Validation: `kubectl -n monitoring get prometheusrule boutique-alerting -o yaml | head`
 
-**Expected outcome:** Rules loaded by Prometheus.
+Expected outcome: Rules loaded by Prometheus.
 
-**Recovery steps:** Sync monitoring app; check AM logs.
+Recovery steps: Sync monitoring app; check AM logs.
 
-**Best practices:** Prefer fix over multi-day silences.
+Best practices: Prefer fix over multi-day silences.
 
 ## End-to-end validation
 
@@ -66,7 +66,7 @@ Revert PrometheusRule MR if a noisy rule ships.
 
 ## Security notes
 
-SMTP password only in AWS Secrets Manager → ESO — never in Git.
+SMTP password only in AWS Secrets Manager → ESO — **never in Git**.
 
 ## Automation opportunities
 

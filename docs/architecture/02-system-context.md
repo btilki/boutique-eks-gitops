@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Describe who interacts with the system, what sits outside the trust boundary, and how environments relate.
+Who uses the platform, what lives outside AWS, and how dev, stage, and prod relate on one cluster.
 
 ## Actors
 
@@ -64,12 +64,12 @@ Rel(platform, ecr, "pull by digest")
 |-----|-----------|----------|-----------|--------|------------|
 | dev | `dev` | `dev-boutique.biroltilki.art` | Automated | No (optional later) | No |
 | stage | `stage` | `stage-boutique.biroltilki.art` | Automated or controlled | Yes (frontend) | No |
-| prod | `prod` | `boutique.biroltilki.art` | **Manual only** | Yes (frontend) | `@btilki` |
+| prod | `prod` | `boutique.biroltilki.art` | **manual prod sync** | Yes (frontend) | `@btilki` |
 | platform | `platform`, `argocd`, monitoring ns | `argocd.` / `grafana.boutique...` | Automated (waves) | N/A | Platform paths reviewed |
 
-**Why one cluster:** Cost and operational simplicity for a production **pilot**. This is **not** three-account blast-radius isolation — documented limitation.
+One cluster keeps cost and ops manageable for a production pilot. That trades away three-account blast-radius isolation — a documented limitation, not hidden.
 
 ## Platform vs application boundary
 
-- **Platform** (shared): ingress, policy, secrets operator, observability, Argo, Rollouts controller.
-- **Applications** (per env): Boutique microservices + Redis; only digest/values differ across envs.
+- Platform (shared): ingress, policy, secrets operator, observability, Argo, Rollouts controller.
+- Applications (per env): Boutique microservices + Redis; only digest/values differ across envs.

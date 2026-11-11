@@ -1,12 +1,10 @@
 # Promotion — digest copy across environments
 
-**Audience:** L2 — Implementer / Release owner  
-**Setup:** Topic 11 · **ADR:** [0001 digest-only GitOps](adr/0001-digest-only-gitops.md)  
-**Related:** [rollback.md](rollback.md) · [ci.md](ci.md) · [CODEOWNERS](../CODEOWNERS)
+Audience: L2 implementer or release owner · Topic 11 · ADR [0001 digest-only GitOps](adr/0001-digest-only-gitops.md) · Related: [rollback.md](rollback.md), [ci.md](ci.md), [CODEOWNERS](../CODEOWNERS)
 
 ## Goal
 
-Move **the same image digests** from `dev` → `stage` → `prod` using Git merge requests. Argo reconciles; CI does not promote.
+Move the same image digests from `dev` → `stage` → `prod` using Git MRs. Argo reconciles; CI does not promote.
 
 ## Rules (non-negotiable)
 
@@ -14,7 +12,7 @@ Move **the same image digests** from `dev` → `stage` → `prod` using Git merg
 |------|--------|
 | Digest-only | Promotion MRs change **only** `image.digest` under `gitops/envs/<env>/values/*.yaml` |
 | No chart edits | Do not change templates, ports, or replica counts in a promote MR |
-| No CI promote | GitLab CI writes **dev** only ([docs/ci.md](ci.md)) |
+| No CI promote | GitLab CI writes dev only ([docs/ci.md](ci.md)) |
 | Stage first | Never skip stage for the pilot happy path |
 | Prod ownership | `gitops/envs/prod/**` requires `@btilki` CODEOWNERS approval |
 | Prod sync | After merge, **manual** Argo sync for `*-prod` apps (no auto-sync) |
@@ -47,7 +45,7 @@ git push -u origin HEAD
 # Open MR → main; merge after review
 ```
 
-**Validate after merge:** Argo apps `*-stage` Synced/Healthy; `https://stage-boutique.biroltilki.art` OK.
+Validate after merge: Argo apps `*-stage` Synced/Healthy; `https://stage-boutique.biroltilki.art` OK.
 
 ## Procedure — promote `stage` → `prod`
 
@@ -70,7 +68,7 @@ git push -u origin HEAD
 # Merge, then MANUAL Argo sync for each *-prod app (or Application sync)
 ```
 
-**Validate after manual sync:** `https://boutique.biroltilki.art` OK; Argo `*-prod` Healthy.
+Validate after manual sync: `https://boutique.biroltilki.art` OK; Argo `*-prod` Healthy.
 
 ## MR checklist (reviewer)
 
@@ -82,4 +80,4 @@ git push -u origin HEAD
 
 ## Partial promote
 
-Allowed: promote a **subset** of services (e.g. only `frontend`) if tested that way — still digest-only, still stage then prod.
+Allowed: promote a subset of services (e.g. only `frontend`) if tested that way — still digest-only, still stage then prod.

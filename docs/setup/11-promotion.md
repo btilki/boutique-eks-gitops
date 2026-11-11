@@ -10,11 +10,11 @@ Related: [CODEOWNERS](../../CODEOWNERS) · ADR [0001](../adr/0001-digest-only-gi
 
 ## Topic goal
 
-Operationalize human promotion of digests `dev → stage → prod` with CODEOWNERS on prod and **manual** Argo sync for production — plus a documented rollback via `git revert`.
+Operationalize human promotion of digests `dev → stage → prod` with CODEOWNERS on prod paths, **manual Argo sync for production**, and a documented rollback via `git revert`.
 
 ## Why this topic is required
 
-Without governed promotion, digests can skip stage or land in prod without `@btilki` review, defeating the manual-sync safety model.
+Without governed promotion, digests can skip stage or reach prod without `@btilki` review — defeating the manual-sync safety model.
 
 ## Before you begin
 
@@ -154,14 +154,14 @@ grep -n 'gitops/envs/prod' CODEOWNERS
 | Platform | GitLab |
 | Navigation | Project → **Settings** → **Repository** → **Protected branches** |
 | Permissions | Maintainer / Owner |
-| Verification | Default branch (`main`) protected; **Code owner approval** enabled |
+| Verification | Default branch (`main`) protected; Code owner approval enabled |
 
 | Field | Value | Why |
 |-------|-------|-----|
 | Branch | `main` (or `CI_DEFAULT_BRANCH`) | Production Git history |
 | Allowed to merge | Maintainers (+ developers if you choose) | Control merges |
 | Allowed to push | No one / Maintainers only | No direct pushes preferred |
-| **Require code owner approval** | **Enabled** | Enforces `CODEOWNERS` |
+| Require code owner approval | Enabled | Enforces `CODEOWNERS` |
 | Require approvals | ≥ 1 | At least `@btilki` for prod paths |
 
 Optional: **Settings** → **Merge requests** → ensure approval rules do not bypass code owners.
@@ -174,7 +174,7 @@ Optional: **Settings** → **Merge requests** → ensure approval rules do not b
 
 ### Expected output
 
-A test MR that only touches `gitops/envs/prod/values/frontend.yaml` shows **Code owners** approval required from `@btilki`.
+A test MR that only touches `gitops/envs/prod/values/frontend.yaml` shows Code owners approval required from `@btilki`.
 
 ### Validation
 
@@ -269,7 +269,7 @@ Still no cluster credentials in CI for this step — human Git + Argo only.
 
 ### Goal
 
-Execute `stage → prod` digest MR with `@btilki` approval, then **manually** sync prod apps.
+Execute `stage → prod` digest MR with `@btilki` approval, then manually sync prod apps.
 
 ### Why this step is required
 
@@ -294,8 +294,8 @@ curl -I --max-time 60 https://boutique.biroltilki.art
 
 | Element | Content |
 |---------|---------|
-| Platform | GitLab | Merge prod promote MR after **code owner** approval |
-| Platform | Argo CD UI | Select each `*-prod` app → **SYNC** (do not enable auto-sync) |
+| Platform | GitLab | Merge prod promote MR after code owner approval |
+| Platform | Argo CD UI | Select each `*-prod` app → SYNC (**do not enable auto-sync**) |
 | Browser | `https://boutique.biroltilki.art` | Storefront OK |
 
 | Field (Argo sync) | Value | Why |
@@ -305,7 +305,7 @@ curl -I --max-time 60 https://boutique.biroltilki.art
 
 ### Expected output
 
-Prod apps Healthy after manual sync; prod hostname HTTPS OK; automated sync still **disabled** on prod apps.
+Prod apps Healthy after manual sync; prod hostname HTTPS OK; automated sync still disabled on prod apps.
 
 ### Validation
 
@@ -333,7 +333,7 @@ Record MR URL + sync time for Topic 13 evidence.
 
 ### Security notes
 
-Enabling prod auto-sync is a **severity** for this pilot.
+Enabling prod auto-sync is a **pilot severity issue**.
 
 ---
 
@@ -367,7 +367,7 @@ Checklist complete.
 - [ ] `docs/rollback.md` reviewed (11.2)
 - [ ] GitLab code owner approval enforced for prod (11.3)
 - [ ] Stage promote verified (11.4)
-- [ ] Prod promote + **manual** sync verified (11.5)
+- [ ] Prod promote + manual sync verified (11.5)
 - [ ] Prod apps still have no automated sync
 
 ### Common problems

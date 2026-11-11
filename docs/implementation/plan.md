@@ -1,12 +1,13 @@
 # Implementation Plan — boutique-eks-gitops
 
-**Audience:** Implementer during build  
-**Public summary:** [ROADMAP.md](../../ROADMAP.md)  
-**Architecture (authoritative):** [docs/ARCHITECTURE.md](../ARCHITECTURE.md) — physical file created in Phase 1; decisions below are **approved** from Planning Gate  
-**Structure (authoritative):** Preferred layout in Project Prompt — materialized in Phase 1  
+Audience: Implementer during build  
+Public summary: [ROADMAP.md](../../ROADMAP.md)  
+Architecture (authoritative): [docs/ARCHITECTURE.md](../ARCHITECTURE.md) — decisions below are approved  
+Structure (authoritative): Preferred layout in Project Prompt — materialized in Phase 1  
 
-**Plan version:** 2026-07-18  
-**Status:** Awaiting plan approval before Setup Guide authoring  
+Status: Production pilot closed. Phases 1–11 complete. AWS resources deleted. Phase 12 scaffold is in Git; live enable waits for a rebuild.
+
+> Maintainer reference — not a reader entry point. For status and milestones use [ROADMAP.md](../../ROADMAP.md). To understand or rebuild use [README.md](../../README.md) → [docs/README.md](../README.md) → [setup/README.md](../setup/README.md). This file keeps phase inventories, FR cross-refs, and historical planning detail.
 
 ---
 
@@ -14,11 +15,11 @@
 
 | Field | Value |
 |-------|--------|
-| Project | **boutique-eks-gitops** |
-| Goal | Production GitOps platform for Online Boutique on one EKS cluster; Git is the only deploy authority; CI only updates image digests |
-| Current status | Planning complete; repo empty except this plan + ROADMAP; no AWS resources |
-| Phases | **11** (Phase 1–11, including teardown) |
-| Overall complexity | **L** (platform breadth); no single XL phase if Phase 2/7/8 stay scoped |
+| Project | boutique-eks-gitops |
+| Goal | Production-pilot GitOps control plane for Online Boutique on one EKS cluster; **Git is the only deploy authority**; CI only updates image digests |
+| Current status | Production pilot closed; AWS resources deleted; GitOps and docs remain |
+| Phases | 11 executed (Phase 1–11, including teardown), plus Phase 12 scaffold in [ROADMAP.md](../../ROADMAP.md) |
+| Overall complexity | L (platform breadth); no single XL phase if Phase 2/7/8 stay scoped |
 | Definition of done | All Must FRs validated; PRODUCTION_CHECKLIST green; digest → promote → prod manual sync + canary proven; teardown documented and executable |
 
 ---
@@ -29,13 +30,13 @@
 |---------|------|-------------------|
 | G-01 | Provision AWS foundation with Terraform | VPC, EKS Ready nodes, ECR, IAM OIDC/IRSA, remote state in `eu-central-1` |
 | G-02 | Expose platform/apps under boutique DNS | Hostnames resolve via external-dns; HTTPS via ACM+ALB |
-| G-03 | GitOps-only delivery | Argo CD app-of-apps + ApplicationSet; CI never `kubectl apply` / `argocd sync` |
+| G-03 | GitOps-only delivery | Argo CD app-of-apps + ApplicationSet; **CI never deploys** (`kubectl` / `argocd sync`) |
 | G-04 | Digest-only promotion | MRs patch only `image.digest`; promote dev→stage→prod with CODEOWNERS `@btilki` |
 | G-05 | Production security baseline | Kyverno digest/ECR rules; ESO; NetworkPolicy |
-| G-06 | On-cluster observability | Prometheus + Loki + Grafana + Alertmanager (**email**) |
+| G-06 | On-cluster observability | Prometheus + Loki + Grafana + Alertmanager (email) |
 | G-07 | Boutique via Helm GitOps | 7 services + Redis reachable on env hostnames |
 | G-08 | Supply-chain CI | Trivy CRITICAL gate → cosign sign → digest MR |
-| G-09 | Frontend canary | Argo Rollouts on **stage and prod** |
+| G-09 | Frontend canary | Argo Rollouts on stage and prod |
 | G-10 | Production readiness | Checklist, runbooks, rollback via git revert tested |
 | G-11 | Clean teardown | Documented decommission; AWS resources destroyed; no orphan billables |
 
@@ -46,7 +47,7 @@
 - Prove deep GitOps on AWS: digest-only releases and Git-driven promotion without CI deploying to the cluster.
 - Deliver a production-quality reference control plane (Terraform + Argo + policy + SRE baseline) reviewable by platform engineers.
 - Operate `dev` / `stage` / `prod` under `biroltilki.art` with documented promotion, rollback, and alerting.
-- Keep cost suitable for a short pilot (single cluster, single NAT, no CloudWatch/PagerDuty) with a **mandatory teardown path**.
+- Keep cost suitable for a short pilot (single cluster, single NAT, no CloudWatch/PagerDuty) with a mandatory teardown path.
 - Encode audit-friendly patterns: Git history, signed images, CODEOWNERS on prod paths.
 
 ---
@@ -57,13 +58,13 @@
 |----|-------------|----------|-------------------|
 | FR-01 | Terraform: VPC, EKS 1.31, ECR, Route53 data, IAM OIDC/IRSA, S3+DynamoDB state | Must | 2 |
 | FR-02 | AWS LB Controller, external-dns, cert-manager; ACM+ALB public HTTPS | Must | 3 |
-| FR-03 | Argo CD app-of-apps + ApplicationSet; auto sync lower envs; **manual prod** | Must | 4 |
+| FR-03 | Argo CD app-of-apps + ApplicationSet; auto sync lower envs; **manual prod sync** | Must | 4 |
 | FR-04 | Kyverno (digest-only, no `:latest`, ECR allowlist), ESO, NetworkPolicy | Must | 5 |
-| FR-05 | Prometheus, Loki, Grafana, Alertmanager → **email** (no CloudWatch/PagerDuty/OTel) | Must | 6 |
+| FR-05 | Prometheus, Loki, Grafana, Alertmanager → email (no CloudWatch/PagerDuty/OTel) | Must | 6 |
 | FR-06 | Helm charts for 7 Boutique services + Redis; env overlays; boutique hostnames | Must | 7 |
 | FR-07 | GitLab CI: test→build→scan→sign→digest MR; OIDC→IAM; no cluster deploy | Must | 8 |
 | FR-08 | Promotion MRs, CODEOWNERS `@btilki` on `gitops/envs/prod/**`, promotion/rollback docs | Must | 9 |
-| FR-09 | Argo Rollouts frontend canary on **stage and prod** | Must | 9 |
+| FR-09 | Argo Rollouts frontend canary on stage and prod | Must | 9 |
 | FR-10 | PRODUCTION_CHECKLIST, architecture docs, runbooks, full production path proof | Must | 10 |
 | FR-11 | Teardown runbook + ordered destroy (GitOps apps → EKS/ALB → Terraform → verify no orphans) | Must | 11 |
 
@@ -76,7 +77,7 @@
 | Availability | Single-cluster production-minimum; prod changes deliberate (manual sync + approvals) | ARCHITECTURE § sync policies |
 | Scalability | One cluster, three app envs + platform; structure allows later multi-cluster | ARCHITECTURE § topology |
 | Security | Least-privilege IAM/IRSA; no secrets in Git; OIDC CI; signed images; Kyverno; NP; ESO | ARCHITECTURE § security |
-| Observability | Metrics + logs + alerts on-cluster; Alertmanager → **email** | ARCHITECTURE § observability |
+| Observability | Metrics + logs + alerts on-cluster; Alertmanager → email | ARCHITECTURE § observability |
 | Maintainability | Modular Terraform/Helm; phase delivery; README/runbooks/ADRs | Repo structure |
 | Reproducibility | Pinned versions; remote state; digest-pinned workloads | `docs/versions.md` |
 | Cost | One EKS; 3× `m6i.large`; single NAT; no CW/PD | ARCHITECTURE § capacity |
@@ -93,9 +94,9 @@
 | GitLab project + OIDC→IAM federation possible | Phase 1 (docs), Phase 8 (live) |
 | Single-cluster namespaces are acceptable blast radius | Phase 1 ADR |
 | 7 Boutique services (+ Redis) sufficient for storefront path | Phase 7 |
-| Alertmanager delivers alerts by **email** | Phase 6 |
-| Cosign uses **Sigstore keyless** via GitLab OIDC (`SIGSTORE_ID_TOKEN`) | Phase 8 |
-| Phase 7 includes **one-time bootstrap ECR digest push** before first CI pipeline | Phase 7 |
+| Alertmanager delivers alerts by email | Phase 6 |
+| Cosign uses Sigstore keyless via GitLab OIDC (`SIGSTORE_ID_TOKEN`) | Phase 8 |
+| Phase 7 includes one-time bootstrap ECR digest push before first CI pipeline | Phase 7 |
 | After all tests complete, **Phase 11 teardown runs immediately** (no keep-alive) | Phase 11 |
 
 ---
@@ -124,7 +125,7 @@
 - Observability: kube-prometheus-stack (Prom/Grafana/AM) + Loki
 - Apps: frontend, productcatalogservice, cartservice (+ Redis), checkoutservice, currencyservice, paymentservice, shippingservice
 - GitLab CI digest path; promotion; stage+prod canary
-- Docs: Setup Guide topics, ADRs, promotion/rollback, PRODUCTION_CHECKLIST, **teardown runbook**
+- Docs: Setup Guide topics, ADRs, promotion/rollback, PRODUCTION_CHECKLIST, teardown runbook
 
 ### Out of scope (deferred)
 
@@ -178,7 +179,7 @@
 | VCS/CI | GitLab + GitLab CI | project-local | 1 / 8 |
 | IaC | Terraform | ≥ 1.9 | 2 |
 | AWS provider | hashicorp/aws | ~> 5.80 | 2 |
-| Kubernetes | EKS | **1.31** | 2 |
+| Kubernetes | EKS | 1.31 | 2 |
 | Nodes | EC2 `m6i.large` ×3 (2–5 ASG) | On-Demand | 2 |
 | Helm | Helm | 3.16.x | 3+ |
 | kubectl | kubectl | 1.31.x | 2 |
@@ -192,17 +193,17 @@
 | Metrics/UI/alerts | kube-prometheus-stack | pin at Phase 6 | 6 |
 | Logs | Grafana Loki | 3.x chart pin | 6 |
 | Registry | Amazon ECR | scan-on-push | 2 |
-| Scan | Trivy | **0.71.0** | 8 |
-| Sign | cosign | **2.4.x** Sigstore keyless (GitLab OIDC) | 8 |
+| Scan | Trivy | 0.71.0 | 8 |
+| Sign | cosign | 2.4.x Sigstore keyless (GitLab OIDC) | 8 |
 | CODEOWNERS | `@btilki` | — | 1 / 9 |
 
 ---
 
 ## 7.12 High-level architecture
 
-GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual for `prod`**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (**email**). Frontend canaries run on stage and prod via Argo Rollouts. Short pilots end with **Phase 11 ordered teardown**.
+GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual prod sync**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (email). Frontend canaries run on stage and prod via Argo Rollouts. Short pilots end with **Phase 11 teardown mandatory**.
 
-**Authoritative detail:** `docs/ARCHITECTURE.md` + `docs/architecture/*` (Phase 1).
+Authoritative detail: `docs/ARCHITECTURE.md` + `docs/architecture/*` (Phase 1).
 
 ### Component-to-phase mapping
 
@@ -230,7 +231,7 @@ GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, 
 
 ## 7.13 Repository organization
 
-**Variant:** Preferred Project Prompt layout (Terraform + gitops + charts + docs).
+Variant: preferred Project Prompt layout (Terraform + gitops + charts + docs).
 
 | Directory | First populated |
 |-----------|-----------------|
@@ -276,7 +277,7 @@ boutique-eks-gitops/
 | Milestone | Target | Phases | Definition of done |
 |-----------|--------|--------|--------------------|
 | M1 Cluster reachable | After Phase 3 | 1–3 | Nodes Ready; HTTPS smoke host on boutique DNS |
-| M2 Platform complete | After Phase 6 | 4–6 | Argo + security + observability (Alertmanager **email**) validated |
+| M2 Platform complete | After Phase 6 | 4–6 | Argo + security + observability (Alertmanager email) validated |
 | M3 Production path proven | After Phase 10 | 7–10 | Digest→promote→prod canary; checklist green |
 | M4 Clean teardown | After Phase 11 | 11 | Ordered destroy complete; no orphan billable resources |
 
@@ -310,11 +311,11 @@ boutique-eks-gitops/
 
 ## Phase 1: Foundation
 
-**Complexity:** S  
-**Estimated effort:** 1 session (~2–3 h)  
-**Prerequisites:** Plan approved; Setup Guide Phase A/B for topics 01–02  
-**Milestone:** toward M1  
-**Setup Guide topics:** `docs/setup/01-prerequisites.md`, `docs/setup/02-repo-foundation.md`
+Complexity: S  
+Estimated effort: 1 session (~2–3 h)  
+Prerequisites: Plan approved; Setup Guide Phase A/B for topics 01–02  
+Milestone: toward M1  
+Setup Guide topics: `docs/setup/01-prerequisites.md`, `docs/setup/02-repo-foundation.md`
 
 ### Objectives
 
@@ -356,11 +357,11 @@ Wait for confirmation before Phase 2.
 
 ## Phase 2: AWS foundation (Terraform)
 
-**Complexity:** L  
-**Estimated effort:** 2–3 sessions  
-**Prerequisites:** Phase 1 complete  
-**Milestone:** toward M1  
-**Setup Guide topics:** `docs/setup/03-remote-state.md`, `docs/setup/04-network-eks-ecr-iam.md`
+Complexity: L  
+Estimated effort: 2–3 sessions  
+Prerequisites: Phase 1 complete  
+Milestone: toward M1  
+Setup Guide topics: `docs/setup/03-remote-state.md`, `docs/setup/04-network-eks-ecr-iam.md`
 
 ### Objectives
 
@@ -401,11 +402,11 @@ Wait before Phase 3.
 
 ## Phase 3: Ingress, DNS, TLS
 
-**Complexity:** M  
-**Estimated effort:** 1–2 sessions  
-**Prerequisites:** Phase 2  
-**Milestone:** **M1**  
-**Setup Guide topics:** `docs/setup/05-ingress-dns-tls.md`
+Complexity: M  
+Estimated effort: 1–2 sessions  
+Prerequisites: Phase 2  
+Milestone: M1  
+Setup Guide topics: `docs/setup/05-ingress-dns-tls.md`
 
 ### Objectives
 
@@ -447,21 +448,21 @@ Wait before Phase 3.
 
 ### Approval gate
 
-**M1 FC review** then wait before Phase 4.
+M1 FC review, then wait before Phase 4.
 
 ---
 
 ## Phase 4: Argo CD GitOps bootstrap
 
-**Complexity:** M  
-**Estimated effort:** 1–2 sessions  
-**Prerequisites:** Phase 3  
-**Milestone:** toward M2  
-**Setup Guide topics:** `docs/setup/06-argocd-bootstrap.md`
+Complexity: M  
+Estimated effort: 1–2 sessions  
+Prerequisites: Phase 3  
+Milestone: toward M2  
+Setup Guide topics: `docs/setup/06-argocd-bootstrap.md`
 
 ### Objectives
 
-- Bootstrap Argo CD; root app-of-apps; ApplicationSets for platform and workloads; sync waves; prod **manual** sync.
+- Bootstrap Argo CD; root app-of-apps; ApplicationSets for platform and workloads; sync waves; **manual prod sync**.
 
 ### Tasks
 
@@ -497,11 +498,11 @@ Wait before Phase 5.
 
 ## Phase 5: Security baseline
 
-**Complexity:** M  
-**Estimated effort:** 1–2 sessions  
-**Prerequisites:** Phase 4  
-**Milestone:** toward M2  
-**Setup Guide topics:** `docs/setup/07-security-baseline.md`
+Complexity: M  
+Estimated effort: 1–2 sessions  
+Prerequisites: Phase 4  
+Milestone: toward M2  
+Setup Guide topics: `docs/setup/07-security-baseline.md`
 
 ### Objectives
 
@@ -542,21 +543,21 @@ Wait before Phase 6.
 
 ## Phase 6: Observability baseline
 
-**Complexity:** M  
-**Estimated effort:** 1–2 sessions  
-**Prerequisites:** Phase 5  
-**Milestone:** **M2**  
-**Setup Guide topics:** `docs/setup/08-observability.md`
+Complexity: M  
+Estimated effort: 1–2 sessions  
+Prerequisites: Phase 5  
+Milestone: M2  
+Setup Guide topics: `docs/setup/08-observability.md`
 
 ### Objectives
 
-- Deploy Prometheus, Grafana, Alertmanager, Loki; Grafana at `grafana.boutique.biroltilki.art`; one critical alert delivered by **email**.
+- Deploy Prometheus, Grafana, Alertmanager, Loki; Grafana at `grafana.boutique.biroltilki.art`; one critical alert delivered by email.
 
 ### Tasks
 
 - `gitops/platform/monitoring/` kube-prometheus-stack + Loki values (retention caps).
 - Grafana Ingress ACM.
-- Alertmanager **email** receiver config via ESO (SMTP credentials in Secrets Manager/SSM — no secrets in Git).
+- Alertmanager email receiver config via ESO (SMTP credentials in Secrets Manager/SSM — no secrets in Git).
 - Runbook: `docs/runbooks/alerting.md`.
 
 ### Expected outputs
@@ -580,17 +581,17 @@ Wait before Phase 6.
 
 ### Approval gate
 
-**M2 FC review** then wait before Phase 7.
+M2 FC review, then wait before Phase 7.
 
 ---
 
 ## Phase 7: Boutique Helm charts + env overlays
 
-**Complexity:** L  
-**Estimated effort:** 2–3 sessions  
-**Prerequisites:** Phase 6  
-**Milestone:** toward M3  
-**Setup Guide topics:** `docs/setup/09-boutique-charts.md`
+Complexity: L  
+Estimated effort: 2–3 sessions  
+Prerequisites: Phase 6  
+Milestone: toward M3  
+Setup Guide topics: `docs/setup/09-boutique-charts.md`
 
 ### Objectives
 
@@ -600,7 +601,7 @@ Wait before Phase 6.
 
 - Charts under `charts/{frontend,productcatalogservice,cartservice,checkoutservice,currencyservice,paymentservice,shippingservice}/` (+ Redis dependency for cart).
 - `gitops/envs/{dev,stage,prod}/` values and digest pins.
-- **Bootstrap (required before first CI):** one-time build/pull → push of the 7 service images to ECR by digest; record digests in `gitops/envs/dev/` so Argo can sync without waiting for the full GitLab pipeline. Document exact commands in Setup Guide `09`.
+- Bootstrap (required before first CI): one-time build/pull → push of the 7 service images to ECR by digest; record digests in `gitops/envs/dev/` so Argo can sync without waiting for the full GitLab pipeline. Document exact commands in Setup Guide `09`.
 - Workload ApplicationSet paths.
 - ServiceMonitors where useful.
 
@@ -618,7 +619,7 @@ Wait before Phase 6.
 ### Risks for this phase
 
 - Checkout needs payment/shipping wiring — include both charts; fix values/service names.
-- Ordering vs CI — **bootstrap ECR digests first** (locked); then Phase 8 takes over ongoing digests.
+- Ordering vs CI — bootstrap ECR digests first (locked); then Phase 8 takes over ongoing digests.
 
 ### Rollback / cleanup
 
@@ -632,22 +633,22 @@ Wait before Phase 8.
 
 ## Phase 8: GitLab CI digest pipeline
 
-**Complexity:** L  
-**Estimated effort:** 2 sessions  
-**Prerequisites:** Phase 7 (charts exist); Phase 2 OIDC  
-**Milestone:** toward M3  
-**Setup Guide topics:** `docs/setup/10-gitlab-ci-digest.md`
+Complexity: L  
+Estimated effort: 2 sessions  
+Prerequisites: Phase 7 (charts exist); Phase 2 OIDC  
+Milestone: toward M3  
+Setup Guide topics: `docs/setup/10-gitlab-ci-digest.md`
 
 ### Objectives
 
-- Implement test→build→scan→sign→gitops MR; OIDC to ECR; **never** kubectl/argocd in CI.
+- Implement test→build→scan→sign→gitops MR; OIDC to ECR; **CI never deploys** (`kubectl` / `argocd` in CI forbidden).
 
 ### Tasks
 
 - `.gitlab-ci.yml` with pinned Trivy `0.71.0` and cosign `2.4.x`.
 - Jobs: unit/lint as applicable; build; Trivy CRITICAL fail; cosign sign; open MR patching `gitops/envs/dev/**` digests only.
 - Docs: CI contract in `docs/architecture/` or `docs/ci.md`.
-- Signing: **Sigstore keyless** via GitLab OIDC (`id_tokens` / `SIGSTORE_ID_TOKEN`, aud `sigstore`); ADR-0006/0009 records this. Verify with `cosign verify` using GitLab certificate identity claims.
+- Signing: Sigstore keyless via GitLab OIDC (`id_tokens` / `SIGSTORE_ID_TOKEN`, aud `sigstore`); ADR-0006/0009 records this. Verify with `cosign verify` using GitLab certificate identity claims.
 
 ### Expected outputs
 
@@ -676,15 +677,15 @@ Wait before Phase 9.
 
 ## Phase 9: Promotion governance + frontend canary
 
-**Complexity:** L  
-**Estimated effort:** 2 sessions  
-**Prerequisites:** Phase 8  
-**Milestone:** toward M3  
-**Setup Guide topics:** `docs/setup/11-promotion.md`, `docs/setup/12-canary-rollouts.md`
+Complexity: L  
+Estimated effort: 2 sessions  
+Prerequisites: Phase 8  
+Milestone: toward M3  
+Setup Guide topics: `docs/setup/11-promotion.md`, `docs/setup/12-canary-rollouts.md`
 
 ### Objectives
 
-- Digest-copy promotion to stage/prod with CODEOWNERS `@btilki`; document rollback; Argo Rollouts canary for frontend on **stage and prod** (ALB traffic split); abort via digest revert.
+- Digest-copy promotion to stage/prod with CODEOWNERS `@btilki`; document rollback; Argo Rollouts canary for frontend on stage and prod (ALB traffic split); abort via digest revert.
 
 ### Tasks
 
@@ -721,15 +722,15 @@ Wait before Phase 10.
 
 ## Phase 10: Production readiness
 
-**Complexity:** M  
-**Estimated effort:** 1–2 sessions  
-**Prerequisites:** Phase 9  
-**Milestone:** **M3**  
-**Setup Guide topics:** `docs/setup/13-production-readiness.md`
+Complexity: M  
+Estimated effort: 1–2 sessions  
+Prerequisites: Phase 9  
+Milestone: M3  
+Setup Guide topics: `docs/setup/13-production-readiness.md`
 
 ### Objectives
 
-- Complete checklist, architecture diagrams (Mermaid), runbooks; full build→prod path proof. Teardown is **Phase 11** (not optional for short pilots).
+- Complete checklist, architecture diagrams (Mermaid), runbooks; full build→prod path proof. Teardown is Phase 11 (**Phase 11 teardown mandatory** for short pilots).
 
 ### Tasks
 
@@ -737,7 +738,7 @@ Wait before Phase 10.
 - Runbooks: ingress down, Argo sync stuck, Kyverno block, canary abort.
 - Verify ECR scan-on-push; no unsigned/`latest` on prod path.
 - Update `ROADMAP.md` statuses for phases 1–10.
-- Human: end-to-end production path; then **proceed immediately to Phase 11 teardown** (no keep-alive after tests).
+- Human: end-to-end production path; then **Phase 11 teardown runs immediately** (no keep-alive after tests).
 
 ### Expected outputs
 
@@ -760,17 +761,17 @@ Wait before Phase 10.
 
 ### Approval gate
 
-**M3 FC review** → **Phase 11 teardown immediately** after tests (mandatory; do not leave cluster running).
+M3 FC review → **Phase 11 teardown runs immediately** after tests (mandatory; do not leave cluster running).
 
 ---
 
 ## Phase 11: Teardown
 
-**Complexity:** M  
-**Estimated effort:** 1 session (~2–4 h)  
-**Prerequisites:** Phase 10 complete (or explicit early abort after any billable phase)  
-**Milestone:** **M4**  
-**Setup Guide topics:** `docs/setup/14-teardown.md`
+Complexity: M  
+Estimated effort: 1 session (~2–4 h)  
+Prerequisites: Phase 10 complete (or explicit early abort after any billable phase)  
+Milestone: M4  
+Setup Guide topics: `docs/setup/14-teardown.md`
 
 ### Objectives
 
@@ -778,14 +779,14 @@ Wait before Phase 10.
 
 ### Tasks
 
-- Author `docs/runbooks/teardown.md` and `docs/setup/14-teardown.md` with **ordered** steps.
+- Author `docs/runbooks/teardown.md` and `docs/setup/14-teardown.md` with ordered steps.
 - Human execute (guide is source of truth):
   1. Disable GitLab schedules / protect against re-pipeline pushes if needed
   2. Delete/prune Argo Applications (workloads → platform → bootstrap) so ALBs/TargetGroups/PVCs release
   3. Confirm Load Balancers and ENIs gone (or note leftovers)
   4. `terraform destroy` in `terraform/envs/prod/` (EKS, nodes, NAT, VPC, IAM roles as coded)
   5. Empty/delete ECR images if repos retained or destroy ECR via Terraform
-  6. Decide remote state bucket/table: empty + destroy **last** (or retain empty state intentionally — document choice)
+  6. Decide remote state bucket/table: empty + destroy last (or retain empty state intentionally — document choice)
   7. Remove ACM unused certs / confirm Route53 records cleaned by external-dns before destroy
 - Update `ROADMAP.md` Phase 11 ✅; note destroy timestamp in checklist appendix.
 
@@ -839,7 +840,7 @@ Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
 | S | < 2 h; few moving parts; easily reversible |
 | M | 2–6 h; multiple components; some state |
 | L | 6–12 h; significant state; debugging likely |
-| XL | 12+ h or high blast radius — **none** if Phases 2/7/8 not combined |
+| XL | 12+ h or high blast radius — none if Phases 2/7/8 not combined |
 
 ---
 
@@ -849,13 +850,13 @@ Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
 - [ ] Hostnames live with ACM+ALB; cert-manager installed
 - [ ] Argo app-of-apps + ApplicationSet; prod manual sync
 - [ ] Kyverno/ESO/NetworkPolicy enforced
-- [ ] Prometheus + Loki + Grafana + Alertmanager (**email**) operational
+- [ ] Prometheus + Loki + Grafana + Alertmanager (email) operational
 - [ ] 7 Boutique services (+ Redis) on GitOps digests; storefront hostnames work
 - [ ] GitLab CI: scan→sign→digest MR only; no cluster deploy from CI
 - [ ] Promotion with `@btilki`; rollback via git revert documented and tested
-- [ ] Frontend canary on stage **and** prod
+- [ ] Frontend canary on stage and prod
 - [ ] PRODUCTION_CHECKLIST complete
-- [ ] Teardown runbook executed **immediately after tests** (Phase 11 mandatory)
+- [ ] Teardown runbook executed immediately after tests (**Phase 11 teardown mandatory**)
 
 ---
 
@@ -870,7 +871,7 @@ Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
 | 3 | Ingress DNS TLS | ⬜ | 05 | HTTPS smoke |
 | 4 | Argo CD | ⬜ | 06 | root app Synced; prod manual |
 | 5 | Security | ⬜ | 07 | deny `:latest` |
-| 6 | Observability | ⬜ | 08 | Grafana + **email** test alert |
+| 6 | Observability | ⬜ | 08 | Grafana + email test alert |
 | 7 | Boutique | ⬜ | 09 | dev hostname |
 | 8 | GitLab CI | ⬜ | 10 | digest-only MR |
 | 9 | Promotion + canary | ⬜ | 11, 12 | canary + CODEOWNERS |
@@ -890,7 +891,7 @@ See [ROADMAP.md](../../ROADMAP.md) — same statements.
 | 3 | ACM+ALB platform |
 | 4 | Argo CD control plane |
 | 5 | Policy + secrets + NP |
-| 6 | Metrics/logs/alerts (**email**) |
+| 6 | Metrics/logs/alerts (email) |
 | 7 | Boutique on GitOps |
 | 8 | Digest CI |
 | 9 | Promotion + canaries |
@@ -919,7 +920,7 @@ See [ROADMAP.md](../../ROADMAP.md) — same statements.
 
 ## 8. Required Files Inventory (per setup topic)
 
-Timing tags: **SETUP_REQUIRED** | **FEATURE_REQUIRED** | **RELEASE_REQUIRED**
+Timing tags: SETUP_REQUIRED | FEATURE_REQUIRED | RELEASE_REQUIRED
 
 ### Topic 01 — prerequisites
 
@@ -972,7 +973,7 @@ Timing tags: **SETUP_REQUIRED** | **FEATURE_REQUIRED** | **RELEASE_REQUIRED**
 | Path | Timing | Acceptance | Depends on |
 |------|--------|------------|------------|
 | `docs/setup/04-network-eks-ecr-iam.md` | SETUP_REQUIRED | Apply order + validations | 03 |
-| `terraform/modules/network/**` | FEATURE_REQUIRED | VPC, public/private subnets, **1 NAT**, endpoints for S3/ECR | 03 |
+| `terraform/modules/network/**` | FEATURE_REQUIRED | VPC, public/private subnets, 1 NAT, endpoints for S3/ECR | 03 |
 | `terraform/modules/eks/**` | FEATURE_REQUIRED | EKS 1.31, m6i.large NG 2–5 | network |
 | `terraform/modules/ecr/**` | FEATURE_REQUIRED | 7 repos, scan-on-push | — |
 | `terraform/modules/dns/**` | FEATURE_REQUIRED | Zone data + ACM cert for hosts | Route53 |
@@ -1021,13 +1022,13 @@ Timing tags: **SETUP_REQUIRED** | **FEATURE_REQUIRED** | **RELEASE_REQUIRED**
 |------|--------|------------|------------|
 | `docs/setup/08-observability.md` | SETUP_REQUIRED | Stack install + alert test | Phase 5 |
 | `gitops/platform/monitoring/**` | FEATURE_REQUIRED | kube-prometheus-stack + Loki values | — |
-| `docs/runbooks/alerting.md` | FEATURE_REQUIRED | One critical rule; Alertmanager **email** | AM |
+| `docs/runbooks/alerting.md` | FEATURE_REQUIRED | One critical rule; Alertmanager email | AM |
 
 ### Topic 09 — boutique-charts
 
 | Path | Timing | Acceptance | Depends on |
 |------|--------|------------|------------|
-| `docs/setup/09-boutique-charts.md` | SETUP_REQUIRED | Chart create + **bootstrap ECR digests** before first CI | Phase 6 |
+| `docs/setup/09-boutique-charts.md` | SETUP_REQUIRED | Chart create + bootstrap ECR digests before first CI | Phase 6 |
 | `charts/<7 services>/**` | FEATURE_REQUIRED | `image.repository` + `image.digest` | — |
 | `charts/README.md` | FEATURE_REQUIRED | Service map + Redis note | — |
 | `gitops/envs/dev/**` | FEATURE_REQUIRED | Digests + ingress host | charts |
@@ -1041,7 +1042,7 @@ Timing tags: **SETUP_REQUIRED** | **FEATURE_REQUIRED** | **RELEASE_REQUIRED**
 | `docs/setup/10-gitlab-ci-digest.md` | SETUP_REQUIRED | OIDC config UI + pipeline | Phase 2 IAM, Phase 7 charts |
 | `docs/ci.md` | FEATURE_REQUIRED | Contract: digest-only MR | — |
 | `.gitlab-ci.yml` | FEATURE_REQUIRED | test→build→scan→sign→gitops | versions |
-| `docs/adr/0006-cosign-signing-mode.md` | FEATURE_REQUIRED | **Sigstore keyless** via GitLab OIDC (locked) | — |
+| `docs/adr/0006-cosign-signing-mode.md` | FEATURE_REQUIRED | Sigstore keyless via GitLab OIDC (locked) | — |
 
 ### Topic 11 — promotion
 
@@ -1098,10 +1099,10 @@ Timing tags: **SETUP_REQUIRED** | **FEATURE_REQUIRED** | **RELEASE_REQUIRED**
 
 ## Open questions (resolve at named phase)
 
-1. ~~Alertmanager target~~ → **email** (locked)
-2. ~~Cosign mode~~ → **Sigstore keyless** via GitLab OIDC (locked)
-3. ~~Phase 7 bootstrap images~~ → **yes**, one-time ECR digest push before first CI (locked)
-4. ~~After M3~~ → **Phase 11 teardown immediately** after all tests (locked)
+1. ~~Alertmanager target~~ → email (locked)
+2. ~~Cosign mode~~ → Sigstore keyless via GitLab OIDC (locked)
+3. ~~Phase 7 bootstrap images~~ → yes, one-time ECR digest push before first CI (locked)
+4. ~~After M3~~ → **Phase 11 teardown runs immediately** after all tests (locked)
 
 No blocking open questions remain for architecture/plan.
 
@@ -1110,6 +1111,6 @@ No blocking open questions remain for architecture/plan.
 ## Next after plan approval
 
 1. `pi-setup-guide` Phase A — topic catalog (from this cross-reference; includes `14-teardown`)
-2. Setup Phase B — author guide + repo files **per topic** together
+2. Setup Phase B — author guide + repo files per topic together
 3. `fc-implementation` Bootstrap for Setup Phase C execution
 4. FC reviews at M1 (Phase 3), M2 (Phase 6), M3 (Phase 10); M4 teardown validation after Phase 11

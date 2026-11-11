@@ -1,48 +1,58 @@
 # Architecture — boutique-eks-gitops
 
-**Status:** Accepted — M3 + M4 PASS (2026-07-19/20); pilot closed — **AWS cloud deleted** (EKS/VPC/NAT/ALB/ECR, TF backend, SM, ACM, Route53)  
-**Maturity:** Production pilot (single AWS account, single EKS cluster) — **decommissioned**  
-**Region:** `eu-central-1` (when provisioned)  
-**Deep docs:** [docs/architecture/](architecture/README.md)  
-**Plan:** [implementation/plan.md](implementation/plan.md) · **Roadmap:** [../ROADMAP.md](../ROADMAP.md) · **Ops:** [operations/README.md](operations/README.md)
+**Status:** Accepted. Milestone 3 (production-pilot path) and Milestone 4 (clean teardown) are complete.  
+Production pilot closed. The AWS stack was deleted — no live EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from the pilot.  
+Maturity: production pilot — single AWS account, single EKS cluster — decommissioned  
+Region: `eu-central-1` (when provisioned)
+
+[Project README](../README.md) · [Doc index](README.md) · [Deep architecture](architecture/README.md) · [Setup](setup/README.md) · [Roadmap](../ROADMAP.md) · [Operations](operations/README.md)
+
+---
+
+## How to read this document
+
+| If you want… | Stay here for… | Then open… |
+|--------------|----------------|------------|
+| A 10-minute picture | Executive summary and diagram | [ADR-0001](adr/0001-digest-only-gitops.md) |
+| Design and delivery detail | Tradeoffs and deep-dive index | [`architecture/`](architecture/README.md) — especially [05-deployment-flow](architecture/05-deployment-flow.md), [07-security-architecture](architecture/07-security-architecture.md) |
+| Evidence without a cluster | — | [`pilot-claims.md`](pilot-claims.md) |
+| Rebuild | Mapping table (orientation only) | [`setup/README.md`](setup/README.md) |
+
+This file is the architecture summary. Numbered pages under [`architecture/`](architecture/README.md) are the deep reference. Setup steps live only under [`setup/`](setup/README.md).
 
 ---
 
 ## Executive summary
 
-This repository is the **operational control plane** for Online Boutique on Amazon **EKS (Elastic Kubernetes Service)**. **Git is the only authority** for what runs on the cluster. GitLab **CI (Continuous Integration)** publishes an image (default: retag `:bootstrap`; optional: build from the Boutique Git tag), scans (Trivy), signs (cosign), and opens **MRs (Merge Requests)** that change **only image digests**. Argo CD reconciles desired state; it never receives deploy commands from CI.
+This repository is the control plane for Online Boutique on Amazon EKS. **Git is the only authority** for what runs on the cluster. GitLab CI publishes an image (default: retag ECR `:bootstrap`; optional: build from the Boutique Git tag), scans (Trivy), signs (cosign), and opens MRs that change only image digests. Argo CD reconciles desired state; **CI never deploys**.
 
-Three application environments (`dev`, `stage`, `prod`) share one cluster as namespaces. NetworkPolicy denies traffic from other namespaces and allows every port inside the namespace. Sync policy, CODEOWNERS, and manual prod sync are the other boundaries. The claim sheet is [`docs/pilot-claims.md`](pilot-claims.md). Public HTTPS uses **ACM (AWS Certificate Manager)** on **ALB (Application Load Balancer)**. Observability is entirely on-cluster (**Prometheus, Loki, Grafana, Alertmanager → email**). Short pilots end with **Phase 11 ordered teardown immediately after all tests** (no keep-alive). **This pilot’s AWS resources were destroyed 2026-07-19/20** (Appendix T); the live cluster is gone.
+`dev`, `stage`, and `prod` are namespaces on one cluster (cost over blast-radius isolation). Boundaries: NetworkPolicy, sync policy (**manual prod sync**), and CODEOWNERS on prod paths. Public HTTPS uses ACM on ALB. Observability is on-cluster: Prometheus, Loki, Grafana, Alertmanager → email. After validation, this pilot was torn down — see [teardown runbook](runbooks/teardown.md) and checklist Appendix T in [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md).
+
+File-backed claims (no cluster required): [`pilot-claims.md`](pilot-claims.md).
 
 ---
 
-## 1. Requirements (condensed)
+## Requirements (condensed)
 
 | ID | Requirement | Implication |
 |----|-------------|-------------|
-| FR-01 | Terraform foundation | Modular VPC/EKS/ECR/IAM/OIDC + remote state |
-| FR-02 | Ingress/DNS/TLS | LB Controller + external-dns + ACM; cert-manager present |
+| FR-01 | Terraform foundation | Modular VPC / EKS / ECR / IAM / OIDC + remote state |
+| FR-02 | Ingress / DNS / TLS | LB Controller + external-dns + ACM; cert-manager present |
 | FR-03 | Argo GitOps | App-of-apps + ApplicationSet; prod manual sync |
-| FR-04 | Security baseline | Kyverno digest/ECR; ESO; NetworkPolicy |
-| FR-05 | Observability | Prom/Loki/Grafana/AM email — no CW/PD/OTel |
-| FR-06–09 | Boutique + CI + promote + canary | 7 services; digest MRs; stage+prod canary |
-| FR-10–11 | Readiness + teardown | Checklist; ordered destroy |
+| FR-04 | Security baseline | Kyverno digest / ECR; ESO; NetworkPolicy |
+| FR-05 | Observability | Prometheus / Loki / Grafana / Alertmanager → email — no CloudWatch / PagerDuty / OTel |
+| FR-06–09 | Boutique + CI + promote + canary | Seven services; digest MRs; stage + prod canary |
+| FR-10–11 | Checklist + teardown | Production-pilot checklist; ordered destroy |
 
 Full tables: [01-requirements.md](architecture/01-requirements.md)
 
----
-
-## 2–3. Constraints & assumptions (condensed)
-
-**Constraints:** AWS-only; one cluster; cost-sensitive; no static AWS keys; digest-only; CI never deploys; `@btilki` on prod paths.
-
-**Assumptions:** Admin AWS + Route53 `biroltilki.art`; GitLab OIDC; ~low test traffic; SMTP available for Alertmanager.
-
-Details: [01-requirements.md](architecture/01-requirements.md) (constraints/assumptions sections)
+Constraints (short): AWS-only; one cluster; digest-only; **CI never deploys**; `@btilki` on prod paths; no static AWS keys in Git.  
+Assumptions (short): Route53 zone `biroltilki.art`; GitLab OIDC; SMTP for Alertmanager tests.  
+Details: [01-requirements.md](architecture/01-requirements.md)
 
 ---
 
-## 4. High-level architecture
+## High-level architecture
 
 ```mermaid
 graph TB
@@ -86,94 +96,63 @@ graph TB
   ACM --> ALB
 ```
 
-**Alt text:** Users reach ALB over HTTPS; GitLab pushes signed images to ECR and digest MRs to Git; Argo CD pulls Git and syncs platform and env namespaces; Alertmanager emails via SMTP; Terraform state lives in S3.
+**Layers**
 
-| Layer | Components | Responsibility |
-|-------|------------|----------------|
-| Infrastructure | VPC, NAT×1, EKS, ECR, IAM/OIDC/IRSA, ACM, Route53, S3/DDB state | Cloud foundation |
-| Platform | LB Controller, external-dns, cert-manager, Argo CD, Kyverno, ESO, NP, Rollouts | Shared cluster services |
-| Applications | 7 Boutique services + Redis | Storefront workloads per env |
-| Observability | Prometheus, Loki, Grafana, Alertmanager | Metrics, logs, email alerts |
-| CI/CD | GitLab CI, Trivy, cosign, digest MRs | Build → scan → sign → Git only |
+| Layer | Responsibility |
+|-------|----------------|
+| Infrastructure | VPC, single NAT, EKS, ECR, IAM / OIDC / IRSA, ACM, Route53, remote state |
+| Platform | Ingress, Argo CD, Kyverno, ESO, NetworkPolicy, Rollouts, monitoring |
+| Applications | Seven Boutique services + Redis; digest-pinned Helm per env |
+| CI/CD | GitLab: test → build → scan → sign → digest MR only |
+| Observability | Prometheus, Loki, Grafana, Alertmanager (email) |
 
-**Environments:** Same cluster; differ by namespace, Git path `gitops/envs/*`, hostname, sync policy (prod manual), replica/canary settings, CODEOWNERS.
-
-Deep dive: [02-system-context.md](architecture/02-system-context.md), [03-component-design.md](architecture/03-component-design.md)
+Context and components: [02-system-context.md](architecture/02-system-context.md), [03-component-design.md](architecture/03-component-design.md)
 
 ---
 
-## 5–9. Flows & boundaries (pointers)
+## Deep-dive index
 
-| Topic | Doc |
-|-------|-----|
-| Component inventory | [03-component-design.md](architecture/03-component-design.md) |
-| Data / secrets / TF flows | [04-data-flows.md](architecture/04-data-flows.md) |
-| Deploy / promote / rollback | [05-deployment-flow.md](architecture/05-deployment-flow.md) |
-| VPC / ingress / DNS / NP | [06-network-design.md](architecture/06-network-design.md) |
-| Trust zones / IRSA / supply chain | [07-security-architecture.md](architecture/07-security-architecture.md) |
+| Topic | Document |
+|-------|----------|
+| Data / secrets / Terraform flows | [04-data-flows.md](architecture/04-data-flows.md) |
+| Deploy, promote, rollback, sync waves | [05-deployment-flow.md](architecture/05-deployment-flow.md) |
+| VPC, ingress, DNS, NetworkPolicy | [06-network-design.md](architecture/06-network-design.md) |
+| Trust zones, IRSA, supply chain | [07-security-architecture.md](architecture/07-security-architecture.md) |
+| Failure, scale, DR, rebuild | [08-resilience-and-dr.md](architecture/08-resilience-and-dr.md) |
+| Metrics, logs, alerts | [09-observability.md](architecture/09-observability.md) |
+| Cost and teardown economics | [10-cost-model.md](architecture/10-cost-model.md) |
+| Design decisions | [ADR index](architecture/README.md#architecture-decision-records) |
 
----
-
-## 10–12. Failure, scale, DR (condensed)
-
-- **HA:** Multi-AZ node group; single NAT (cost tradeoff — AZ NAT loss impacts egress).
-- **Scale:** Cluster ASG 2–5× `m6i.large`; HPA optional later; Prom/Loki retention capped.
-- **DR (pilot):** Rebuild from Git + Terraform; RTO hours not minutes; no multi-region.
-- **Teardown:** Phase 11 ordered destroy — [10-cost-model.md](architecture/10-cost-model.md)
-
-Full: [08-resilience-and-dr.md](architecture/08-resilience-and-dr.md)
+Resilience (summary): multi-AZ nodes; single NAT (cost tradeoff). DR = rebuild from Git + Terraform, not multi-region failover.  
+Cost (summary): ~$350–500/mo if left running; ~$30–45 for a short pilot with teardown — see [10-cost-model.md](architecture/10-cost-model.md).
 
 ---
 
-## 13–14. Observability & cost (condensed)
+## Key tradeoffs
 
-- Metrics/logs/alerts on-cluster; **no** distributed tracing in v1.
-- Critical alert: shop/ingress down → **email**.
-- ~$350–500/mo if left up; ~$30–45 for 2-day pilot with teardown.
+| Decision | Chosen | Rejected | Why |
+|----------|--------|----------|-----|
+| Deploy authority | GitOps pull (Argo) | CI `kubectl` push | Audit + drift control |
+| Env isolation | Namespaces | Three clusters | Cost |
+| TLS | ACM + ALB | cert-manager as primary public TLS | Fewer moving parts |
+| Observability | Prometheus / Loki / Alertmanager on cluster | CloudWatch / PagerDuty / OTel | Cost + simplicity |
+| Images | Digest-only | Tags / `:latest` | Immutability |
 
-Full: [09-observability.md](architecture/09-observability.md), [10-cost-model.md](architecture/10-cost-model.md)
+Recorded decisions: [ADR-0001](adr/0001-digest-only-gitops.md) through [ADR-0010](adr/0010-edge-waf-and-falco.md) — index in [architecture/README.md](architecture/README.md).
 
----
-
-## 15. Key tradeoffs
-
-| Decision | Chosen | Rejected | Why | Cost of choice |
-|----------|--------|----------|-----|----------------|
-| Deploy authority | GitOps pull (Argo) | CI `kubectl` push | Audit + drift control | Argo ops skill |
-| Env isolation | Namespaces | 3 clusters | Cost | Shared blast radius |
-| TLS | ACM + ALB | cert-manager DNS-01 primary | Fewer moving parts | ACM dependency |
-| Observability | Prom/Loki/AM | CloudWatch/PagerDuty/OTel | Cost + simplicity | Self-operate stack |
-| Images | Digest-only | Tags/`latest` | Immutability | CI must patch digests |
-
-Proposed ADRs: see [architecture/README.md](architecture/README.md#adr-recommendations)
+Out of scope for this pilot: service mesh, multi-region, CloudWatch / PagerDuty / OTel as primary paths.
 
 ---
 
-## 16. Future enhancements
+## Hostnames (locked)
 
-| Enhancement | Prerequisite | Effort | Roadmap |
-|-------------|--------------|--------|---------|
-| Second EKS (prod split) | Stable ApplicationSet | L | Deferred |
-| Remaining Boutique services | Charts + digests | M | Deferred |
-| OTel / Tempo | Obs stable | M | Deferred |
-| Service mesh | Explicit need | XL | Out |
-| Multi-region DR | Multi-cluster | XL | Out |
+`argocd.boutique.biroltilki.art` · `grafana.boutique.biroltilki.art` · `dev-boutique` / `stage-boutique` / `boutique.biroltilki.art` — detail: [dns-and-tls.md](dns-and-tls.md) · [ADR-0004](adr/0004-dns-hostname-scheme.md)
 
 ---
 
-## DNS (locked)
+## Component → repo → setup topic
 
-```text
-argocd.boutique.biroltilki.art
-grafana.boutique.biroltilki.art
-dev-boutique.biroltilki.art
-stage-boutique.biroltilki.art
-boutique.biroltilki.art
-```
-
----
-
-## Mapping (component → repo → setup)
+Orientation only — steps live in [`setup/`](setup/README.md).
 
 | Component | Repo path | Setup topic |
 |-----------|-----------|-------------|
@@ -187,20 +166,5 @@ boutique.biroltilki.art
 | Boutique | `charts/`, `gitops/envs/` | 09 |
 | GitLab CI | `.gitlab-ci.yml` | 10 |
 | Promotion / canary | `docs/promotion.md`, `gitops/platform/argo-rollouts/` | 11, 12 |
-| Checklist | `docs/PRODUCTION_CHECKLIST.md` | 13 |
+| Production-pilot checklist | `docs/PRODUCTION_CHECKLIST.md` | 13 |
 | Teardown | `docs/runbooks/teardown.md` | 14 |
-
----
-
-## Quality checklist
-
-- [x] Every component maps to a requirement
-- [x] Out-of-scope not designed in (mesh, CW, PD, OTel, multi-region)
-- [x] Diagrams include prose descriptions
-- [x] Security covers secrets and identity
-- [x] Failure scenarios include detection and recovery
-- [x] Cost section has realistic estimates
-- [x] Tradeoffs name rejected alternatives
-- [x] Maps to approved repository structure
-- [x] Setup Guide topics derivable
-- [x] Maturity = production pilot (honest single-cluster limits)

@@ -1,21 +1,19 @@
 # What this pilot claims
 
-**Audience:** Someone defending this repository in a DevOps interview  
-**Status:** Closed pilot. AWS resources were destroyed on 2026-07-19/20. Nothing in this file requires a new cluster.  
-**Evidence date:** 2026-07-19 (M3) and 2026-07-20 (M4)
+For anyone defending this repository in a DevOps interview. Closed pilot: AWS resources were destroyed on 2026-07-19/20. Nothing here requires a new cluster. Evidence from 2026-07-19 (M3) and 2026-07-20 (M4).
 
-Say this first: GitLab proposes image digests, Git stores them, and Argo CD is the reconciler. The pilot proved that path once, then the cloud resources were removed.
+GitLab proposes image digests, Git stores them, and Argo CD reconciles. The pilot proved that path once, then the cloud resources were removed.
 
 ## Proven on 19 July 2026
 
 - EKS 1.31 in `eu-central-1`, three nodes, digest-pinned Boutique pods.
 - GitLab OIDC to ECR. CI did not call the cluster API.
-- Kyverno **Enforce** for `:latest`, required digests, and the ECR allowlist.
+- Kyverno Enforce for `:latest`, required digests, and the ECR allowlist.
 - Promotion `dev → stage → prod`, CODEOWNERS on prod, manual prod sync.
 - Frontend canary with timed ALB weights on stage and prod, then a `git revert` rollback.
 - Teardown completed. The checklist is [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md).
 
-## What a reader can check with no cluster
+## Verifiable without a cluster
 
 | Control | File | Claim that matches the file |
 |---------|------|-----------------------------|
@@ -45,4 +43,4 @@ Say this first: GitLab proposes image digests, Git stores them, and Argo CD is t
 
 ## Left for a rebuild you choose later
 
-Private API CIDR, KMS encryption for Kubernetes secrets, `Enforce` on signature verify, metric analysis on the canary, and an EKS version past 1.31. Those edits belong in Git only after you decide to run them. This page does not mark them done.
+Private API CIDR, KMS encryption for Kubernetes secrets, Enforce on signature verify, metric analysis on the canary, and an EKS version past 1.31. Those edits belong in Git only after you decide to run them. This page does not mark them done.

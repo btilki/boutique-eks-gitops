@@ -4,17 +4,17 @@ Audience: L2 — Implementer / FC reviewer
 Estimated time: 1–2 hours  
 Prerequisites: [12 — Canary rollouts](12-canary-rollouts.md) complete (stage + prod canary proven or ready)  
 Creates / owns: [`docs/PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md), runbooks set under [`docs/runbooks/`](../runbooks/), ROADMAP status update at sign-off  
-**Milestone:** **M3 — Production path proven**
+Milestone: M3 — Production path proven
 
 ---
 
 ## Topic goal
 
-Prove the full production path with evidence: checklist green, runbooks usable, digest → promote → prod manual sync + canary — then proceed **immediately** to teardown (Topic 14).
+Prove the full production path with evidence: checklist green, runbooks usable, digest → promote → prod manual sync + canary — then proceed **immediately to teardown (Topic 14)**.
 
 ## Why this topic is required
 
-FR-10 requires operability artifacts and a demonstrated path. Short pilots must not claim “done” without evidence, and must not leave billables running after tests (FR-11 / Topic 14).
+FR-10 requires operability artifacts and a demonstrated path. Short pilots must not claim “done” without evidence, and **must not leave billables running** after tests (FR-11 / Topic 14).
 
 ## Before you begin
 
@@ -32,7 +32,7 @@ FR-10 requires operability artifacts and a demonstrated path. Short pilots must 
 
 ### Goal
 
-Complete [`docs/PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md) sections **A–D** with evidence notes.
+Complete [`docs/PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md) sections A–D with evidence notes.
 
 ### Why this step is required
 
@@ -67,7 +67,7 @@ Open the checklist in your editor; tick items only when evidence is recorded.
 
 ### Expected output
 
-Sections A–D mostly green; gaps explicitly listed (must be zero Must gaps for PASS).
+Sections A–D mostly green; gaps explicitly listed (**zero Must gaps** required for PASS).
 
 ### Validation
 
@@ -130,7 +130,7 @@ N/A — docs review.
 
 ### Expected output
 
-Checklist **D3** evidence = runbooks index path + date reviewed.
+Checklist D3 evidence = runbooks index path + date reviewed.
 
 ### Validation
 
@@ -163,7 +163,7 @@ Runbooks must not instruct static AWS keys or cluster deploy from CI.
 
 ### Goal
 
-Fill checklist section **E** with one full production path: CI digest MR → promote stage → promote prod (CODEOWNERS) → manual sync → canary → storefront OK.
+Fill checklist section E with one full production path: CI digest MR → promote stage → promote prod (CODEOWNERS) → manual sync → canary → storefront OK.
 
 ### Why this step is required
 
@@ -202,7 +202,7 @@ Optional recovery proof: one `git revert` or canary abort + revert ([rollback.md
 
 ### Expected output
 
-Section **E** fully filled; path owner + date set.
+Section E fully filled; path owner + date set.
 
 ![Online Boutique storefront — `boutique.biroltilki.art` (prod)](../../assets/images/setup/13-boutique-prod-homepage.png)
 
@@ -237,7 +237,7 @@ Prod promote still requires `@btilki`; the production-path proof does not bypass
 
 ### Goal
 
-Sign the checklist PASS/FAIL; on PASS mark ROADMAP phases **1–10** ✅ and start Topic 14 **immediately**.
+Sign the checklist PASS/FAIL; on PASS mark ROADMAP phases 1–10 ✅ and **start Topic 14 immediately**.
 
 ### Why this step is required
 
@@ -259,7 +259,7 @@ FC review at M3: confirm checklist evidence, then approve teardown start.
 
 ### Expected output
 
-- Checklist **M3 result = PASS**
+- Checklist M3 result = PASS
 - `ROADMAP.md` phases 1–10 ✅; Current focus → Topic 14
 - Operator starts [`14-teardown.md`](14-teardown.md) the same day
 
@@ -324,4 +324,4 @@ Teardown reduces attack surface and bill — treat as security hygiene.
 
 ## Next topic
 
-**[14 — Teardown](14-teardown.md)** — run **immediately** after tests (Milestone M4).
+**[14 — Teardown](14-teardown.md)** — run immediately after tests (Milestone M4).

@@ -1,8 +1,6 @@
 # boutique-eks-gitops
 
-**Production-pilot GitOps platform for Online Boutique on Amazon EKS — Git is the only deploy authority.**
-
-Part of the [DevOps Engineering Playbook](https://github.com/btilki/devops-engineering-playbook) · Author: [Birol Tilki](https://www.linkedin.com/in/birol-tilki-48731326/)
+Production-pilot GitOps platform for Online Boutique on Amazon EKS — Git is the only deploy authority.
 
 [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.9-purple.svg)](https://www.terraform.io/)
 [![EKS](https://img.shields.io/badge/EKS-1.31-FF9900.svg)](https://aws.amazon.com/eks/)
@@ -11,17 +9,34 @@ Part of the [DevOps Engineering Playbook](https://github.com/btilki/devops-engin
 [![Maturity](https://img.shields.io/badge/maturity-production%20pilot-blue.svg)](docs/ARCHITECTURE.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-> Version badges above reflect the locked pin matrix in [`docs/versions.md`](docs/versions.md). CI status badges are omitted (use GitLab pipelines).
+> **Status:** Production pilot closed. Digest MR → promote → prod (manual sync and canary) ran end to end; then all AWS billable resources were destroyed. No live cluster. To run again, follow [`docs/setup/`](docs/setup/).
 
-### At a glance (30 seconds)
+---
+
+## At a glance
 
 | | |
 |-|-|
-| **What** | Digest-only GitOps on Amazon EKS for a scoped Online Boutique workload |
-| **Hard rule** | **CI never deploys** — pipelines open digest MRs; Argo CD reconciles from Git |
-| **Proven** | Multi-AZ pilot (M3+M4 PASS); AWS resources **torn down** after validation |
-| **Stack** | Terraform · EKS 1.31 · Argo CD · Rollouts · Kyverno · Prom/Loki/Grafana |
-| **Start reading** | Diagram below → [`docs/pilot-claims.md`](docs/pilot-claims.md) → [`docs/adr/0001-digest-only-gitops.md`](docs/adr/0001-digest-only-gitops.md) |
+| What | Digest-only GitOps on one EKS cluster in `eu-central-1` |
+| Hard rule | **CI never deploys** — GitLab CI opens digest MRs; Argo CD reconciles from Git |
+| Scope | Production pilot — one account, one region; not multi-region HA |
+| Stack | Terraform · EKS 1.31 · Argo CD · Rollouts · Kyverno · Prometheus / Loki / Grafana |
+
+---
+
+## Where to start
+
+| I want to… | Read |
+|------------|------|
+| Understand the project in ~10 minutes | This page → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) → [ADR-0001: digest-only GitOps](docs/adr/0001-digest-only-gitops.md) |
+| Review design and delivery | [`docs/architecture/`](docs/architecture/) · [`docs/promotion.md`](docs/promotion.md) · [`docs/rollback.md`](docs/rollback.md) · [`docs/ci.md`](docs/ci.md) · [`docs/pilot-claims.md`](docs/pilot-claims.md) |
+| Rebuild or operate the platform | [`docs/setup/`](docs/setup/) (topics 01–14) · [`docs/versions.md`](docs/versions.md) · [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) · [`docs/runbooks/`](docs/runbooks/README.md) |
+
+Full index: [`docs/README.md`](docs/README.md)
+
+---
+
+## GitOps flow (summary)
 
 ```mermaid
 flowchart LR
@@ -34,371 +49,79 @@ flowchart LR
   Users((Users)) -->|HTTPS ACM+ALB| Dev & Stage & Prod
 ```
 
-Full design: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · Deep dive: [`docs/architecture/`](docs/architecture/) · Playbook brief: [featured project](https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md)
+Promotion: `dev → stage → prod` (digest-only MRs; **manual Argo sync for prod**). Details: [`docs/architecture/05-deployment-flow.md`](docs/architecture/05-deployment-flow.md).
 
 ---
 
-## 1. Project Overview
+## Repository map and navigation
 
-This repository is the **operational control plane** for running a scoped Online Boutique workload on a single **AWS (Amazon Web Services)** **EKS (Elastic Kubernetes Service)** cluster in `eu-central-1`. Engineers change what runs in the cluster by merging Git changes — primarily **image digest** updates. GitLab **CI (Continuous Integration)** publishes an image (default: retag the ECR `:bootstrap` image; optional: build from the Boutique Git tag), scans, and signs it, then opens a digest-only **MR (Merge Request)**. It never runs `kubectl apply` or `argocd sync` against the cluster. What that sentence includes, and what it leaves out, is [`docs/pilot-claims.md`](docs/pilot-claims.md).
+Use this map for repository layout, platform components, and where each engineering area lives.
 
-**Audience:** platform engineers, **SRE (Site Reliability Engineering)**/**GitOps (Git as the deploy authority)** practitioners, and operators running or reviewing an AWS/GitOps production path.
-
-**Maturity:** production **pilot** (completed) — multi-AZ nodes, digest promotion, security baseline, and on-cluster observability were proven; **not** multi-account or multi-region HA. **M3 + M4 PASS** (2026-07-19/20): production path proven; **AWS cloud resources fully destroyed** (no live EKS/VPC/NAT/ALB/ECR/TF backend/ACM/Route53 zone).
-
-**Outcomes**
-
-- Digest-only releases with reviewable promotion `dev → stage → prod`
-- Argo CD app-of-apps + ApplicationSet; **manual sync for prod**
-- Kyverno, External Secrets, NetworkPolicy baseline
-- Prometheus, Loki, Grafana, Alertmanager → **email**
-- Frontend canary on stage **and** prod (Argo Rollouts, timed weights; analysis off)
+![Boutique EKS GitOps Platform — Repository Map and Navigation](assets/images/aws-eks-gitops-platform-architecture.png)
 
 ---
 
-## 2. Architecture
+## What the pilot demonstrated
 
-| Layer | Responsibility |
-|-------|----------------|
-| **Infrastructure** | Terraform: VPC (1× NAT), EKS 1.31, ECR, IAM OIDC/IRSA, ACM/Route53 data, remote state |
-| **Platform** | LB Controller, external-dns, cert-manager, Argo CD, Kyverno, ESO, NetworkPolicy, Rollouts, monitoring |
-| **Applications** | 7 Boutique services + Redis via Helm; env overlays pin digests |
-| **CI/CD** | GitLab CI: test → build → Trivy → cosign → SBOM attest → digest MR |
-| **Observability** | Prometheus + Loki + Grafana + Alertmanager (email); no CloudWatch/PagerDuty/OTel in v1 |
+- Digest-only releases with promotion `dev → stage → prod` and manual prod sync
+- Argo CD app-of-apps + ApplicationSet; Kyverno, External Secrets, NetworkPolicy
+- GitLab CI: scan (Trivy) → sign (cosign) → digest MR only (no `kubectl` / `argocd` in CI)
+- On-cluster observability (Prometheus, Loki, Grafana, Alertmanager → email) and frontend canary on stage and prod
+- Ordered teardown after validation (see [`ROADMAP.md`](ROADMAP.md))
 
-**Environments:** `dev`, `stage`, `prod` as namespaces on **one** cluster (cost over blast-radius isolation — see architecture).
-
-Details: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`](docs/architecture/)
+Phase 12 is an optional hardening scaffold in Git (topics 15–19) — enable after a rebuild.
 
 ---
 
-## 3. Features
+## Technology stack
 
-| Domain | Capability | Status |
-|--------|------------|--------|
-| **Infrastructure** | Terraform VPC / EKS / ECR / OIDC / remote state | ✅ Implemented |
-| **Platform** | Ingress (ACM+ALB), external-dns, cert-manager | ✅ Implemented |
-| **GitOps** | Argo CD app-of-apps + ApplicationSet; prod manual sync | ✅ Implemented |
-| **GitOps (Phase 12)** | AppProjects; Dex/SSO + notifications examples | 🚧 Scaffold |
-| **Security** | Kyverno digest/ECR, ESO, NetworkPolicy | ✅ Implemented |
-| **Security (Phase 12)** | Signature/SBOM Audit policies; WAF/Falco stubs | 🚧 Scaffold |
-| **Observability** | Prom / Loki / Grafana / AM email | ✅ Implemented |
-| **Applications** | 7 Boutique Helm charts + Redis; boutique hostnames | ✅ Implemented |
-| **CI/CD** | Digest-only MRs; Sigstore keyless cosign; Trivy CRITICAL | ✅ Implemented |
-| **CI/CD (Phase 12)** | SBOM attest; Gitleaks/Checkov/policy_test | 🚧 Scaffold |
-| **Delivery** | Promotion governance; frontend canary stage+prod | ✅ Implemented |
-| **Delivery (Phase 12)** | AnalysisTemplates (opt-in) | 🚧 Scaffold |
-| **Ops** | [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) M3 + M4 PASS (Appendix T) | Topic 14 ✅ |
+| Area | Choices |
+|------|---------|
+| Cloud / region | AWS `eu-central-1` |
+| IaC | Terraform ≥ 1.9 |
+| Kubernetes | EKS 1.31, Helm 3.16.x |
+| GitOps / delivery | Argo CD, Argo Rollouts |
+| Policy / secrets | Kyverno, External Secrets Operator |
+| Ingress / TLS | AWS LB Controller, external-dns, ACM |
+| CI / supply chain | GitLab CI, ECR, Trivy, Sigstore cosign |
+| Observability | kube-prometheus-stack, Loki, Grafana |
 
-
-Legend: ✅ Implemented (pilot-proven) · 🚧 Scaffold (in-repo; enable after rebuild) · ⬜ Not started · ❌ Out of scope (mesh, CloudWatch, PagerDuty, OTel, multi-region)
+Pins and rationale: [`docs/versions.md`](docs/versions.md) · [`docs/architecture/README.md`](docs/architecture/README.md)
 
 ---
 
-## 4. Technology Stack
-
-| Layer | Technology | Version / note |
-|-------|------------|----------------|
-| Cloud | AWS `eu-central-1` | — |
-| IaC | Terraform | ≥ 1.9 |
-| Orchestration | Amazon EKS | **1.31** |
-| Nodes | EC2 `m6i.large` ×3 (ASG 2–5) | On-Demand |
-| Packaging | Helm | 3.16.x |
-| GitOps | Argo CD | v2.14.x (pin at bootstrap) |
-| Progressive delivery | Argo Rollouts | v1.8.x (pin) |
-| Policy | Kyverno | 1.16.x |
-| Secrets | External Secrets Operator | chart pin at Phase 5 |
-| Ingress / DNS / TLS | AWS LB Controller, external-dns, ACM (+ cert-manager installed) | See ADRs |
-| Registry | Amazon ECR | scan-on-push |
-| CI | GitLab CI | OIDC → IAM |
-| Scan / sign / SBOM | Trivy **0.71.0**, cosign **2.4.x** keyless + CycloneDX attest | Topic 15 |
-| Observability | kube-prometheus-stack, Loki, Grafana, Alertmanager | email alerts |
-
-Non-obvious choices: [`docs/architecture/README.md`](docs/architecture/README.md) · pins: [`docs/versions.md`](docs/versions.md)
-
----
-
-## 5. Repository Structure
+## Repository layout
 
 ```text
 boutique-eks-gitops/
-├── terraform/           # AWS foundation (modules + envs/prod)
-├── gitops/
-│   ├── bootstrap/       # Argo CD + root app
-│   ├── apps/            # app-of-apps / ApplicationSets
-│   ├── platform/        # ingress, policy, monitoring, rollouts
-│   └── envs/{dev,stage,prod}/  # digest pins + env values
-├── charts/              # Boutique Helm charts (7 services)
-├── docs/                # architecture, plan, setup, operations, runbooks
-├── examples/            # smoke samples (not prod config)
-├── tests/               # helm / policy / smoke checks
-└── .gitlab-ci.yml       # digest pipeline
+├── terraform/        # VPC, EKS, ECR, IAM, remote state
+├── gitops/           # Argo CD desired state (bootstrap, platform, envs)
+├── charts/           # Boutique Helm charts (7 services + Redis)
+├── docs/             # Architecture, setup guide, runbooks, ADRs
+├── tests/            # Policy and lint fixtures
+└── .gitlab-ci.yml    # Digest pipeline (dormant until CI flags are set)
 ```
 
-Full structure blueprint: [`docs/implementation/plan.md`](docs/implementation/plan.md) §7.13. Setup topics: [`docs/setup/`](docs/setup/).
-
 ---
 
-## 6. Prerequisites
-
-- [ ] AWS account with permission to create VPC, EKS, IAM, ECR, ACM (admin or equivalent scoped roles)
-- [ ] Route53 zone for `biroltilki.art`
-- [ ] GitLab project with CI and OIDC federation capability
-- [ ] CLIs per pin matrix: `terraform` ≥ 1.9, `kubectl` 1.31.x, `helm` 3.16.x, AWS CLI
-- [ ] SMTP mailbox for Alertmanager email tests
-- [ ] Budget awareness: ~**$35–45** for a 2-day run with teardown; ~**$350–500/mo** if left up — see [`docs/architecture/10-cost-model.md`](docs/architecture/10-cost-model.md)
-
-Authoritative checklist: [`docs/setup/01-prerequisites.md`](docs/setup/01-prerequisites.md)
-
----
-
-## 7. Quick Start
+## Quick clone
 
 ```bash
 git clone https://github.com/btilki/boutique-eks-gitops.git
 cd boutique-eks-gitops
-# Read the plan and architecture before any apply:
-#   docs/ARCHITECTURE.md
-#   docs/implementation/plan.md
-#   ROADMAP.md
 ```
 
-Mirror / CI remote may also exist on GitLab; GitHub is the public source entry point.
-
-**Do not provision AWS from the README.** Follow the Setup Guide: [`docs/setup/`](docs/setup/).
+Do not provision AWS from this file. Bootstrap and destroy live under [`docs/setup/`](docs/setup/).
 
 ---
 
-## 8. Installation
+## Contributing · License · References
 
-Bootstrap is **phase-ordered** and documented only under `docs/setup/`:
+- Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- Security: [`SECURITY.md`](SECURITY.md)
+- Changelog: [`CHANGELOG.md`](CHANGELOG.md)
+- Roadmap: [`ROADMAP.md`](ROADMAP.md)
 
-| Phase (summary) | Setup topics |
-|-----------------|--------------|
-| Foundation / versions | `01`, `02` |
-| Terraform state + EKS | `03`, `04` |
-| Ingress / DNS / TLS | `05` |
-| Argo CD | `06` |
-| Security baseline | `07` |
-| Observability | `08` |
-| Boutique charts + ECR bootstrap digests | `09` |
-| GitLab CI digest pipeline | `10` |
-| Promotion + canary | `11`, `12` |
-| Production checklist | `13` |
-| **Immediate teardown after tests** | `14` |
+Licensed under Apache License 2.0 — see [`LICENSE`](LICENSE). Upstream app inspiration: [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo).
 
-Index: [`docs/setup/README.md`](docs/setup/README.md)
-
----
-
-## 9. Configuration
-
-| Area | Where | Notes |
-|------|-------|-------|
-| AWS / cluster | `terraform/envs/prod/` | `terraform.tfvars.example` — no secrets committed |
-| Platform | `gitops/platform/*` | Helm values / manifests for shared services |
-| App env values + digests | `gitops/envs/{dev,stage,prod}/` | Promotion = copy digests; prod path CODEOWNERS `@btilki` |
-| Charts | `charts/<service>/values.yaml` | `image.repository` + `image.digest` |
-| Secrets | AWS Secrets Manager / SSM → ESO | **Never** store secrets in Git |
-| Versions | `docs/versions.md` | Pins for CI images and cluster add-ons |
-
----
-
-## 10. Deployment
-
-```text
-build/scan/sign → ECR → digest MR → merge → Argo sync
-dev (auto) → stage (auto/controlled + canary) → prod (CODEOWNERS + manual sync + canary)
-```
-
-Rollback: `git revert` of the digest MR (Argo reconciles).  
-Promotion / rollback docs: [`docs/promotion.md`](docs/promotion.md), [`docs/rollback.md`](docs/rollback.md).
-Plan: [`docs/implementation/plan.md`](docs/implementation/plan.md) · Flow: [`docs/architecture/05-deployment-flow.md`](docs/architecture/05-deployment-flow.md)
-
----
-
-## 11. CI/CD
-
-**Post-teardown:** pipelines are **dormant** unless GitLab CI/CD has `ENABLE_PILOT_CI=true` (full path, needs AWS) or `ENABLE_REPO_GATES=true` (MR test-stage only). See [`docs/ci.md`](docs/ci.md).
-
-| Pipeline concern | Trigger | Behavior |
-|------------------|---------|----------|
-| test | MR / main (when gates enabled) | Helm lint + Gitleaks + Checkov (soft-fail) + policy_test |
-| build → scan → sign → sbom | default branch + `ENABLE_PILOT_CI` | ECR publish, Trivy CRITICAL, cosign, CycloneDX attest |
-| gitops | after sbom | Open MR patching **only** `image.digest` under `gitops/envs/dev/` |
-
-**Hard rule:** no `kubectl` / `argocd sync` in CI for routine deploys.
-
-Entry: [`.gitlab-ci.yml`](.gitlab-ci.yml) · Contract: [`docs/ci.md`](docs/ci.md)
-
----
-
-## 12. GitOps
-
-| Item | Choice |
-|------|--------|
-| Tool | Argo CD |
-| Pattern | App-of-apps + ApplicationSet |
-| Paths | `gitops/bootstrap/`, `gitops/apps/`, `gitops/platform/`, `gitops/envs/` |
-| Prod | `syncPolicy.automated` **absent** — manual sync only |
-| Host | `argocd.boutique.biroltilki.art` |
-
-See [`gitops/README.md`](gitops/README.md) · [`docs/architecture/05-deployment-flow.md`](docs/architecture/05-deployment-flow.md)
-
----
-
-## 13. Monitoring
-
-| Signal | Stack |
-|--------|-------|
-| Metrics | Prometheus (kube-prometheus-stack) |
-| Logs | Grafana Loki |
-| UI | Grafana @ `grafana.boutique.biroltilki.art` |
-| Alerts | Alertmanager → **email** (one critical ingress/shop-down rule first) |
-
-Not in v1: CloudWatch, PagerDuty, OpenTelemetry/traces.
-
-Details: [`docs/architecture/09-observability.md`](docs/architecture/09-observability.md) · Runbook: [`docs/runbooks/alerting.md`](docs/runbooks/alerting.md) *(Phase 6)*
-
----
-
-## 14. Security
-
-| Practice | Implementation |
-|----------|----------------|
-| Least privilege | IRSA for controllers; GitLab OIDC role scoped to ECR (no cluster deploy) |
-| Secrets | ESO ← Secrets Manager/SSM; nothing secret in Git |
-| Supply chain | Trivy CRITICAL on the published digest; Sigstore keyless cosign; SBOM attest. Default publish mode retags `:bootstrap` |
-| Admission | Kyverno **Enforce**: digest required, deny `:latest`, ECR allowlist. Signature and SBOM verify stay **Audit** |
-| Network | Default-deny, then same-namespace (all ports), VPC CIDR ingress, and TCP 80/443 egress |
-| Prod governance | CODEOWNERS `@btilki` on `gitops/envs/prod/**` |
-
-Honest limits, file by file: [`docs/pilot-claims.md`](docs/pilot-claims.md). Namespace detail: [`docs/architecture/07-security-architecture.md`](docs/architecture/07-security-architecture.md).
-
-Policy doc: [`SECURITY.md`](SECURITY.md).
-
----
-
-## 15. Testing
-
-| Type | Where / how |
-|------|-------------|
-| Terraform fmt | `make lint` → `terraform fmt -check -recursive terraform` |
-| Docs presence | `make docs-check` |
-| Helm lint | GitLab CI `helm_lint` job · locally: `helm lint charts/*` |
-| Policy fixtures | `tests/policy/` (sample deny fixtures; Kyverno live policies under `gitops/platform/kyverno/`) |
-| Smoke / e2e | Setup Guide **Validation** sections + [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) |
-| CI gates | Trivy CRITICAL + cosign keyless + digest MR path guards |
-
-Local entry: `make lint` && `make docs-check` (no install/apply bypass).  
-[`tests/README.md`](tests/README.md)
-
----
-
-## 16. Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Pilot claims](docs/pilot-claims.md) | What the files support in an interview, with no cluster running |
-| [Architecture](docs/ARCHITECTURE.md) | System design summary |
-| [Architecture deep dive](docs/architecture/) | Requirements → cost model |
-| [Implementation plan](docs/implementation/plan.md) | Phases, inventories, validation |
-| [Roadmap](ROADMAP.md) | Phase status and milestones |
-| [Changelog](CHANGELOG.md) | Notable changes and recent history |
-| [Setup Guide](docs/setup/) | **Authoritative** bootstrap |
-| [ADRs](docs/adr/) | Design decisions |
-| [Versions](docs/versions.md) | Pin matrix |
-| [Promotion](docs/promotion.md) / [Rollback](docs/rollback.md) | Digest governance |
-| [PRODUCTION_CHECKLIST](docs/PRODUCTION_CHECKLIST.md) | Readiness (M3) |
-| [Operations index](docs/operations/README.md) | Day-2 deploy, DR, incidents, health |
-| [Teardown runbook](docs/runbooks/teardown.md) | Immediate destroy after tests (Topic 14 / M4) |
-| [Runbooks index](docs/runbooks/README.md) | Symptom playbooks: ingress, Argo, Kyverno, canary, alerting |
-| [Cost model](docs/architecture/10-cost-model.md) | 2-day vs monthly estimates |
-
----
-
-## 17. Roadmap
-
-| Phase | Title | Status |
-|-------|--------|--------|
-| 1 | Foundation | ✅ |
-| 2 | AWS foundation (Terraform) | ✅ |
-| 3 | Ingress, DNS, TLS | ✅ |
-| 4 | Argo CD bootstrap | ✅ |
-| 5 | Security baseline | ✅ |
-| 6 | Observability | ✅ |
-| 7 | Boutique charts + ECR digest bootstrap | ✅ |
-| 8 | GitLab CI digest pipeline | ✅ |
-| 9 | Promotion + frontend canary | ✅ |
-| 10 | Production readiness (M3) | ✅ |
-| 11 | Teardown (immediate after tests) | ✅ |
-| 12 | GitOps hardening scaffolds (Topics 15–19) | 🚧 Scaffold |
-
-Milestones: **M1–M4** complete — details in [`ROADMAP.md`](ROADMAP.md). Phase 12 is **in-repo scaffold only** (no live AWS).
-
----
-
-## 18. Contributing
-
-1. One phase / Setup topic at a time; do not skip the Setup Guide order.  
-2. Prefer small MRs; digest promotion MRs must touch only digest fields.  
-3. Prod path changes require `@btilki` (CODEOWNERS).  
-4. Never commit secrets or long-lived AWS keys.
-
-Full guide: [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
----
-
-## 19. License
-
-Licensed under the **Apache License, Version 2.0**. See [`LICENSE`](LICENSE).
-
-```text
-Copyright 2026 Birol Tilki
-```
-
-Upstream Online Boutique is a separate Google project; this repository’s control-plane configs and docs are covered by the license above.
-
----
-
-## 20. Related projects
-
-| Resource | Link |
-|----------|------|
-| **DevOps Engineering Playbook** (hub) | https://github.com/btilki/devops-engineering-playbook |
-| Playbook project brief | https://github.com/btilki/devops-engineering-playbook/blob/main/featured-projects/boutique-eks-gitops.md |
-| Article E1 — Digest-only GitOps (CI never deploys) | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E1.md |
-| Article E2 — Argo Rollouts canary | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E2.md |
-| Article E3 — Cost-honest EKS teardown | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/E3.md |
-| Article X1 — Online Boutique on EKS, GKE, and AKS | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/X1.md |
-| Article X2 — Single cluster vs multi-cluster | https://github.com/btilki/devops-engineering-playbook/blob/main/articles/X2.md |
-| Sister platform — AKS DevSecOps | https://github.com/btilki/boutique-aks-devsecops |
-| Sister platform — GKE SRE | https://github.com/btilki/boutique-gke-sre |
-| *Practical GitOps on Amazon EKS* (Boutique Production) | https://github.com/btilki/learn-devops-by-building/tree/main/boutique-production/gitops |
-| LinkedIn | https://www.linkedin.com/in/birol-tilki-48731326/ |
-
----
-
-## 21. References
-
-- [Argo CD documentation](https://argo-cd.readthedocs.io/)
-- [Argo Rollouts](https://argo-rollouts.readthedocs.io/)
-- [Kyverno](https://kyverno.io/)
-- [External Secrets Operator](https://external-secrets.io/)
-- [Sigstore / cosign](https://docs.sigstore.dev/)
-- [Trivy](https://trivy.dev/)
-- [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)
-- [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) (upstream app inspiration)
-- Project architecture: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-
----
-
-## DNS (locked)
-
-```text
-argocd.boutique.biroltilki.art
-grafana.boutique.biroltilki.art
-dev-boutique.biroltilki.art
-stage-boutique.biroltilki.art
-boutique.biroltilki.art
-```
+Stack references: [Argo CD](https://argo-cd.readthedocs.io/) · [Argo Rollouts](https://argo-rollouts.readthedocs.io/) · [Kyverno](https://kyverno.io/) · [External Secrets](https://external-secrets.io/) · [cosign](https://docs.sigstore.dev/) · [Trivy](https://trivy.dev/) · [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)

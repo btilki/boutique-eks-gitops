@@ -1,5 +1,7 @@
 # 05 — Deployment flow
 
+How code becomes running digests: CI stops at Git; humans promote; Argo reconciles.
+
 ## Branching and promotion
 
 | Path | Trigger | Result |
@@ -7,10 +9,10 @@
 | Feature / service change | MR → `main` | May rebuild images |
 | CI on successful build | Auto | Digest MR → `gitops/envs/dev/**` only |
 | Promote to stage | Human MR copying digests `dev` → `stage` | Argo auto/controlled sync |
-| Promote to prod | Human MR `stage` → `prod` + **`@btilki` CODEOWNERS** | Argo **manual** sync |
+| Promote to prod | Human MR `stage` → `prod` + `@btilki` CODEOWNERS | **manual prod sync** |
 | Rollback | `git revert` of digest MR | Argo reconciles previous digests |
 
-**Contract:** Promotion MRs change **only** `image.digest` (and explicitly allowed env scalars if documented). No CI `kubectl` / `argocd sync`.
+Promotion MRs change **only** `image.digest` (and explicitly allowed env scalars if documented). **CI never deploys** — no `kubectl` / `argocd sync` from the pipeline.
 
 ## CI stages (GitLab)
 
@@ -18,19 +20,19 @@
 test → build → scan (Trivy 0.71.0) → sign (cosign 2.4.x) → sbom (CycloneDX + attest, Topic 15) → gitops (digest MR)
 ```
 
-Pinned in `docs/versions.md`. Failure at CRITICAL CVE or sign error blocks the digest MR. Signing is **Sigstore keyless** (GitLab OIDC → Fulcio). Phase 7 performs a **one-time ECR digest bootstrap** so Argo can sync before the first full CI run.
+Pinned in `docs/versions.md`. Failure at CRITICAL CVE or sign error blocks the digest MR. Signing is Sigstore keyless (GitLab OIDC → Fulcio). Phase 7 performs a one-time ECR digest bootstrap so Argo can sync before the first full CI run.
 
-Default `BOUTIQUE_BUILD_MODE` is `ecr-bootstrap`: CI retags that bootstrap image and publishes its digest. `BOUTIQUE_BUILD_MODE=git` builds from the Boutique Git tag. Kyverno signature verify stays **Audit** until that Enforce switch is proven ([ADR-0007](../adr/0007-admission-verify-and-sbom.md)).
+Default `BOUTIQUE_BUILD_MODE` is `ecr-bootstrap`: CI retags that bootstrap image and publishes its digest. `BOUTIQUE_BUILD_MODE=git` builds from the Boutique Git tag. Kyverno signature verify stays Audit until that Enforce switch is proven ([ADR-0007](../adr/0007-admission-verify-and-sbom.md)).
 
 ## GitOps sync model
 
 | Layer | Mechanism | Sync |
 |-------|-----------|------|
 | Root | App-of-apps | Automated |
-| Platform | Applications / ApplicationSet | Automated + **sync waves** |
-| Workloads | ApplicationSet per env | dev/stage automated; **prod manual** |
+| Platform | Applications / ApplicationSet | Automated + sync waves |
+| Workloads | ApplicationSet per env | dev/stage automated; **manual prod sync** |
 
-**Sync waves (conceptual):**
+Sync waves (conceptual):
 
 | Wave | Content |
 |------|---------|
@@ -41,7 +43,7 @@ Default `BOUTIQUE_BUILD_MODE` is `ecr-bootstrap`: CI retags that bootstrap image
 
 ## Canary (frontend)
 
-- **Stage and prod** use Argo Rollouts + ALB traffic splitting.
+- Stage and prod use Argo Rollouts + ALB traffic splitting.
 - Steps are timed weights (10, 30, 50, 100). `canary.analysis.enabled` is `false` in the env values. The AnalysisTemplate is in Git and does not gate the rollout.
 - Abort = Git revert of bad digest (Rollout cancels/returns to stable).
 - Prod canary still requires manual Application sync to start reconciliation.

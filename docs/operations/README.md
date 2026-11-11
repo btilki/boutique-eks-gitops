@@ -1,11 +1,13 @@
 # Operations — boutique-eks-gitops
 
-**Audience:** L2–L3 Operator / on-call (solo maintainer: **You**)  
-**Maturity:** Production **pilot** — not enterprise multi-region on-call  
-**Authority:** Day-2 procedures. Bootstrap remains [`docs/setup/`](../setup/). Symptom playbooks remain [`docs/runbooks/`](../runbooks/).  
-**Last reviewed:** 2026-07-19
+Audience: Operator / on-call (solo maintainer: you)  
+Maturity: Production pilot. Enterprise multi-region on-call is out of scope.  
+Authority: Day-2 procedures. Bootstrap remains [`docs/setup/`](../setup/). Symptom runbooks remain [`docs/runbooks/`](../runbooks/).  
+[Doc index](../README.md) · [Architecture](../ARCHITECTURE.md) · [Promotion](../promotion.md) · [Rollback](../rollback.md)
 
-Operations assume Topics **01–13** succeeded at least once. If the cluster is gone, rebuild via Setup Guide, then return here.
+> No live cluster today. The closed pilot destroyed AWS resources after Milestone 4. These pages describe how to operate the platform when it is running again — not how to create it. Rebuild first: [`setup/README.md`](../setup/README.md) (topics 01–14), then use this index and [`runbooks/`](../runbooks/README.md).
+
+When docs conflict: setup wins for bootstrap; runbooks win for symptom steps; this index routes between them.
 
 ---
 
@@ -36,7 +38,7 @@ Operations assume Topics **01–13** succeeded at least once. If the cluster is 
 | GitLab CI → ECR | GitLab + ECR | You | GitLab → CI/CD → Pipelines | Pipeline failed / Trivy CRITICAL |
 | External Secrets / SMTP | `external-secrets` / `monitoring` | You | `kubectl get externalsecret -A` | SecretSynced false |
 
-**Hostnames:** `argocd` · `grafana` · `dev-boutique` · `stage-boutique` · `boutique` — all under `*.biroltilki.art` (see [dns-and-tls](../dns-and-tls.md)).
+Hostnames: `argocd` · `grafana` · `dev-boutique` · `stage-boutique` · `boutique` — all under `*.biroltilki.art` (see [dns-and-tls](../dns-and-tls.md)).
 
 ---
 
@@ -48,7 +50,7 @@ Operations assume Topics **01–13** succeeded at least once. If the cluster is 
 | L2 | You (platform) | > 30 min without mitigation, or data/IAM risk |
 | L3 | AWS account admin (You) | Billing lockout, account IAM break-glass, unable to destroy |
 
-There is **no** PagerDuty. Alertmanager → **email** only ([ADR-0005](../adr/0005-observability-on-cluster.md)).
+There is no PagerDuty. Alertmanager → email only ([ADR-0005](../adr/0005-observability-on-cluster.md)).
 
 ---
 
@@ -77,7 +79,7 @@ There is **no** PagerDuty. Alertmanager → **email** only ([ADR-0005](../adr/00
 | 19 | [Postmortem checklist](19-postmortem-checklist.md) | Yes | Blameless PM |
 | 20 | [Automation opportunities](20-automation-opportunities.md) | Yes | Toil backlog |
 
-**Symptom playbooks (do not duplicate here):** [docs/runbooks/](../runbooks/)
+Symptom playbooks (do not duplicate here): [docs/runbooks/](../runbooks/)
 
 ---
 

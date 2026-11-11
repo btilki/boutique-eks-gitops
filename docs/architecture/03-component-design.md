@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Inventory major components, why each exists, and relationships.
+What runs in the stack, why it is there, and how the pieces connect.
 
 ## Component diagram
 

@@ -11,7 +11,7 @@ Pins: Gitleaks **8.21.2** · Checkov **3.2.334** · Kyverno CLI **1.13.4** ([doc
 
 ## Topic goal
 
-Add **repo security gates** in the GitLab `test` stage: secret scanning (**Gitleaks**), Terraform IaC scanning (**Checkov**), and offline **Kyverno CLI** policy unit tests — without changing digest-only deploy rules or requiring a live cluster to *author* the files.
+Add repo security gates in the GitLab `test` stage: secret scanning (Gitleaks), Terraform IaC scanning (Checkov), and offline Kyverno CLI policy unit tests — **without changing digest-only deploy rules** or requiring a live cluster to author the files.
 
 ## Why this topic is required
 
@@ -26,7 +26,7 @@ Helm lint alone does not catch leaked secrets, risky Terraform defaults, or brok
 **Apply when CI runs again:**
 
 - Either `ENABLE_PILOT_CI=true` (full pipeline after rebuild), or  
-- `ENABLE_REPO_GATES=true` for **MR-only** test-stage jobs **without** AWS/ECR (Topic 16 Step 16.4).
+- `ENABLE_REPO_GATES=true` for MR-only test-stage jobs without AWS/ECR (Topic 16 Step 16.4).
 
 **Idempotent:** Re-running scanners is safe. Checkov ships with `soft_fail: true` until you baseline findings.
 
@@ -186,7 +186,7 @@ GitLab → CI/CD → Pipelines → MR pipeline → gitleaks / checkov / policy_t
 
 ### Security notes
 
-`ENABLE_REPO_GATES` must **not** grant AWS keys. Build jobs still use OIDC only when `ENABLE_PILOT_CI` is on.
+**`ENABLE_REPO_GATES` must not grant AWS keys.** Build jobs still use OIDC only when `ENABLE_PILOT_CI` is on.
 
 ---
 

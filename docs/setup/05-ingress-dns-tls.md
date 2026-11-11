@@ -2,20 +2,20 @@
 
 Audience: L2 — Implementer  
 Estimated time: 1.5–2.5 hours  
-Prerequisites: [04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) complete (nodes Ready, ACM **ISSUED**, IRSA ARNs available)  
+Prerequisites: [04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) complete (nodes Ready, ACM ISSUED, IRSA ARNs available)  
 Creates: Helm-installed AWS LB Controller, external-dns, cert-manager; GitOps values under `gitops/platform/{aws-load-balancer-controller,external-dns,cert-manager}/`; [`docs/dns-and-tls.md`](../dns-and-tls.md); temporary [`examples/smoke-ingress.yaml`](../../examples/smoke-ingress.yaml)  
 Related ADRs: [0003](../adr/0003-tls-acm-alb.md) · [0004](../adr/0004-dns-hostname-scheme.md)  
-**Milestone:** **M1 — Cluster reachable (HTTPS smoke)**
+Milestone: M1 — Cluster reachable (HTTPS smoke)
 
 ---
 
 ## Topic goal
 
-Expose HTTPS on boutique DNS via **ACM (AWS Certificate Manager)** + **ALB (Application Load Balancer)**, with external-dns managing records and **TLS (Transport Layer Security)** terminating on the load balancer, proving the ingress path before Argo CD (Topic 06).
+Expose HTTPS on boutique DNS via ACM and an ALB, with external-dns managing records and TLS terminating on the load balancer — proving the ingress path before Argo CD (Topic 06).
 
 ## Why this topic is required
 
-Without a working Ingress → ALB → ACM → Route53 path, Argo/Grafana/Boutique hostnames cannot be validated. This topic is **Milestone M1**.
+Without a working Ingress → ALB → ACM → Route53 path, Argo, Grafana, and Boutique hostnames cannot be validated. This topic delivers Milestone M1.
 
 ## Before you begin
 
@@ -23,11 +23,11 @@ Without a working Ingress → ALB → ACM → Route53 path, Argo/Grafana/Boutiqu
 - `terraform -chdir=terraform/envs/prod output -raw acm_certificate_arn` and IRSA role outputs work.
 - Helm 3.16.x available (Topic 01).
 - Phase B files for Topic 05 present in the repo.
-- **Cost:** ALB hours while smoke Ingress exists — delete smoke when done; controllers are low incremental cost on existing nodes.
+- ALB hours accrue while the smoke Ingress exists — **delete smoke when done**; controllers add low incremental cost on existing nodes.
 
-**Idempotent:** `helm upgrade --install` is safe to re-run. Re-applying smoke Ingress is safe.
+Idempotent: `helm upgrade --install` and re-applying the smoke Ingress are safe to re-run.
 
-**Note:** Controllers are installed with **Helm** now; Argo Applications under each platform path are adopted in Topic 06 (`TODO(setup:6.5)`).
+Note: controllers are installed with Helm now; Argo Applications under each platform path are adopted in Topic 06 (`TODO(setup:6.5)`).
 
 ---
 
@@ -116,7 +116,7 @@ IRSA roles are scoped; do not annotate app pods with the LB controller role.
 
 ### Goal
 
-Install controller **v2.11.x** via Helm chart **1.11.0** into `kube-system`.
+Install controller v2.11.x via Helm chart 1.11.0 into `kube-system`.
 
 ### Why this step is required
 
@@ -162,7 +162,7 @@ kubectl get ingressclass alb
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | Pods `Unauthorized` / AWS errors | Bad IRSA annotation / trust | Re-check role ARN and SA name `aws-load-balancer-controller` in `kube-system` |
-| Chart version missing | Stale pin / repo outdated | `helm repo update`; use chart **1.11.0** (app **v2.11.0**) — `1.11.4` is not published |
+| Chart version missing | Stale pin / repo outdated | `helm repo update`; use chart 1.11.0 (app v2.11.0) — `1.11.4` is not published |
 
 ### Recovery
 
@@ -186,7 +186,7 @@ Controller can create AWS load balancers — limit who can create Ingresses in l
 
 ### Goal
 
-Install external-dns **v0.15.x** watching Ingresses for zone `biroltilki.art`.
+Install external-dns v0.15.x watching Ingresses for zone `biroltilki.art`.
 
 ### Why this step is required
 
@@ -251,7 +251,7 @@ Keep `txtOwnerId: boutique-eks-gitops` unique per cluster managing this zone.
 
 ### Goal
 
-Install cert-manager **v1.16.x** for platform readiness (not primary public TLS).
+Install cert-manager v1.16.x for platform readiness (not primary public TLS).
 
 ### Why this step is required
 
@@ -315,7 +315,7 @@ Webhook failure can block cert resources; for this pilot, ACM path does not depe
 
 ### Goal
 
-Re-validate ACM certificate is **ISSUED** and document ARN in [`docs/dns-and-tls.md`](../dns-and-tls.md) workflow (already authored).
+Re-validate ACM certificate is ISSUED and document ARN in [`docs/dns-and-tls.md`](../dns-and-tls.md) workflow (already authored).
 
 ### Why this step is required
 
@@ -398,9 +398,9 @@ kubectl -n smoke-m1 get ingress smoke-echo -w
 # Wait until ADDRESS is populated (ALB DNS name). Ctrl+C when set.
 ```
 
-Expected duration: ALB provisioning often **3–8 minutes**; DNS TTL may add 1–2 minutes.
+Expected duration: ALB provisioning often 3–8 minutes; DNS TTL may add 1–2 minutes.
 
-**Cost impact:** Application Load Balancer hourly charge while the Ingress exists.
+Cost impact: ALB hourly charges apply while the Ingress exists.
 
 ### GUI instructions (if applicable)
 
@@ -457,7 +457,7 @@ Prove `https://smoke.boutique.biroltilki.art` returns success over public TLS.
 
 ### Why this step is required
 
-This is the **Milestone M1** acceptance check.
+This is the Milestone M1 acceptance check.
 
 ### Commands
 
@@ -550,7 +550,7 @@ Checklist:
 - [ ] external-dns pods Ready (5.3)
 - [ ] cert-manager pods Ready + CRDs (5.4)
 - [ ] ACM ISSUED (5.5)
-- [ ] Smoke Ingress reached HTTPS 200 (5.7) — **M1**
+- [ ] Smoke Ingress reached HTTPS 200 (5.7) — M1
 - [ ] Smoke namespace deleted (recommended) or deletion time noted
 - [ ] `docs/dns-and-tls.md` reviewed
 
@@ -574,9 +574,9 @@ Confirm no long-lived smoke ALB left forgotten.
 
 ## Topic validation (end-to-end)
 
-Topic 05 / **M1** is complete when Step 5.8 checklist passes.
+Topic 05 / M1 is complete when Step 5.8 checklist passes.
 
-**Cost check:** Delete smoke Ingress/ALB; retain controllers for Topics 06+.
+**Cost check:** **Delete** smoke Ingress/ALB; retain controllers for Topics 06+.
 
 ---
 
@@ -593,6 +593,6 @@ Topic 05 / **M1** is complete when Step 5.8 checklist passes.
 
 ## Next step
 
-**[06 — Argo CD bootstrap](06-argocd-bootstrap.md)** (Phase B next).
+[06 — Argo CD bootstrap](06-argocd-bootstrap.md) (Phase B next).
 
 Argo UI will use `argocd.boutique.biroltilki.art` on this same ACM+ALB path.

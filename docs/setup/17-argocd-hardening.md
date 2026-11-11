@@ -11,7 +11,7 @@ Pins: Argo CD **v2.14.x** / chart **7.8.14** ([docs/versions.md](../versions.md)
 
 ## Topic goal
 
-Harden Argo CD for a fuller GitOps control plane: separate **AppProjects** for platform vs Boutique workloads, and prepare **SSO (Dex + GitLab)** and **Notifications** as merge-ready examples — without enabling IdP/alerts until secrets exist.
+Harden Argo CD for a fuller GitOps control plane: separate AppProjects for platform vs Boutique workloads, and prepare SSO (Dex + GitLab) and Notifications as merge-ready examples — **without enabling IdP or alerts until secrets exist**.
 
 ## Why this topic is required
 
@@ -21,7 +21,7 @@ The pilot used `project: default` and local `admin`. Named projects limit where 
 
 **Scaffold-only:**
 
-- Confirm files under Creates exist; Dex/notifications stay **disabled** in `values.yaml`.
+- Confirm files under Creates exist; Dex/notifications stay disabled in `values.yaml`.
 
 **Apply after cluster rebuild (after Topic 06):**
 
@@ -194,7 +194,7 @@ helm upgrade argocd argo/argo-cd -n argocd --version 7.8.14 \
 
 ### Validation
 
-Login UI shows **GitLab**; local `admin` still works until you remove password login.
+Login UI shows GitLab; local `admin` still works until you remove password login.
 
 ### Common problems
 
@@ -218,7 +218,7 @@ less gitops/bootstrap/argocd/hardening/notifications/values-notifications.yaml.e
 less gitops/bootstrap/argocd/hardening/notifications/configmap.example.yaml
 ```
 
-Enable only after creating `argocd-notifications-secret` (Slack token or SMTP). Prefer starting with **sync failed** triggers only.
+Enable only after creating `argocd-notifications-secret` (Slack token or SMTP). Prefer starting with sync failed triggers only.
 
 ### Security notes
 

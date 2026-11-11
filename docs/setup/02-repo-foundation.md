@@ -10,11 +10,11 @@ Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0002](../adr/0002-si
 
 ## Topic goal
 
-Materialize the control-plane repository spine so Topics 03+ have a stable layout, pinned versions, recorded decisions, and lint hooks — **without** provisioning AWS resources.
+Materialize the control-plane repository spine so Topics 03+ have a stable layout, pinned versions, recorded decisions, and lint hooks — without provisioning AWS resources.
 
 ## Why this topic is required
 
-Terraform modules, GitOps manifests, and CI need an agreed tree and ADRs before the first `terraform apply`. Skipping foundation causes path drift, missing CODEOWNERS on prod, and undocumented decisions.
+Terraform modules, GitOps manifests, and CI need an agreed tree and ADRs before the first `terraform apply`. Skipping foundation leads to path drift, missing CODEOWNERS on prod, and undocumented decisions.
 
 ## Before you begin
 
@@ -24,7 +24,7 @@ Terraform modules, GitOps manifests, and CI need an agreed tree and ADRs before 
 - No `terraform apply` in this topic.
 - Prefer verifying existing files over recreating them by hand.
 
-**Idempotent:** Re-running validation is safe. Re-creating files only if missing.
+Idempotent: re-running validation is safe; re-create files only if missing.
 
 ---
 
@@ -55,7 +55,7 @@ for d in \
 done
 ```
 
-If any path is **MISSING**, create only the missing directory (do not invent alternate layouts):
+If any path is MISSING, create only the missing directory (do not invent alternate layouts):
 
 ```bash
 mkdir -p <MISSING_PATH>
@@ -289,7 +289,7 @@ pre-commit run --all-files
 
 ### GUI instructions (if applicable)
 
-N/A for file presence. GitLab CODEOWNERS enforcement is configured in **Topic 11** (do not block Topic 02).
+N/A for file presence. GitLab CODEOWNERS enforcement is configured in Topic 11 (do not block Topic 02).
 
 ### Expected output
 
@@ -454,7 +454,7 @@ Confirm `backend.hcl` and `*.tfvars` (non-example) are ignored before any state 
 
 Topic 02 is complete when Step 2.7 checklist passes and the foundation MR is merged (or confirmed on your working branch for solo pilot).
 
-**Cost check:** Still no EKS/NAT/ALB from this topic.
+**Cost check:** Still no EKS, NAT, or ALB from this topic.
 
 ---
 
@@ -471,6 +471,6 @@ Topic 02 is complete when Step 2.7 checklist passes and the foundation MR is mer
 
 ## Next step
 
-**[03 — Terraform remote state](03-remote-state.md)** (Phase B authoring next, then Phase C execution).
+[03 — Terraform remote state](03-remote-state.md) (Phase B authoring next, then Phase C execution).
 
 Do not create S3/DynamoDB until Topic 03 guide is approved and you execute its steps.

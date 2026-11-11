@@ -1,10 +1,10 @@
 # 15 — Secret rotation
 
-**Audience:** L3 — Operator  
-**Applies to:** SMTP and future SM secrets  
-**Prerequisites:** AWS Secrets Manager IAM; ESO healthy  
-**Estimated time:** 15–30 min  
-**Risk level:** Medium  
+Audience: Operator  
+Applies to: SMTP and future SM secrets  
+Prerequisites: AWS Secrets Manager IAM; ESO healthy  
+Estimated time: 15–30 min  
+Risk level: Medium  
 
 ## Purpose
 
@@ -12,8 +12,8 @@ Rotate secrets without committing them to Git, via Secrets Manager → External 
 
 ## When to use / When not to use
 
-**Use** on credential leak, SMTP password change, or periodic hygiene.  
-**Do not** put new secrets in `gitops/` values or CI variables as long-lived AWS keys.
+Use on credential leak, SMTP password change, or periodic hygiene.  
+Do not put new secrets in `gitops/` values or CI variables — **never commit secrets**.
 
 ## Prerequisites
 
@@ -24,7 +24,7 @@ Rotate secrets without committing them to Git, via Secrets Manager → External 
 
 ### Step 1: Update Secrets Manager
 
-**GUI:** AWS Console → Secrets Manager → secret → **Retrieve** / **Store new secret value** (password field)
+GUI: AWS Console → Secrets Manager → secret → Retrieve / Store new secret value (password field)
 
 Or CLI:
 
@@ -35,13 +35,13 @@ aws secretsmanager put-secret-value \
   --region eu-central-1
 ```
 
-**Validation:** New version `AWSCURRENT`.
+Validation: New version `AWSCURRENT`.
 
-**Expected outcome:** SM updated; Git unchanged.
+Expected outcome: SM updated; Git unchanged.
 
-**Recovery steps:** Roll SM to previous version if AM auth fails.
+Recovery steps: Roll SM to previous version if AM auth fails.
 
-**Best practices:** Rotate Grafana/Argo admin passwords in-cluster Secrets separately (not SM unless you wire them).
+Best practices: Rotate Grafana/Argo admin passwords in-cluster Secrets separately (not SM unless you wire them).
 
 ### Step 2: Refresh ESO / pods
 
@@ -53,9 +53,9 @@ kubectl -n monitoring annotate externalsecret alertmanager-smtp \
 kubectl -n monitoring rollout restart statefulset/alertmanager-monitoring-alertmanager
 ```
 
-**Validation:** Secret keys present; test alert email (temporary) then disable test rule.
+Validation: Secret keys present; test alert email (temporary) then disable test rule.
 
-**Expected outcome:** AM authenticates to SMTP.
+Expected outcome: AM authenticates to SMTP.
 
 ## End-to-end validation
 

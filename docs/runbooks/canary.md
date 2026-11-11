@@ -1,7 +1,7 @@
 # Runbook — Frontend canary abort / stuck
 
-**Audience:** L2 — Operator  
-**Setup:** Topic 12 · **Rollback:** [`../rollback.md`](../rollback.md)
+Audience: L2 — Operator  
+Setup: Topic 12 · Rollback: [`../rollback.md`](../rollback.md)
 
 ## Purpose
 

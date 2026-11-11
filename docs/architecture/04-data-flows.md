@@ -1,5 +1,7 @@
 # 04 — Data flows
 
+Request, GitOps, infra, secrets, and telemetry paths — each diagram stands alone.
+
 ## Application request flow
 
 ```mermaid

@@ -1,12 +1,10 @@
 # Rollback — Git revert of digest changes
 
-**Audience:** L2 — Implementer / On-call  
-**Setup:** Topic 11 · **ADR:** [0001](adr/0001-digest-only-gitops.md)  
-**Related:** [promotion.md](promotion.md) · [runbooks/alerting.md](runbooks/alerting.md)
+Audience: L2 implementer or on-call · Topic 11 · ADR [0001](adr/0001-digest-only-gitops.md) · Related: [promotion.md](promotion.md), [runbooks/alerting.md](runbooks/alerting.md)
 
 ## Principle
 
-Desired state lives in Git. Rollback = return previous digests via **`git revert`** (or a new MR that restores known-good digests). Argo reconciles. Do **not** `kubectl set image` or force-sync an unreproducible state.
+Desired state lives in Git. Rollback = return previous digests via `git revert` (or a new MR that restores known-good digests). Argo reconciles. Do **not** `kubectl set image` or force-sync an unreproducible state.
 
 ## When to rollback
 
