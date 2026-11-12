@@ -11,7 +11,8 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | I want to… | Read |
 |------------|------|
 | Understand the project quickly | [`ARCHITECTURE.md`](ARCHITECTURE.md) · [ADR-0001](adr/0001-digest-only-gitops.md) |
-| Review design and delivery | [`architecture/`](architecture/README.md) · [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) · [`ci.md`](ci.md) · [`pilot-claims.md`](pilot-claims.md) |
+| See pilot proof / lessons | [`evidence/`](evidence/README.md) · [`lessons-learned.md`](lessons-learned.md) · [`pilot-claims.md`](pilot-claims.md) |
+| Review design and delivery | [`architecture/`](architecture/README.md) · [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) · [`ci.md`](ci.md) |
 | Rebuild or operate | [`setup/`](setup/README.md) (01–14) · [`versions.md`](versions.md) · [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) · [`runbooks/`](runbooks/README.md) |
 
 ---
@@ -23,6 +24,8 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | Architecture summary | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Architecture deep dive | [`architecture/README.md`](architecture/README.md) |
 | Design decisions | [`adr/`](adr/0001-digest-only-gitops.md) |
+| Pilot evidence | [`evidence/README.md`](evidence/README.md) |
+| Lessons learned | [`lessons-learned.md`](lessons-learned.md) |
 | Bootstrap & teardown | [`setup/README.md`](setup/README.md) |
 | Version pins | [`versions.md`](versions.md) |
 | Digest promotion / rollback | [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) |

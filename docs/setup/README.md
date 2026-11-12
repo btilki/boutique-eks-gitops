@@ -20,15 +20,15 @@ Authority: This directory is the **single source of truth** for bootstrap. If RE
 | Estimated calendar time | ~4–8 working sessions (plan-dependent); teardown is mandatory after tests |
 | Estimated cost | ~$35–45 for a ~2-day pilot with teardown; ~$350–500/mo if left running — see [cost model](../architecture/10-cost-model.md) |
 | Who executes | You run every CLI / GUI step |
-| Phase status | Topics 01–14 complete (Milestone 3 and Milestone 4) · pilot closed · Phase 12 scaffold: Topics 15–19 authored |
+| Phase status | Topics **01–14** complete (Milestone 3 and Milestone 4) · pilot closed |
 
 Do not skip topics after an error. Do not replace documented steps with install-all scripts unless explicitly requested.
 
 ---
 
-## Topic sequence
+## Topic sequence (pilot path: 01–14)
 
-Status legend: ⬜ Not started · 🔄 In progress · 🚧 Scaffold (in-repo; enable after rebuild) · ✅ Complete · ⏭️ Skipped (document risk)
+Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Skipped (document risk)
 
 | # | Topic | Guide | Prerequisites | Est. time | Cost impact | Status |
 |---|--------|-------|---------------|-----------|-------------|--------|
@@ -46,20 +46,27 @@ Status legend: ⬜ Not started · 🔄 In progress · 🚧 Scaffold (in-repo; en
 | 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ✅ |
 | 13 | Production-pilot checklist | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
 | 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | Stops billables | ✅ |
-| 15 | Supply chain verify + SBOM | [15-supply-chain-verify-sbom.md](15-supply-chain-verify-sbom.md) | 07 + 10 (live after rebuild) | 1–2 h | None while scaffold-only | 🚧 Scaffold |
-| 16 | CI security gates | [16-ci-security-gates.md](16-ci-security-gates.md) | 10 (CI files); no AWS for MR gates | 1–1.5 h | None | 🚧 Scaffold |
-| 17 | Argo CD hardening | [17-argocd-hardening.md](17-argocd-hardening.md) | 06 (live after rebuild) | 1.5–2 h | None while scaffold-only | 🚧 Scaffold |
-| 18 | Canary AnalysisTemplates | [18-canary-analysis.md](18-canary-analysis.md) | 12 + 08 (live after rebuild) | 1–1.5 h | None while scaffold-only | 🚧 Scaffold |
-| 19 | Edge WAF + Falco | [19-edge-runtime-waf-falco.md](19-edge-runtime-waf-falco.md) | 04–06 (WAF); 08 helpful (Falco) | 1–2 h | WAF/Falco only when enabled | 🚧 Scaffold |
 
-Dependency rule: complete topics in numeric order through 14 for the original pilot. Topics 15–19 are Phase 12 scaffolds: author anytime; live apply after the listed prerequisites on a rebuilt cluster. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the pilot — still follow ordered destroy.
+Dependency rule: complete topics in numeric order through 14. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the pilot — still follow ordered destroy.
+
+This is the portfolio / pilot story. Live execution through Topic 13 is complete; Topic 14 tore the stack down.
 
 Planning artifacts (Phase A):
 
 - [OUTLINES.md](OUTLINES.md) — step sketches for topics 01–14
 - [REQUIRED-FILES.md](REQUIRED-FILES.md) — file inventory per topic
 
-Topic guides 01–14 are authored; live execution through Topic 13 is complete for this pilot.
+### Optional after rebuild (Phase 12 scaffolds — not part of the closed pilot)
+
+Guides 15–19 exist in Git as **scaffolds only**. They were not required for Milestone 3/4 and are **not** claimed as demonstrated. Enable only after a deliberate rebuild; see [ROADMAP](../../ROADMAP.md).
+
+| # | Topic | Guide |
+|---|--------|-------|
+| 15 | Supply chain verify + SBOM | [15-supply-chain-verify-sbom.md](15-supply-chain-verify-sbom.md) |
+| 16 | CI security gates | [16-ci-security-gates.md](16-ci-security-gates.md) |
+| 17 | Argo CD hardening | [17-argocd-hardening.md](17-argocd-hardening.md) |
+| 18 | Canary AnalysisTemplates | [18-canary-analysis.md](18-canary-analysis.md) |
+| 19 | Edge WAF + Falco | [19-edge-runtime-waf-falco.md](19-edge-runtime-waf-falco.md) |
 
 ---
 
@@ -156,6 +163,5 @@ Partner response pattern: symptom → likely cause → fix (guide and/or files) 
 | 1 | [01 — Prerequisites](01-prerequisites.md) (access + pins; no AWS billables) |
 | 2 | [02 — Repo foundation](02-repo-foundation.md) → [03 — Remote state](03-remote-state.md) |
 | 3 | [04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) onward through [14 — Teardown](14-teardown.md) |
-| 4 | Optional scaffolds after cluster is up: Topics [15](15-supply-chain-verify-sbom.md)–[19](19-edge-runtime-waf-falco.md) |
 
-Phase 12 scaffolds (15–19) are in Git; enable only after rebuild and deliberate choice — not required to repeat the original pilot.
+Stop at Topic 14 for a faithful repeat of the closed pilot. Optional Phase 12 scaffolds (15–19) are linked above — not on the critical path.
