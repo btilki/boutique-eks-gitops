@@ -6,7 +6,7 @@
 
 ## Context
 
-Pilot Argo CD used the built-in `default` AppProject and local `admin` login (`dex.enabled: false`, `notifications.enabled: false`). That is enough for a short cost-capped pilot, but it does not limit blast radius (platform vs workloads) or provide SSO/audit-friendly identity.
+Reference Argo CD used the built-in `default` AppProject and local `admin` login (`dex.enabled: false`, `notifications.enabled: false`). That is enough for a short cost-capped reference, but it does not limit blast radius (platform vs workloads) or provide SSO/audit-friendly identity.
 
 ## Decision
 

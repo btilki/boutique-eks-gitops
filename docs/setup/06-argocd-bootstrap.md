@@ -174,7 +174,7 @@ Bookmark the URL; store new admin password in a password manager.
 
 ### Security notes
 
-Delete or rotate `argocd-initial-admin-secret` usage after password change. Restrict UI exposure later (IP allow / SSO) if the pilot becomes long-lived.
+Delete or rotate `argocd-initial-admin-secret` usage after password change. Restrict UI exposure later (IP allow / SSO) if the reference becomes long-lived.
 
 ---
 
@@ -295,7 +295,7 @@ sed -i '' "s|<GITLAB_REPO_URL>|${GITLAB_REPO_URL}|g" /tmp/root-app.yaml
 # Also substitute in ApplicationSets before they sync (Step 6.5) — do this in Git:
 
 # Recommended: commit substituted URLs to a private fork OR use sed locally and
-# push to main so Argo reads the same URL. For pilot, edit files in repo:
+# push to main so Argo reads the same URL. For reference, edit files in repo:
 
 # gitops/bootstrap/root/application.yaml
 # gitops/apps/platform-apps/applicationset.yaml
@@ -513,7 +513,7 @@ Screenshot or save jsonpath output as evidence for Topic 13 checklist.
 
 ### Security notes
 
-Enabling prod auto-sync is a severity incident for this pilot — **treat as a config error**.
+Enabling prod auto-sync is a severity incident for this reference — **treat as a config error**.
 
 ---
 

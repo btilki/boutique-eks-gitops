@@ -151,7 +151,7 @@ Prefer narrowing to `@refs/heads/main` once Enforce is planned; avoid `.*` forev
 
 ## Step 15.3: Apply after rebuild — sync policies + run SBOM CI
 
-> **Apply after cluster rebuild (after Topic 04+).** Skip on a torn-down pilot.
+> **Apply after cluster rebuild (after Topic 04+).** Skip on a torn-down reference.
 
 ### Goal
 

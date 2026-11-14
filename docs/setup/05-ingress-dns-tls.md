@@ -73,7 +73,7 @@ grep -E 'role-arn|clusterName|vpcId|zoneIdFilters' \
   gitops/platform/external-dns/values.yaml
 ```
 
-**Do not commit** live account ARNs if your org forbids it — keep substituted values local or use a private overlay. For this pilot, committing non-secret ARNs is acceptable; never commit AWS keys.
+**Do not commit** live account ARNs if your org forbids it — keep substituted values local or use a private overlay. For this reference, committing non-secret ARNs is acceptable; never commit AWS keys.
 
 ### GUI instructions (if applicable)
 
@@ -174,7 +174,7 @@ kubectl -n kube-system logs deploy/aws-load-balancer-controller --tail=100
 
 ### Best practices
 
-Keep replicaCount ≥ 2 for controller HA on the pilot.
+Keep replicaCount ≥ 2 for controller HA on the reference.
 
 ### Security notes
 
@@ -307,7 +307,7 @@ Do not create a public DNS-01 ClusterIssuer for boutique hosts in v1 — stick t
 
 ### Security notes
 
-Webhook failure can block cert resources; for this pilot, ACM path does not depend on it.
+Webhook failure can block cert resources; for this reference, ACM path does not depend on it.
 
 ---
 
@@ -363,7 +363,7 @@ Do not request a second duplicate cert ad-hoc; fix Terraform-managed cert.
 
 ### Best practices
 
-Use the same ARN on all public Ingresses in this pilot.
+Use the same ARN on all public Ingresses in this reference.
 
 ### Security notes
 

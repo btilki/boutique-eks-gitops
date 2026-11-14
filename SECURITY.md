@@ -29,7 +29,7 @@ If you find a vulnerability in this repository’s configs or docs, open a confi
 
 ## Honest limits
 
-The precise claim for each control is [`docs/pilot-claims.md`](docs/pilot-claims.md).
+The precise claim for each control is [`docs/reference-claims.md`](docs/reference-claims.md).
 
 - `dev`, `stage`, and `prod` are namespaces on one cluster. A node or cluster-admin mistake reaches all three.
 - Signature and SBOM policies are **Audit**. The Enforce policies are `:latest`, digest, and the ECR allowlist.
@@ -40,6 +40,6 @@ The precise claim for each control is [`docs/pilot-claims.md`](docs/pilot-claims
 - Boutique charts set no `securityContext`. Namespaces enforce Pod Security `baseline`. Redis has no password and no volume.
 - Account `868480224481` and the July ACM certificate ARN remain in Git as identifiers. The certificate is gone.
 - Pins were reviewed on 2026-07-25. EKS 1.31 extended support runs into November 2026.
-- The pilot AWS resources are gone. A green pipeline today requires `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES`.
+- The reference AWS resources are gone. A green pipeline today requires `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES`.
 
-Short pilots must run **Topic 14 teardown** immediately after tests to remove blast radius and cost.
+Short references must run **Topic 14 teardown** immediately after tests to remove blast radius and cost.

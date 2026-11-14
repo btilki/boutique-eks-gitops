@@ -6,11 +6,11 @@ Prerequisites: Cluster built via [`docs/setup/`](../setup/); AWS + kubectl conte
 Estimated time: 10 min read  
 Risk level: Low  
 
-> No live cluster unless you rebuilt after the closed pilot. These steps assume a running cluster from Setup Topics 03–09; otherwise rebuild first ([setup/README.md](../setup/README.md)).
+> No live cluster unless you rebuilt after the closed reference. These steps assume a running cluster from Setup Topics 03–09; otherwise rebuild first ([setup/README.md](../setup/README.md)).
 
 ## Purpose
 
-This page is the day-2 map for the pilot: environments, ownership, honest SLOs, and where procedures live. Bootstrap stays in Setup; symptom steps stay in runbooks.
+This page is the day-2 map for this reference: environments, ownership, honest SLOs, and where procedures live. Bootstrap stays in Setup; symptom steps stay in runbooks.
 
 ## When to use / When not to use
 
@@ -58,7 +58,7 @@ Best practices: Prefer Git revert over kubectl mutate; treat prod manual sync as
 
 Validation: `curl -sI -o /dev/null -w '%{http_code}\n' https://boutique.biroltilki.art`
 
-### Step 3: SLOs / SLAs (pilot-honest)
+### Step 3: SLOs / SLAs (reference-honest)
 
 | Item | Target | Notes |
 |------|--------|-------|
@@ -83,7 +83,7 @@ N/A (documentation only).
 
 ## Security notes
 
-Single-cluster multi-env is an accepted pilot risk ([SECURITY.md](../../SECURITY.md)).
+Single-cluster multi-env is an accepted reference risk ([SECURITY.md](../../SECURITY.md)).
 
 ## Automation opportunities
 

@@ -89,7 +89,7 @@ Fix values or AppSet pin; re-sync `argo-rollouts`.
 
 ### Best practices
 
-Leave dashboard disabled for the pilot (values already set).
+Leave dashboard disabled for the reference (values already set).
 
 ### Security notes
 
@@ -350,7 +350,7 @@ Promote (finish early) if healthy:
 kubectl argo rollouts promote frontend -n stage
 ```
 
-Prefer letting timed steps complete for the pilot evidence path.
+Prefer letting timed steps complete for the reference evidence path.
 
 ### GUI instructions (if applicable)
 

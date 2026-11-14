@@ -26,7 +26,7 @@
 | Observability | Metrics + logs + email alerts | Prom/Loki/Grafana/AM |
 | Maintainability | Modular TF/Helm; phase delivery; docs | Repo layout + Setup Guide |
 | Reproducibility | Pinned versions; digest pins; remote state | `docs/versions.md` |
-| Cost | Solo/pilot suitable; teardown mandatory for short tests | 1 NAT; 3× m6i.large; Phase 11 |
+| Cost | Solo/reference suitable; teardown mandatory for short tests | 1 NAT; 3× m6i.large; Phase 11 |
 | Compliance | Audit-friendly Git + signatures + CODEOWNERS | No formal SOC2 scope |
 
 ## Derived requirements
@@ -64,6 +64,6 @@
 | Route53 zone `biroltilki.art` | `01` / `05` — zone ID |
 | GitLab project + OIDC federation | `01` docs; live in `10` |
 | SMTP reachable for Alertmanager | `08-observability` |
-| Low traffic (pilot) | Implicit; ALB LCU stays low |
+| Low traffic (reference) | Implicit; ALB LCU stays low |
 | `m6i.large` in eu-central-1 | Confirmed; re-check at `04` apply |
 | Namespace isolation acceptable | ADR single-cluster; accept residual risk |

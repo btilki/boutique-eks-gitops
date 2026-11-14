@@ -452,7 +452,7 @@ Confirm `backend.hcl` and `*.tfvars` (non-example) are ignored before any state 
 
 ## Topic validation (end-to-end)
 
-Topic 02 is complete when Step 2.7 checklist passes and the foundation MR is merged (or confirmed on your working branch for solo pilot).
+Topic 02 is complete when Step 2.7 checklist passes and the foundation MR is merged (or confirmed on your working branch for a solo reference).
 
 **Cost check:** Still no EKS, NAT, or ALB from this topic.
 

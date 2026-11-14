@@ -6,7 +6,7 @@
 
 ## Context
 
-The pilot edge was ACM + ALB + NetworkPolicy without AWS WAF or runtime detection. LB Controller IRSA already permits WAFv2 associate/disassociate. Operators rebuilding for longer-lived use need a documented, cost-gated path.
+The reference edge was ACM + ALB + NetworkPolicy without AWS WAF or runtime detection. LB Controller IRSA already permits WAFv2 associate/disassociate. Operators rebuilding for longer-lived use need a documented, cost-gated path.
 
 ## Decision
 

@@ -4,8 +4,8 @@ Audience: Implementer
 Authority: This directory is the **single source of truth** for bootstrap. If README, chat, or scripts conflict with `docs/setup/`, this guide wins.  
 [Doc index](../README.md) · [Architecture summary](../ARCHITECTURE.md) · [Roadmap](../../ROADMAP.md) · Maintainer: [OUTLINES](OUTLINES.md) · [REQUIRED-FILES](REQUIRED-FILES.md)
 
-> **Pilot status:** Production pilot closed. Milestone 3 (production-pilot path) and Milestone 4 (clean teardown) are complete.  
-> There is no live AWS stack — no EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from the pilot.  
+> **Reference status:** Production reference closed. Milestone 3 (production-reference path) and Milestone 4 (clean teardown) are complete.  
+> There is no live AWS stack — no EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from this reference.  
 > This guide is for step-by-step rebuild and validation. Follow topics 01 → 14 in order unless you abort early (still use Topic 14 teardown order). Milestone definitions: [ROADMAP — Milestones](../../ROADMAP.md#milestones).  
 > Do not assume a cluster already exists because the repo is complete in Git.
 
@@ -18,15 +18,15 @@ Authority: This directory is the **single source of truth** for bootstrap. If RE
 | End-to-end goal | Provision one EKS cluster in `eu-central-1`, GitOps platform (Argo CD + security + observability), Online Boutique on digest-pinned Helm, GitLab CI digest MRs, promotion + canary, then ordered teardown |
 | Environments | `dev`, `stage`, `prod` as namespaces on one cluster |
 | Estimated calendar time | ~4–8 working sessions (plan-dependent); teardown is mandatory after tests |
-| Estimated cost | ~$35–45 for a ~2-day pilot with teardown; ~$350–500/mo if left running — see [cost model](../architecture/10-cost-model.md) |
+| Estimated cost | ~$35–45 for a ~2-day reference with teardown; ~$350–500/mo if left running — see [cost model](../architecture/10-cost-model.md) |
 | Who executes | You run every CLI / GUI step |
-| Phase status | Topics **01–14** complete (Milestone 3 and Milestone 4) · pilot closed |
+| Phase status | Topics **01–14** complete (Milestone 3 and Milestone 4) · reference closed |
 
 Do not skip topics after an error. Do not replace documented steps with install-all scripts unless explicitly requested.
 
 ---
 
-## Topic sequence (pilot path: 01–14)
+## Topic sequence (reference path: 01–14)
 
 Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Skipped (document risk)
 
@@ -44,19 +44,19 @@ Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Ski
 | 10 | GitLab CI digests | [10-gitlab-ci-digest.md](10-gitlab-ci-digest.md) | 09 (+ OIDC from 04) | 2–3 h | CI runners + ECR | ✅ |
 | 11 | Promotion | [11-promotion.md](11-promotion.md) | 10 | 1–1.5 h | None beyond envs | ✅ |
 | 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ✅ |
-| 13 | Production-pilot checklist | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
+| 13 | Production-reference checklist | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
 | 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | Stops billables | ✅ |
 
-Dependency rule: complete topics in numeric order through 14. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the pilot — still follow ordered destroy.
+Dependency rule: complete topics in numeric order through 14. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the reference — still follow ordered destroy.
 
-This is the portfolio / pilot story. Live execution through Topic 13 is complete; Topic 14 tore the stack down.
+This is the closed reference path. Live execution through Topic 13 is complete; Topic 14 tore the stack down.
 
 Planning artifacts (Phase A):
 
 - [OUTLINES.md](OUTLINES.md) — step sketches for topics 01–14
 - [REQUIRED-FILES.md](REQUIRED-FILES.md) — file inventory per topic
 
-### Optional after rebuild (Phase 12 scaffolds — not part of the closed pilot)
+### Optional after rebuild (Phase 12 scaffolds — not part of the closed reference)
 
 Guides 15–19 exist in Git as **scaffolds only**. They were not required for Milestone 3/4 and are **not** claimed as demonstrated. Enable only after a deliberate rebuild; see [ROADMAP](../../ROADMAP.md).
 
@@ -79,7 +79,7 @@ Guides 15–19 exist in Git as **scaffolds only**. They were not required for Mi
 | Cluster | Single EKS 1.31; nodes 3× `m6i.large` (ASG 2–5) |
 | DNS zone | `biroltilki.art` (Route53) |
 | Terminology | Short form only (CI, EKS, MR). Do not expand in parentheses. Bold only critical rules — see [Terminology](#terminology) |
-| Placeholders | Guides use `<ACCOUNT_ID>`, `<GITLAB_PROJECT_PATH>`, `<SMOKE_HOST>` — never commit tokens or SMTP passwords. Env overlays may pin this pilot’s ECR/ACM account IDs so Argo can sync; redact for a public fork (see [CONTRIBUTING.md](../../CONTRIBUTING.md)). |
+| Placeholders | Guides use `<ACCOUNT_ID>`, `<GITLAB_PROJECT_PATH>`, `<SMOKE_HOST>` — never commit tokens or SMTP passwords. Env overlays may pin this reference’s ECR/ACM account IDs so Argo can sync; redact for a public fork (see [CONTRIBUTING.md](../../CONTRIBUTING.md)). |
 | Local state | Terraform state in remote S3/DynamoDB after topic 03; kubeconfig via `aws eks update-kubeconfig`; no secrets in Git |
 | Version pins | Authoritative matrix in `docs/versions.md` (materialized in topic 02 / used from 01) |
 | CODEOWNERS | `@btilki` on `gitops/envs/prod/**` |
@@ -164,4 +164,4 @@ Partner response pattern: symptom → likely cause → fix (guide and/or files) 
 | 2 | [02 — Repo foundation](02-repo-foundation.md) → [03 — Remote state](03-remote-state.md) |
 | 3 | [04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) onward through [14 — Teardown](14-teardown.md) |
 
-Stop at Topic 14 for a faithful repeat of the closed pilot. Optional Phase 12 scaffolds (15–19) are linked above — not on the critical path.
+Stop at Topic 14 for a faithful repeat of the closed reference. Optional Phase 12 scaffolds (15–19) are linked above — not on the critical path.

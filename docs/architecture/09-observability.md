@@ -29,7 +29,7 @@ Guardrail: limit high-cardinality labels; set resource requests/limits on Prom/L
 Pods → Loki agent/daemonset or chart default → Loki → Grafana Explore
 ```
 
-Retention ~7 days for pilot cost/disk.
+Retention ~7 days for reference cost/disk.
 
 ## Alerting
 
@@ -50,7 +50,7 @@ SMTP credentials via ESO from Secrets Manager — **not in Git**.
 
 Grafana: `grafana.boutique.biroltilki.art` (ACM+ALB).
 
-## On-call (pilot)
+## On-call (reference platform)
 
 - No PagerDuty rotation.
 - Owner monitors email + Grafana.
@@ -67,5 +67,5 @@ Grafana: `grafana.boutique.biroltilki.art` (ACM+ALB).
 ## Honest gaps
 
 - No distributed tracing → hard to debug deep checkout latency across services.
-- Email alert fatigue / delay vs pages — acceptable for pilot.
+- Email alert fatigue / delay vs pages — acceptable for reference.
 - Observability stack sharing cluster with apps → noisy-neighbor risk (mitigate with limits).

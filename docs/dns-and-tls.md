@@ -4,7 +4,7 @@ Audience: Implementer
 ADRs: [0003 ACM+ALB](adr/0003-tls-acm-alb.md) · [0004 hostname scheme](adr/0004-dns-hostname-scheme.md)  
 Setup: Topic 05 · Terraform ACM: Topic 04 `module.dns`
 
-> Hostnames below are the locked scheme for this project. Pilot ACM / ALB / Route53 records were removed at teardown — on a rebuild you recreate them via Topics 04–05, not by assuming existing DNS.
+> Hostnames below are the locked scheme for this project. Reference ACM / ALB / Route53 records were removed at teardown — on a rebuild you recreate them via Topics 04–05, not by assuming existing DNS.
 
 ## Locked hostnames
 

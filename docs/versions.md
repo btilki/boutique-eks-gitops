@@ -9,11 +9,11 @@ Do not drift these pins without an ADR update and Setup Guide revision.
 
 ## What the pins mean
 
-These pins describe the **closed pilot** reviewed on 2026-07-25 — the same stack the July screenshots and checklist used ([`evidence/`](evidence/README.md)). They are an evidence matrix, not a claim that every component is still current on every calendar day.
+These pins describe the **closed reference** reviewed on 2026-07-25 — the same stack the July screenshots and checklist used ([`evidence/`](evidence/README.md)). They are an evidence matrix, not a claim that every component is still current on every calendar day.
 
 **Why not silent upgrades:** changing EKS / Argo / Kyverno pins without a rebuild re-run would break the “this is what we proved” story. A rebuild starts here: bump this matrix → follow [`operations/13-upgrades.md`](operations/13-upgrades.md) → update ADRs if behavior changes → re-capture evidence.
 
-EKS 1.31 extended support runs into November 2026; after that, pick a supported Kubernetes minor before Topic 04. The Kyverno cluster chart target is 1.16.x. The Kyverno CLI pin 1.13.4 is the offline `kyverno test` binary in CI. Interview claim: [`pilot-claims.md`](pilot-claims.md).
+EKS 1.31 extended support runs into November 2026; after that, pick a supported Kubernetes minor before Topic 04. The Kyverno cluster chart target is 1.16.x. The Kyverno CLI pin 1.13.4 is the offline `kyverno test` binary in CI. File-backed claims: [`reference-claims.md`](reference-claims.md).
 
 ---
 

@@ -88,4 +88,4 @@ Ingress / Service annotations → external-dns (IRSA) → Route53 record upsert
 
 ## Single-NAT limitation
 
-Loss of the NAT AZ breaks egress (pulls, AWS API from private pods) until recovered. Ingress via ALB in other AZs may continue. Accepted for pilot cost; multi-NAT is a future enhancement.
+Loss of the NAT AZ breaks egress (pulls, AWS API from private pods) until recovered. Ingress via ALB in other AZs may continue. Accepted for reference cost; multi-NAT is a future enhancement.

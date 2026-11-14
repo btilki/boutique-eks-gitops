@@ -138,4 +138,4 @@ Friction notes (for future rebuilds): stop Argo controllers (or delete `root`) b
 
 PASS only if sections A–E are checked with evidence and no Must FR (except FR-11) is open.
 
-Current: M3 PASS + M4 PASS (Topic 14 / Phase 11). Pilot closed — billable stack, TF backend, SM secrets, ACM, and Route53 zone removed. Rebuild = Topic 01 zone + Topic 03 remote-state first.
+Current: M3 PASS + M4 PASS (Topic 14 / Phase 11). Reference closed — billable stack, TF backend, SM secrets, ACM, and Route53 zone removed. Rebuild = Topic 01 zone + Topic 03 remote-state first.

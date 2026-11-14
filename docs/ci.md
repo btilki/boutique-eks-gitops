@@ -68,7 +68,7 @@ test → build → scan → sign → sbom → gitops
 
 | Variable | Purpose |
 |----------|---------|
-| `ENABLE_PILOT_CI` | Must be `true` to run full pilot pipeline including build/sign (off by default after teardown) |
+| `ENABLE_PILOT_CI` | Must be `true` to run full reference pipeline including build/sign (off by default after teardown) |
 | `ENABLE_REPO_GATES` | Optional: `true` to run MR test-stage gates without AWS (Topic 16) |
 | `AWS_ROLE_ARN` | GitLab OIDC IAM role from Terraform `gitlab_ci_role_arn` |
 | `AWS_DEFAULT_REGION` | `eu-central-1` |

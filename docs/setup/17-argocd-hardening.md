@@ -15,7 +15,7 @@ Harden Argo CD for a fuller GitOps control plane: separate AppProjects for platf
 
 ## Why this topic is required
 
-The pilot used `project: default` and local `admin`. Named projects limit where apps can deploy; SSO removes shared passwords; notifications surface sync failures. Scaffolding now avoids re-designing this on the next rebuild.
+The reference used `project: default` and local `admin`. Named projects limit where apps can deploy; SSO removes shared passwords; notifications surface sync failures. Scaffolding now avoids re-designing this on the next rebuild.
 
 ## Before you begin
 

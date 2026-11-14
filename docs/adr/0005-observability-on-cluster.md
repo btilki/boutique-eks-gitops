@@ -6,7 +6,7 @@
 
 ## Context
 
-The pilot needs metrics, logs, and alerting without multiplying AWS observability cost or introducing a paging vendor. Distributed tracing is valuable but out of scope for v1 depth on GitOps.
+The reference needs metrics, logs, and alerting without multiplying AWS observability cost or introducing a paging vendor. Distributed tracing is valuable but out of scope for v1 depth on GitOps.
 
 ## Decision
 

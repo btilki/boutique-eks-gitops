@@ -6,7 +6,7 @@ Prerequisites: None
 Creates: Verified local toolchain; GitLab project (created if missing); local Git repo linked to that remote; confirmed AWS / Route53 / SMTP access (no new AWS billables from this topic). Repo file: [`docs/versions.md`](../versions.md)  
 Related ADRs: None yet (authored in Topic 02)
 
-> No live cluster from the closed pilot. AWS resources were destroyed after Milestone 4 (clean teardown). This topic checks your machine and accounts only — it does not create EKS or other billable AWS resources. Full setup index: [setup README](README.md).
+> No live cluster from the closed reference. AWS resources were destroyed after Milestone 4 (clean teardown). This topic checks your machine and accounts only — it does not create EKS or other billable AWS resources. Full setup index: [setup README](README.md).
 
 ---
 
@@ -420,9 +420,9 @@ aws sts get-caller-identity --region eu-central-1
 Access key profile (if SSO unavailable):
 
 ```bash
-aws configure --profile boutique-pilot
+aws configure --profile boutique-reference
 # enter Access Key ID, Secret, region eu-central-1, output json
-AWS_PROFILE=boutique-pilot aws sts get-caller-identity
+AWS_PROFILE=boutique-reference aws sts get-caller-identity
 ```
 
 ### GUI instructions (if applicable)
@@ -432,7 +432,7 @@ AWS_PROFILE=boutique-pilot aws sts get-caller-identity
 | Platform | SSO (IAM Identity Center) or IAM console |
 | Navigation (SSO) | Your org SSO portal → AWS account → role → **Command line or programmatic access** → copy env vars / profile instructions |
 | Navigation (keys) | IAM → Users → Security credentials → Create access key (**emergency only**) |
-| Permissions | Permission to view account and later create VPC/EKS/IAM (admin recommended for pilot) |
+| Permissions | Permission to view account and later create VPC/EKS/IAM (admin recommended for reference) |
 | Verification | `get-caller-identity` returns `Account`, `Arn`, `UserId` |
 
 | Field (SSO configure) | Value | Why |
@@ -440,7 +440,7 @@ AWS_PROFILE=boutique-pilot aws sts get-caller-identity
 | SSO session / start URL | Your org URL | IdP entry |
 | SSO region | As provided by org | Token endpoint |
 | CLI default region | `eu-central-1` | Locked project region |
-| CLI profile name | e.g. `boutique-pilot` | Stable local reference |
+| CLI profile name | e.g. `boutique-reference` | Stable local reference |
 
 ### Expected output
 
@@ -463,7 +463,7 @@ aws sts get-caller-identity --query Account --output text
 aws sts get-caller-identity --query Arn --output text
 ```
 
-Both must return non-empty values for the intended pilot account.
+Both must return non-empty values for the intended reference account.
 
 ### Common problems
 
@@ -479,11 +479,11 @@ Both must return non-empty values for the intended pilot account.
 
 ### Best practices
 
-Use a dedicated pilot account if available; tag resources later with project name.
+Use a dedicated reference account if available; tag resources later with project name.
 
 ### Security notes
 
-Least privilege long-term; pilot often uses admin. Never commit access keys. Prefer SSO over long-lived IAM user keys.
+Least privilege long-term; reference often uses admin. Never commit access keys. Prefer SSO over long-lived IAM user keys.
 
 ---
 
@@ -513,7 +513,7 @@ Note the hosted zone ID (right-hand `/hostedzone/Z…` form) in private notes fo
 | Platform | AWS Console |
 | Navigation | Services → **Route 53** → **Hosted zones** → select `biroltilki.art` |
 | Permissions | `route53:ListHostedZones`, eventually change records (or IRSA for external-dns later) |
-| Verification | Zone name shows `biroltilki.art.`; type Public (expected for this pilot) |
+| Verification | Zone name shows `biroltilki.art.`; type Public (expected for this reference) |
 | Screenshot (optional) | Capture Route53 hosted zone in AWS Console if useful; no committed screenshot required for Phase B |
 
 | Field | Expected | Why |
@@ -547,7 +547,7 @@ Fix IAM or account selection; do not create a second conflicting public zone wit
 
 ### Best practices
 
-One public zone for the pilot; record zone ID for Terraform `dns` module inputs (Topic 04).
+One public zone for the reference; record zone ID for Terraform `dns` module inputs (Topic 04).
 
 ### Security notes
 
@@ -638,7 +638,7 @@ Delete an accidental empty test project only if you own it and nothing depends o
 
 ### Best practices
 
-One control-plane project per pilot; do not mix with unrelated application source repos.
+One control-plane project per reference; do not mix with unrelated application source repos.
 
 ### Security notes
 
@@ -701,7 +701,7 @@ Manual checklist (report in confirmation):
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | 404 on project | Wrong namespace / no access / Step 1.8 skipped | Create project (1.8) or request invite |
-| Reporter only | Insufficient role | Request Maintainer for pilot |
+| Reporter only | Insufficient role | Request Maintainer for reference |
 
 ### Recovery
 
@@ -770,7 +770,7 @@ git pull origin main --rebase
 git push -u origin main
 ```
 
-Do **not** use `--force` on `main` unless you intentionally own an empty pilot project and understand the risk.
+Do **not** use `--force` on `main` unless you intentionally own an empty reference project and understand the risk.
 
 ### GUI instructions (if applicable)
 
@@ -1001,7 +1001,7 @@ Topic 01 is complete when Step 1.12 checklist is fully checked and you have conf
 | Area | Symptom | Action |
 |------|---------|--------|
 | Versions | Minor skew (e.g. Helm 3.17) | Document deviation; prefer pinning 3.16.x; ask partner before continuing |
-| AWS | Multiple accounts | Standardize on one `AWS_PROFILE` for the pilot |
+| AWS | Multiple accounts | Standardize on one `AWS_PROFILE` for the reference |
 | DNS | Zone in different account than EKS | Stop — architecture assumes same account for Route53 + cluster |
 | GitLab | Project missing | Complete Step 1.8 before 1.9–1.10 |
 | Git | No `.git/` or no `origin` | Complete Step 1.10 before Topic 02 |

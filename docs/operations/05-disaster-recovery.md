@@ -6,11 +6,11 @@ Prerequisites: GitLab repo intact; TF state backend accessible or willingness to
 Estimated time: Hours (RTO)  
 Risk level: High  
 
-> Closed-pilot default: destroy billables when tests finish. DR here means rebuild from Git + TF when you chose to keep the platform alive.
+> Closed-reference default: destroy billables when tests finish. DR here means rebuild from Git + TF when you chose to keep the platform alive.
 
 ## Purpose
 
-Recover from cluster loss or unrecoverable corruption by rebuilding from Git + Terraform (pilot DR). **No multi-region failover** — out of scope.
+Recover from cluster loss or unrecoverable corruption by rebuilding from Git + Terraform (reference DR). **No multi-region failover** — out of scope.
 
 ## When to use / When not to use
 
@@ -27,7 +27,7 @@ Do not expect multi-region failover.
 
 ### Step 1: Decide rebuild vs teardown-only
 
-If the pilot is over → [teardown](../runbooks/teardown.md) and stop.  
+If the reference is over → [teardown](../runbooks/teardown.md) and stop.  
 If rebuild required → continue.
 
 ### Step 2: Restore / recreate foundation

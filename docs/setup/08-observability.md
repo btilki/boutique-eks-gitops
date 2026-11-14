@@ -96,7 +96,7 @@ Fix values; sync app; check events in `monitoring`.
 
 ### Best practices
 
-Keep retention at 7d for the pilot; avoid large PVCs unless needed.
+Keep retention at 7d for the reference; avoid large PVCs unless needed.
 
 ### Security notes
 
@@ -155,11 +155,11 @@ Re-sync; adjust service URL to match `kubectl get svc`.
 
 ### Best practices
 
-Pilot uses filesystem storage without PVC — accept log loss on restart.
+Reference uses filesystem storage without PVC — accept log loss on restart.
 
 ### Security notes
 
-`auth_enabled: false` is pilot-only on a private cluster network path.
+`auth_enabled: false` is reference-only on a private cluster network path.
 
 ---
 
@@ -229,7 +229,7 @@ Bookmark Grafana; keep admin password in password manager.
 
 ### Security notes
 
-Do not expose Grafana without TLS; consider IP allow later if pilot extends.
+Do not expose Grafana without TLS; consider IP allow later if reference extends.
 
 ---
 

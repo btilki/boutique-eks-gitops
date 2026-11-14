@@ -12,7 +12,7 @@ Confirm the control plane and storefronts are healthy before/after changes (morn
 
 ## When to use / When not to use
 
-Use after promote/sync, after incidents, or daily while the pilot runs.  
+Use after promote/sync, after incidents, or daily while the reference runs.  
 Do not use as a substitute for CI/Trivy gates.
 
 ## Prerequisites

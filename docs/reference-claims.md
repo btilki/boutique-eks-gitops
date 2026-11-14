@@ -1,8 +1,8 @@
-# What this pilot claims
+# What this reference platform claims
 
-For anyone defending this repository in a DevOps interview. Closed pilot: AWS resources were destroyed on 2026-07-19/20. Nothing here requires a new cluster. Evidence from 2026-07-19 (M3) and 2026-07-20 (M4).
+Closed reference: AWS resources were destroyed on 2026-07-19/20. Nothing here requires a live cluster. Evidence from 2026-07-19 (M3) and 2026-07-20 (M4).
 
-GitLab proposes image digests, Git stores them, and Argo CD reconciles. The pilot proved that path once, then the cloud resources were removed.
+GitLab proposes image digests, Git stores them, and Argo CD reconciles. The reference proved that path once, then the cloud resources were removed.
 
 ## Proven on 19 July 2026
 
@@ -33,13 +33,13 @@ GitLab proposes image digests, Git stores them, and Argo CD reconciles. The pilo
 | Redis | `charts/redis/` | No password and no volume. Cart data ends when the pod is replaced. |
 | Identifiers in Git | `gitops/envs/prod/values/frontend.yaml` and platform values | Account `868480224481` and ACM certificate `9363fd9a-7ed5-41da-aea5-f37f53a94269` are committed. The certificate and cluster are gone. These are identifiers. The secret path was External Secrets. |
 
-## Sentences to retire
+## Claims that do not match the files
 
 - “Ignore red CI on digest MRs.” The July checklist did not name the failed job. The image path was taken from the default-branch pipeline and the merged digest diff. See [`ci.md`](ci.md).
 - “Signatures are enforced.” The Enforce policies are the tag, digest, and ECR checks. Signature verify is Audit ([ADR-0007](adr/0007-admission-verify-and-sbom.md)).
 - “The pipeline builds the application from source.” That is `BOUTIQUE_BUILD_MODE=git`. The default mode retags.
 - “The canary analyzes error rate.” The rehearsed canary moved traffic on a timer.
-- “These pins are the current supported set.” They are the closed-pilot set from July 2026.
+- “These pins are the current supported set.” They are the closed-reference set from July 2026.
 
 ## Left for a rebuild you choose later
 

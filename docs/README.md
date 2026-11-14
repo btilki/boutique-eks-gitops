@@ -1,6 +1,6 @@
 # Documentation — boutique-eks-gitops
 
-Production pilot closed. The delivery path was validated, then AWS resources from the pilot were destroyed. These docs describe what was built and how to rebuild it.
+Production reference closed. The delivery path was validated, then AWS resources from this reference were destroyed. These docs describe what was built and how to rebuild it.
 
 If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the setup guide wins.
 
@@ -11,7 +11,7 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | I want to… | Read |
 |------------|------|
 | Understand the project quickly | [`ARCHITECTURE.md`](ARCHITECTURE.md) · [ADR-0001](adr/0001-digest-only-gitops.md) |
-| See pilot proof / lessons | [`evidence/`](evidence/README.md) · [`lessons-learned.md`](lessons-learned.md) · [`pilot-claims.md`](pilot-claims.md) |
+| See reference proof / lessons | [`evidence/`](evidence/README.md) · [`lessons-learned.md`](lessons-learned.md) · [`reference-claims.md`](reference-claims.md) |
 | Review design and delivery | [`architecture/`](architecture/README.md) · [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) · [`ci.md`](ci.md) |
 | Rebuild or operate | [`setup/`](setup/README.md) (01–14) · [`versions.md`](versions.md) · [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) · [`runbooks/`](runbooks/README.md) |
 
@@ -24,13 +24,13 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | Architecture summary | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Architecture deep dive | [`architecture/README.md`](architecture/README.md) |
 | Design decisions | [`adr/`](adr/0001-digest-only-gitops.md) |
-| Pilot evidence | [`evidence/README.md`](evidence/README.md) |
+| Reference evidence | [`evidence/README.md`](evidence/README.md) |
 | Lessons learned | [`lessons-learned.md`](lessons-learned.md) |
 | Bootstrap & teardown | [`setup/README.md`](setup/README.md) |
 | Version pins | [`versions.md`](versions.md) |
 | Digest promotion / rollback | [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) |
 | CI contract | [`ci.md`](ci.md) |
-| Production-pilot checklist | [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) |
+| Production-reference checklist | [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) |
 | Day-2 operations | [`operations/README.md`](operations/README.md) |
 | Symptom runbooks | [`runbooks/README.md`](runbooks/README.md) |
 | Implementation / phases | [`implementation/plan.md`](implementation/plan.md) · [`../ROADMAP.md`](../ROADMAP.md) |

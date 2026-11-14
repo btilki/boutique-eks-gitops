@@ -1,6 +1,6 @@
 # Terraform — boutique-eks-gitops
 
-AWS foundation for the pilot (remote state, VPC, EKS, ECR, IAM OIDC/IRSA, DNS/ACM data).
+AWS foundation for the reference (remote state, VPC, EKS, ECR, IAM OIDC/IRSA, DNS/ACM data).
 
 **Setup authority:** Topics [03](../docs/setup/03-remote-state.md) and [04](../docs/setup/04-network-eks-ecr-iam.md)  
 **Pins:** [docs/versions.md](../docs/versions.md)

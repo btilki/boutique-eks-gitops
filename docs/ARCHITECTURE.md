@@ -1,8 +1,8 @@
 # Architecture — boutique-eks-gitops
 
-**Status:** Accepted. Milestone 3 (production-pilot path) and Milestone 4 (clean teardown) are complete.  
-Production pilot closed. The AWS stack was deleted — no live EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from the pilot.  
-Maturity: production pilot — single AWS account, single EKS cluster — decommissioned  
+**Status:** Accepted. Milestone 3 (production-reference path) and Milestone 4 (clean teardown) are complete.  
+Production reference closed. The AWS stack was deleted — no live EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from this reference.  
+Maturity: production reference — single AWS account, single EKS cluster — decommissioned  
 Region: `eu-central-1` (when provisioned)
 
 [Project README](../README.md) · [Doc index](README.md) · [Deep architecture](architecture/README.md) · [Setup](setup/README.md) · [Roadmap](../ROADMAP.md) · [Operations](operations/README.md)
@@ -15,7 +15,7 @@ Region: `eu-central-1` (when provisioned)
 |--------------|----------------|------------|
 | A 10-minute picture | Executive summary and diagram | [ADR-0001](adr/0001-digest-only-gitops.md) |
 | Design and delivery detail | Tradeoffs and deep-dive index | [`architecture/`](architecture/README.md) — especially [05-deployment-flow](architecture/05-deployment-flow.md), [07-security-architecture](architecture/07-security-architecture.md) |
-| Evidence without a cluster | — | [`pilot-claims.md`](pilot-claims.md) |
+| Evidence without a cluster | — | [`reference-claims.md`](reference-claims.md) |
 | Rebuild | Mapping table (orientation only) | [`setup/README.md`](setup/README.md) |
 
 This file is the architecture summary. Numbered pages under [`architecture/`](architecture/README.md) are the deep reference. Setup steps live only under [`setup/`](setup/README.md).
@@ -26,9 +26,9 @@ This file is the architecture summary. Numbered pages under [`architecture/`](ar
 
 This repository is the control plane for Online Boutique on Amazon EKS. **Git is the only authority** for what runs on the cluster. GitLab CI publishes an image (default: retag ECR `:bootstrap`; optional: build from the Boutique Git tag), scans (Trivy), signs (cosign), and opens MRs that change only image digests. Argo CD reconciles desired state; **CI never deploys**.
 
-`dev`, `stage`, and `prod` are namespaces on one cluster (cost over blast-radius isolation). Boundaries: NetworkPolicy, sync policy (**manual prod sync**), and CODEOWNERS on prod paths. Public HTTPS uses ACM on ALB. Observability is on-cluster: Prometheus, Loki, Grafana, Alertmanager → email. After validation, this pilot was torn down — see [teardown runbook](runbooks/teardown.md) and checklist Appendix T in [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md).
+`dev`, `stage`, and `prod` are namespaces on one cluster (cost over blast-radius isolation). Boundaries: NetworkPolicy, sync policy (**manual prod sync**), and CODEOWNERS on prod paths. Public HTTPS uses ACM on ALB. Observability is on-cluster: Prometheus, Loki, Grafana, Alertmanager → email. After validation, this reference was torn down — see [teardown runbook](runbooks/teardown.md) and checklist Appendix T in [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md).
 
-File-backed claims (no cluster required): [`pilot-claims.md`](pilot-claims.md).
+File-backed claims (no cluster required): [`reference-claims.md`](reference-claims.md).
 
 ---
 
@@ -42,7 +42,7 @@ File-backed claims (no cluster required): [`pilot-claims.md`](pilot-claims.md).
 | FR-04 | Security baseline | Kyverno digest / ECR; ESO; NetworkPolicy |
 | FR-05 | Observability | Prometheus / Loki / Grafana / Alertmanager → email — no CloudWatch / PagerDuty / OTel |
 | FR-06–09 | Boutique + CI + promote + canary | Seven services; digest MRs; stage + prod canary |
-| FR-10–11 | Checklist + teardown | Production-pilot checklist; ordered destroy |
+| FR-10–11 | Checklist + teardown | Production-reference checklist; ordered destroy |
 
 Full tables: [01-requirements.md](architecture/01-requirements.md)
 
@@ -124,7 +124,7 @@ Context and components: [02-system-context.md](architecture/02-system-context.md
 | Design decisions | [ADR index](architecture/README.md#architecture-decision-records) |
 
 Resilience (summary): multi-AZ nodes; single NAT (cost tradeoff). DR = rebuild from Git + Terraform, not multi-region failover.  
-Cost (summary): ~$350–500/mo if left running; ~$30–45 for a short pilot with teardown — see [10-cost-model.md](architecture/10-cost-model.md).
+Cost (summary): ~$350–500/mo if left running; ~$30–45 for a short reference with teardown — see [10-cost-model.md](architecture/10-cost-model.md).
 
 ---
 
@@ -140,7 +140,7 @@ Cost (summary): ~$350–500/mo if left running; ~$30–45 for a short pilot with
 
 Recorded decisions: [ADR-0001](adr/0001-digest-only-gitops.md) through [ADR-0010](adr/0010-edge-waf-and-falco.md) — index in [architecture/README.md](architecture/README.md).
 
-Out of scope for this pilot: service mesh, multi-region, CloudWatch / PagerDuty / OTel as primary paths.
+Out of scope for this reference: service mesh, multi-region, CloudWatch / PagerDuty / OTel as primary paths.
 
 ---
 
@@ -166,5 +166,5 @@ Orientation only — steps live in [`setup/`](setup/README.md).
 | Boutique | `charts/`, `gitops/envs/` | 09 |
 | GitLab CI | `.gitlab-ci.yml` | 10 |
 | Promotion / canary | `docs/promotion.md`, `gitops/platform/argo-rollouts/` | 11, 12 |
-| Production-pilot checklist | `docs/PRODUCTION_CHECKLIST.md` | 13 |
+| Production-reference checklist | `docs/PRODUCTION_CHECKLIST.md` | 13 |
 | Teardown | `docs/runbooks/teardown.md` | 14 |

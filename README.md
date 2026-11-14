@@ -1,15 +1,15 @@
 # boutique-eks-gitops
 
-Production-pilot GitOps platform for Online Boutique on Amazon EKS — Git is the only deploy authority.
+Production reference GitOps platform for Online Boutique on Amazon EKS — Git is the only deploy authority.
 
 [![Terraform](https://img.shields.io/badge/terraform-%3E%3D1.9-purple.svg)](https://www.terraform.io/)
 [![EKS](https://img.shields.io/badge/EKS-1.31-FF9900.svg)](https://aws.amazon.com/eks/)
 [![GitLab CI](https://img.shields.io/badge/CI-GitLab%20CI-FC6D26.svg)](https://docs.gitlab.com/ee/ci/)
 [![Argo CD](https://img.shields.io/badge/GitOps-Argo%20CD-EF7B4D.svg)](https://argo-cd.readthedocs.io/)
-[![Maturity](https://img.shields.io/badge/maturity-production%20pilot-blue.svg)](docs/ARCHITECTURE.md)
+[![Maturity](https://img.shields.io/badge/maturity-production%20reference-blue.svg)](docs/ARCHITECTURE.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-> **Status:** Production pilot closed (July 2026). Digest MR → promote → prod (manual sync and canary) ran end to end; then all AWS billable resources were destroyed. No live cluster. To run again, follow [`docs/setup/`](docs/setup/).
+> **Status:** Production reference closed (July 2026). Digest MR → promote → prod (manual sync and canary) ran end to end; then all AWS billable resources were destroyed. No live cluster. To run again, follow [`docs/setup/`](docs/setup/).
 
 ---
 
@@ -25,7 +25,7 @@ Tag-based deploys and CI `kubectl`/`argocd` pushes make “what is running?” h
 
 ## Result
 
-Milestone 3 (production-pilot path) and Milestone 4 (clean teardown) completed. Cost stayed in the short-pilot band (~$35–45 with teardown vs ~$350–500/mo if left running). Screenshots from the live run are below; file-backed claims: [`docs/pilot-claims.md`](docs/pilot-claims.md).
+Milestone 3 (production-reference path) and Milestone 4 (clean teardown) completed. Cost stayed in the short reference cost band (~$35–45 with teardown vs ~$350–500/mo if left running). Screenshots from the live run are below; file-backed claims: [`docs/reference-claims.md`](docs/reference-claims.md).
 
 ---
 
@@ -35,14 +35,14 @@ Milestone 3 (production-pilot path) and Milestone 4 (clean teardown) completed. 
 |-|-|
 | What | Digest-only GitOps on one EKS cluster in `eu-central-1` |
 | Hard rule | **CI never deploys** — GitLab CI opens digest MRs; Argo CD reconciles from Git |
-| Scope | Production pilot — one account, one region; not multi-region HA |
+| Scope | Production reference — one account, one region; not multi-region HA |
 | Stack | Terraform · EKS 1.31 · Argo CD · Rollouts · Kyverno · Prometheus / Loki / Grafana |
 
 ---
 
 ## Proof
 
-Pilot captures (~2026-07-19). Full captions and gaps: [`docs/evidence/`](docs/evidence/README.md).
+Captures from the reference run (~2026-07-19). Full captions and gaps: [`docs/evidence/`](docs/evidence/README.md).
 
 **Argo CD** — 40 apps Healthy on `argocd.boutique.biroltilki.art` (4 OutOfSync at capture; not named in this crop):
 
@@ -62,13 +62,13 @@ More: stage/prod storefronts, Grafana list — [`docs/evidence/`](docs/evidence/
 
 ## Tradeoffs / what I would change for real production
 
-- **Single cluster, three namespaces** — fine for a cost-capped pilot; not true env isolation. Multi-account or separate clusters for prod.
+- **Single cluster, three namespaces** — fine for a cost-capped reference; not true env isolation. Multi-account or separate clusters for prod.
 - **Single NAT** — documented cost tradeoff; HA egress would use NAT per AZ.
 - **CODEOWNERS is solo (`@btilki`)** — without GitLab “Code owner approval” enabled, the file is documentation-only, not enforced dual control ([`CODEOWNERS`](CODEOWNERS)).
 - **Email-only Alertmanager** — no PagerDuty; SLOs / burn-rate alerts would come next.
 - **Pins match the July 2026 evidence matrix** (EKS 1.31, Argo CD 2.14.x). A rebuild starts by bumping [`docs/versions.md`](docs/versions.md) and following [`docs/operations/13-upgrades.md`](docs/operations/13-upgrades.md).
 
-Lessons from the pilot: [`docs/lessons-learned.md`](docs/lessons-learned.md). Optional hardening ideas after a rebuild (not part of the closed pilot): [`docs/setup/README.md`](docs/setup/README.md#optional-after-rebuild-phase-12-scaffolds--not-part-of-the-closed-pilot).
+Lessons from this reference: [`docs/lessons-learned.md`](docs/lessons-learned.md). Optional hardening ideas after a rebuild (not part of the closed reference): [`docs/setup/README.md`](docs/setup/README.md#optional-after-rebuild-phase-12-scaffolds--not-part-of-the-closed-reference).
 
 ---
 
@@ -77,7 +77,7 @@ Lessons from the pilot: [`docs/lessons-learned.md`](docs/lessons-learned.md). Op
 | I want to… | Read |
 |------------|------|
 | Understand the project in ~10 minutes | This page → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) → [ADR-0001](docs/adr/0001-digest-only-gitops.md) |
-| See pilot proof | [`docs/evidence/`](docs/evidence/README.md) · [`docs/pilot-claims.md`](docs/pilot-claims.md) |
+| See reference proof | [`docs/evidence/`](docs/evidence/README.md) · [`docs/reference-claims.md`](docs/reference-claims.md) |
 | Review design and delivery | [`docs/architecture/`](docs/architecture/) · [`docs/promotion.md`](docs/promotion.md) · [`docs/rollback.md`](docs/rollback.md) · [`docs/ci.md`](docs/ci.md) |
 | Rebuild or operate | [`docs/setup/`](docs/setup/) (topics 01–14) · [`docs/versions.md`](docs/versions.md) · [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) · [`docs/runbooks/`](docs/runbooks/README.md) |
 
@@ -110,7 +110,7 @@ Use this map for repository layout, platform components, and where each engineer
 
 ---
 
-## What the pilot demonstrated
+## What the reference demonstrated
 
 - Digest-only releases with promotion `dev → stage → prod` and manual prod sync
 - Argo CD app-of-apps + ApplicationSet; Kyverno, External Secrets, NetworkPolicy

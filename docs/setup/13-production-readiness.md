@@ -14,7 +14,7 @@ Prove the full production path with evidence: checklist green, runbooks usable, 
 
 ## Why this topic is required
 
-FR-10 requires operability artifacts and a demonstrated path. Short pilots must not claim “done” without evidence, and **must not leave billables running** after tests (FR-11 / Topic 14).
+FR-10 requires operability artifacts and a demonstrated path. Short references must not claim “done” without evidence, and **must not leave billables running** after tests (FR-11 / Topic 14).
 
 ## Before you begin
 
@@ -241,7 +241,7 @@ Sign the checklist PASS/FAIL; on PASS mark ROADMAP phases 1–10 ✅ and **start
 
 ### Why this step is required
 
-Closes Milestone M3 and triggers mandatory teardown for short pilots.
+Closes Milestone M3 and triggers mandatory teardown for short references.
 
 ### Commands
 
@@ -284,7 +284,7 @@ If FAIL: list open Must IDs; fix; re-run 13.1–13.3.
 
 ### Best practices
 
-Do not schedule “one more feature” between M3 and teardown for this pilot.
+Do not schedule “one more feature” between M3 and teardown for this reference.
 
 ### Security notes
 

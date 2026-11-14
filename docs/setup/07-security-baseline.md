@@ -122,7 +122,7 @@ kubectl get clusterpolicy deny-latest-tag require-image-digest ecr-registry-allo
 | Navigation | **kyverno-policies** → Synced/Healthy |
 | Verification | At least three Enforce ClusterPolicies (digest/latest/ECR); Topic 15 may add two Audit verify policies |
 
-Optional audit-first (only if enforce breaks platform unexpectedly): temporarily set `validationFailureAction: Audit` in Git, sync, observe, then return to `Enforce`. Prefer staying on Enforce for this pilot once Kyverno is healthy.
+Optional audit-first (only if enforce breaks platform unexpectedly): temporarily set `validationFailureAction: Audit` in Git, sync, observe, then return to `Enforce`. Prefer staying on Enforce for this reference once Kyverno is healthy.
 
 ### Expected output
 
@@ -338,7 +338,7 @@ kubectl -n dev get secret eso-smoke-secret
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| AccessDenied | IAM policy too narrow / wrong secret name | Align secret name with policy; broaden temporarily for pilot |
+| AccessDenied | IAM policy too narrow / wrong secret name | Align secret name with policy; broaden temporarily for reference |
 | Invalid key | JSON property mismatch | Ensure property `smoke-key` exists |
 
 ### Recovery
@@ -415,7 +415,7 @@ Tune DNS policy; re-sync; test with a digest-pinned debug pod later (Topic 09).
 
 ### Best practices
 
-Tighten `allow-from-vpc-ingress` to ALB security group patterns when operationalizing beyond the pilot.
+Tighten `allow-from-vpc-ingress` to ALB security group patterns when operationalizing beyond the reference.
 
 ### Security notes
 

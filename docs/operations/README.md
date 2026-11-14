@@ -1,11 +1,11 @@
 # Operations — boutique-eks-gitops
 
 Audience: Operator / on-call (solo maintainer: you)  
-Maturity: Production pilot. Enterprise multi-region on-call is out of scope.  
+Maturity: Production reference. Enterprise multi-region on-call is out of scope.  
 Authority: Day-2 procedures. Bootstrap remains [`docs/setup/`](../setup/). Symptom runbooks remain [`docs/runbooks/`](../runbooks/).  
 [Doc index](../README.md) · [Architecture](../ARCHITECTURE.md) · [Promotion](../promotion.md) · [Rollback](../rollback.md)
 
-> No live cluster today. The closed pilot destroyed AWS resources after Milestone 4. These pages describe how to operate the platform when it is running again — not how to create it. Rebuild first: [`setup/README.md`](../setup/README.md) (topics 01–14), then use this index and [`runbooks/`](../runbooks/README.md).
+> No live cluster today. The closed reference destroyed AWS resources after Milestone 4. These pages describe how to operate the platform when it is running again — not how to create it. Rebuild first: [`setup/README.md`](../setup/README.md) (topics 01–14), then use this index and [`runbooks/`](../runbooks/README.md).
 
 When docs conflict: setup wins for bootstrap; runbooks win for symptom steps; this index routes between them.
 
@@ -22,7 +22,7 @@ When docs conflict: setup wins for bootstrap; runbooks win for symptom steps; th
 | Kyverno deny | [kyverno](../runbooks/kyverno.md) | `kubectl get clusterpolicy` |
 | No alert email | [alerting](../runbooks/alerting.md) | `kubectl -n monitoring get secret alertmanager-smtp` |
 | Node NotReady | [17](17-common-incidents.md) | `kubectl get nodes -o wide` |
-| End pilot / stop cost | [teardown](../runbooks/teardown.md) | Follow Topic 14 **immediately** |
+| End the reference / stop cost | [teardown](../runbooks/teardown.md) | Follow Topic 14 **immediately** |
 
 ---
 
@@ -42,7 +42,7 @@ Hostnames: `argocd` · `grafana` · `dev-boutique` · `stage-boutique` · `bouti
 
 ---
 
-## Escalation (solo pilot)
+## Escalation (solo reference platform)
 
 | Level | Role | When |
 |-------|------|------|

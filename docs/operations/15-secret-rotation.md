@@ -77,4 +77,4 @@ Scope ESO IRSA to prefix ARNs when possible (Security finding SEC-004). Never lo
 
 ## Automation opportunities
 
-SM rotation Lambda — out of pilot scope.
+SM rotation Lambda — out of reference scope.

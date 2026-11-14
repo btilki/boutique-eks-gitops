@@ -13,7 +13,7 @@ Perform planned node or platform maintenance with minimal shop downtime.
 ## When to use / When not to use
 
 Use for node replacement, AMI refresh, or short freezes.  
-Do not start long maintenance if the pilot should end — prefer **Topic 14 teardown**.
+Do not start long maintenance if the reference should end — prefer **Topic 14 teardown**.
 
 ## Prerequisites
 
@@ -63,4 +63,4 @@ Drain does not rotate credentials — pair with [15](15-secret-rotation.md) if n
 
 ## Automation opportunities
 
-None required for pilot.
+None required for reference.

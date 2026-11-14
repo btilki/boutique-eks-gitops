@@ -274,7 +274,7 @@ Owner step IDs refer to [OUTLINES.md](OUTLINES.md).
 
 | Topic | Guide file | Notes |
 |-------|------------|--------|
-| 01–14 | EXISTS | Pilot complete (M3/M4); live AWS destroyed |
+| 01–14 | EXISTS | Reference complete (M3/M4); live AWS destroyed |
 | 15–19 | EXISTS | Phase 12 **scaffold** in-repo; enable after rebuild |
 
 **Phase A historical note:** Early planning treated guides as deferred until Phase B. That gate is closed — guides and FEATURE files for Topics 01–19 now exist as listed above.

@@ -49,7 +49,7 @@ kubectl -n monitoring logs statefulset/alertmanager-monitoring-alertmanager --ta
 ## Security
 
 - Never put SMTP passwords in Git or Argo Application values
-- Rotate SMTP credentials after the pilot if the mailbox is shared
+- Rotate SMTP credentials after the reference if the mailbox is shared
 
 ## Related
 

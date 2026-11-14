@@ -8,7 +8,7 @@ Risk level: Medium–High (depends on SEV)
 
 ## Purpose
 
-Classify and handle incidents consistently on this solo pilot: Alertmanager → email, no PagerDuty, you are IC and operator.
+Classify and handle incidents consistently on this solo reference platform: Alertmanager → email, no PagerDuty, you are IC and operator.
 
 ## When to use / When not to use
 
@@ -40,7 +40,7 @@ date -u
 kubectl get nodes
 ```
 
-Assign SEV from the table. Incident commander = you (solo pilot).
+Assign SEV from the table. Incident commander = you (solo reference platform).
 
 Validation: SEV written in notes (chat/issue).
 
@@ -67,13 +67,13 @@ Validation: Health checks ([08](08-health-checks.md)) green or degraded-stable.
 
 ### Step 3: Communicate
 
-Solo pilot: note start/end UTC, SEV, actions in GitLab issue or personal log. No customer status page in scope.
+Solo reference platform: note start/end UTC, SEV, actions in GitLab issue or personal log. No customer status page in scope.
 
 ### Step 4: Resolve and follow up
 
 - SEV-1/2 → schedule [19-postmortem](19-postmortem-checklist.md) within 48h  
 - Disable long silences; fix alert noise  
-- If pilot goal met → **Topic 14 teardown immediately** rather than endless keep-alive
+- If reference goal met → **Topic 14 teardown immediately** rather than endless keep-alive
 
 ```mermaid
 flowchart TD

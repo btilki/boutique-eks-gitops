@@ -56,7 +56,7 @@ Sync waves (conceptual):
 | Canary | Rollout abort / revert digest |
 | Platform chart | Git revert platform values |
 | Infrastructure | Terraform plan/apply prior state; avoid blind destroy in prod keep scenarios |
-| Full pilot end | Phase 11 teardown |
+| Full reference end | Phase 11 teardown |
 
 ## Deployment flowchart
 

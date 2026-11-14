@@ -13,7 +13,7 @@ Move the same image digests from `dev` → `stage` → `prod` using Git MRs. Arg
 | Digest-only | Promotion MRs change **only** `image.digest` under `gitops/envs/<env>/values/*.yaml` |
 | No chart edits | Do not change templates, ports, or replica counts in a promote MR |
 | No CI promote | GitLab CI writes dev only ([docs/ci.md](ci.md)) |
-| Stage first | Never skip stage for the pilot happy path |
+| Stage first | Never skip stage for the reference happy path |
 | Prod ownership | `gitops/envs/prod/**` requires `@btilki` CODEOWNERS approval |
 | Prod sync | After merge, **manual** Argo sync for `*-prod` apps (no auto-sync) |
 

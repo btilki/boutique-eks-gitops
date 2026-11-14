@@ -333,7 +333,7 @@ Record MR URL + sync time for Topic 13 evidence.
 
 ### Security notes
 
-Enabling prod auto-sync is a **pilot severity issue**.
+Enabling prod auto-sync is a **reference severity issue**.
 
 ---
 

@@ -2,22 +2,22 @@
 
 Audience: Implementer  
 Estimated time: 1–2 hours (EKS destroy often 15–30+ minutes)  
-Prerequisites: [13 — Production-pilot checklist](13-production-readiness.md) PASS, or early abort after any billable topic  
+Prerequisites: [13 — Production-reference checklist](13-production-readiness.md) PASS, or early abort after any billable topic  
 Creates / owns: [`docs/runbooks/teardown.md`](../runbooks/teardown.md); fills [`PRODUCTION_CHECKLIST`](../PRODUCTION_CHECKLIST.md) Appendix T; ROADMAP Phase 11 ✅  
 Milestone 4 — Clean teardown  
 Related: [cost model](../architecture/10-cost-model.md) · [Setup guide](README.md) · [Runbook](../runbooks/teardown.md)
 
-> Pilot already torn down. Topic 14 was executed; AWS billables from this pilot are gone. Use this topic on a new rebuild after Milestone 3 (or when aborting an in-flight run). Live step order: [runbook](../runbooks/teardown.md). Evidence: [PRODUCTION_CHECKLIST Appendix T](../PRODUCTION_CHECKLIST.md#appendix-t--teardown-evidence-topic-14).
+> Reference already torn down. Topic 14 was executed; AWS billables from this reference are gone. Use this topic on a new rebuild after Milestone 3 (or when aborting an in-flight run). Live step order: [runbook](../runbooks/teardown.md). Evidence: [PRODUCTION_CHECKLIST Appendix T](../PRODUCTION_CHECKLIST.md#appendix-t--teardown-evidence-topic-14).
 
 ---
 
 ## Topic goal
 
-Decommission the pilot in a fixed order so **no orphan billables** remain: GitOps prune (ALBs) → confirm edge cleanup → `terraform destroy` → optional state backend → orphan audit.
+Decommission the reference in a fixed order so **no orphan billables** remain: GitOps prune (ALBs) → confirm edge cleanup → `terraform destroy` → optional state backend → orphan audit.
 
 ## Why this topic is required
 
-FR-11 / cost guardrail: short pilots must destroy immediately after tests. **Leaving EKS + NAT + ALBs running** is the largest cost and attack-surface failure mode.
+FR-11 / cost guardrail: short references must destroy immediately after tests. **Leaving EKS + NAT + ALBs running** is the largest cost and attack-surface failure mode.
 
 ## Before you begin
 
@@ -151,7 +151,7 @@ aws ec2 describe-network-interfaces --region "$AWS_REGION" \
   --output table
 ```
 
-If ALBs still `active`, delete them (and dependent TGs) in Console or CLI after confirming they belong to this pilot.
+If ALBs still `active`, delete them (and dependent TGs) in Console or CLI after confirming they belong to this reference.
 
 ### GUI instructions (if applicable)
 
@@ -163,12 +163,12 @@ If ALBs still `active`, delete them (and dependent TGs) in Console or CLI after 
 
 ### Expected output
 
-Empty (or documented) ELBv2 list for the pilot VPC.
+Empty (or documented) ELBv2 list for the reference VPC.
 
 ### Validation
 
 ```bash
-# Should print nothing or only non-pilot LBs in other VPCs
+# Should print nothing or only non-reference LBs in other VPCs
 aws elbv2 describe-load-balancers --region "$AWS_REGION" \
   --query "LoadBalancers[?VpcId=='${VPC_ID}'].LoadBalancerName" --output text
 ```
@@ -261,7 +261,7 @@ Keep `destroy.tfplan` artifact until Appendix T signed (local only).
 
 ### Security notes
 
-Destroy removes IRSA/CI roles — expected. Rotate any SMTP secrets used for the pilot if the mailbox is shared.
+Destroy removes IRSA/CI roles — expected. Rotate any SMTP secrets used for the reference if the mailbox is shared.
 
 ---
 
@@ -337,7 +337,7 @@ State may contain resource IDs — treat retained buckets as sensitive.
 
 ### Goal
 
-Prove no EKS cluster, no pilot NAT, no stray ALBs, no running node instances; document ECR/ACM/Route53 choices.
+Prove no EKS cluster, no reference NAT, no stray ALBs, no running node instances; document ECR/ACM/Route53 choices.
 
 ### Why this step is required
 
@@ -383,7 +383,7 @@ echo "=== Route53 boutique records (spot-check) ==="
 
 ### Expected output
 
-Cluster absent; NAT/ALB clean for this pilot; leftovers listed with disposition (delete later / accept).
+Cluster absent; NAT/ALB clean for this reference; leftovers listed with disposition (delete later / accept).
 
 ### Validation
 
@@ -415,7 +415,7 @@ Remove unused ACM certs only if unused elsewhere; do not delete certs for other 
 
 ### Goal
 
-Complete Appendix T; mark ROADMAP Phase 11 ✅; declare pilot closed (bill stopped / residuals documented).
+Complete Appendix T; mark ROADMAP Phase 11 ✅; declare reference closed (bill stopped / residuals documented).
 
 ### Why this step is required
 
@@ -439,7 +439,7 @@ N/A — docs sign-off.
 | Check | Result |
 |-------|--------|
 | `aws eks list-clusters` lacks this cluster | PASS |
-| No pilot NAT / ALB (or documented) | PASS |
+| No reference NAT / ALB (or documented) | PASS |
 | Nodes terminated | PASS |
 | Appendix T complete | PASS |
 | ROADMAP Phase 11 ✅ | PASS |
@@ -468,7 +468,7 @@ Note destroy UTC timestamp for cost discussions.
 
 ### Security notes
 
-Revoke temporary AWS keys used for the pilot if any were created (prefer SSO/OIDC only).
+Revoke temporary AWS keys used for the reference if any were created (prefer SSO/OIDC only).
 
 ---
 
@@ -506,10 +506,10 @@ If stopping after Topics 04–12 without Milestone 3: **still run Steps 14.1→1
 
 - Ordered decommission without orphan billables
 - Milestone 4 evidence in Appendix T
-- Pilot closed (repo retained for rebuild)
+- Reference closed (repo retained for rebuild)
 
 ## Next
 
 Phase B complete after this topic’s approval.  
 Phase C: live bootstrap starting at [`01-prerequisites.md`](01-prerequisites.md) Step 1.1 (one step per turn).  
-If the cluster was just destroyed after a successful pilot, Phase C is only needed for a rebuild.
+If the cluster was just destroyed after a successful reference, Phase C is only needed for a rebuild.

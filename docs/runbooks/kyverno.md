@@ -5,7 +5,7 @@ Setup: Topic 07 · Policies: [`../../gitops/platform/kyverno/policies/`](../../g
 
 ## Purpose
 
-Unblock legitimate workloads blocked by admission policy — without weakening digest-only rules for the pilot.
+Unblock legitimate workloads blocked by admission policy — without weakening digest-only rules for the reference.
 
 ## Active policies (app namespaces)
 

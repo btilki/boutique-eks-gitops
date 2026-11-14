@@ -268,7 +268,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | 13.3 | Capture production path digest → promote → prod sync + canary | Proof |
 | 13.4 | Topic validation / M3 sign-off | Gate to 14 |
 
-**Why required:** Declares the pilot path proven before teardown.
+**Why required:** Declares the reference path proven before teardown.
 
 ---
 
@@ -287,7 +287,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | 14.5 | Orphan audit (EC2, ELB, NAT, EIP, ECR optional retain policy) | Cost stop |
 | 14.6 | Topic validation — **READY for close** / bill stopped | M4 |
 
-**Why required:** Cost and security — pilot must not leave a running control plane unpaid-for.
+**Why required:** Cost and security — reference must not leave a running control plane unpaid-for.
 
 ---
 
@@ -320,7 +320,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | 16.1 | Confirm scaffold files | Repo-only |
 | 16.2 | Run gates locally (optional) | Pre-CI |
 | 16.3 | Checkov soft-fail baseline | IaC noise |
-| 16.4 | Enable `ENABLE_REPO_GATES` / pilot CI | GitLab vars |
+| 16.4 | Enable `ENABLE_REPO_GATES` / reference CI | GitLab vars |
 | 16.5 | Topic validation (scaffold) | Gate |
 
 **Why required:** Catch secrets, risky Terraform, and policy regressions before digest promotion.
@@ -378,7 +378,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 | 19.4 | After rebuild: enable Falco opt-in | Runtime |
 | 19.5 | Topic validation (scaffold) | Gate |
 
-**Why required:** Documented edge/runtime path without paying during short pilots.
+**Why required:** Documented edge/runtime path without paying during short references.
 
 ---
 

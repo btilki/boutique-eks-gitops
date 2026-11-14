@@ -13,7 +13,7 @@ Query application and platform logs via Loki (on-cluster, short retention).
 ## When to use / When not to use
 
 Use for CrashLoop, 5xx, SMTP/AM failures.  
-Do not expect long retention or centralized SIEM — pilot Loki retention ~7d.
+Do not expect long retention or centralized SIEM — reference Loki retention ~7d.
 
 ## Prerequisites
 

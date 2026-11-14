@@ -14,13 +14,13 @@ Bootstrap durable, locked Terraform remote state so Topic 04 (and later) applies
 
 ## Why this topic is required
 
-Without remote state + locking, concurrent applies and laptop loss corrupt infrastructure truth. S3 versioning + DynamoDB locks are the AWS-standard backend for this pilot ([FR-01](../implementation/plan.md)).
+Without remote state + locking, concurrent applies and laptop loss corrupt infrastructure truth. S3 versioning + DynamoDB locks are the AWS-standard backend for this reference ([FR-01](../implementation/plan.md)).
 
 ## Before you begin
 
 - Topics 01–02 complete (`make docs-check` passes).
-- AWS credentials for the pilot account (`aws sts get-caller-identity` works in `eu-central-1`).
-- IAM permission to create S3 buckets, DynamoDB tables, and use them for state (typically admin for the pilot).
+- AWS credentials for the reference account (`aws sts get-caller-identity` works in `eu-central-1`).
+- IAM permission to create S3 buckets, DynamoDB tables, and use them for state (typically admin for the reference).
 - Phase B files for this topic present in the repo (partner delivery).
 - Cost impact (low): empty S3 bucket + small DynamoDB table — **destroy in Topic 14**.
 - **Do not** create VPC or EKS in this topic.
@@ -85,7 +85,7 @@ Choose new names before creating resources; renaming after creation means migrat
 
 ### Best practices
 
-Include account ID in the bucket name for uniqueness; keep one lock table per pilot.
+Include account ID in the bucket name for uniqueness; keep one lock table per reference.
 
 ### Security notes
 
@@ -197,7 +197,7 @@ Expect: `Status=Enabled` versioning; `AES256` rule; all public-access flags `tru
 |---------|--------------|-----|
 | `BucketAlreadyExists` | Name taken globally | Change `TF_STATE_BUCKET`; re-run 3.1–3.2 |
 | `IllegalLocationConstraintException` | Wrong create-bucket args | Use `LocationConstraint=eu-central-1` as shown |
-| AccessDenied | IAM gap | Elevate pilot role / attach S3 admin for bootstrap |
+| AccessDenied | IAM gap | Elevate reference role / attach S3 admin for bootstrap |
 
 ### Recovery
 
@@ -244,7 +244,7 @@ aws dynamodb create-table \
 aws dynamodb wait table-exists --table-name "${TF_LOCK_TABLE}" --region eu-central-1
 ```
 
-Cost impact: on-demand DynamoDB — pennies at pilot scale.
+Cost impact: on-demand DynamoDB — pennies at reference scale.
 
 ### GUI instructions (if applicable)
 
@@ -260,7 +260,7 @@ Cost impact: on-demand DynamoDB — pennies at pilot scale.
 | Table name | Same as `TF_LOCK_TABLE` | Must match backend |
 | Partition key | `LockID` · type **String** | Terraform backend contract |
 | Sort key | None | Not used by Terraform |
-| Table settings | On-demand (pay-per-request) | Simple for pilot |
+| Table settings | On-demand (pay-per-request) | Simple for reference |
 | Region | `eu-central-1` | Same as bucket |
 
 ### Expected output
@@ -290,7 +290,7 @@ aws dynamodb describe-table --table-name "${TF_LOCK_TABLE}" --region eu-central-
 
 ### Best practices
 
-One lock table per state backend for this pilot; do not share with unrelated projects.
+One lock table per state backend for this reference; do not share with unrelated projects.
 
 ### Security notes
 
@@ -451,7 +451,7 @@ Fix IAM or `backend.hcl`; re-run `terraform init -backend-config=../../backend.h
 
 ### Best practices
 
-Always `cd terraform/envs/prod` before init/plan/apply for this pilot root module.
+Always `cd terraform/envs/prod` before init/plan/apply for this reference root module.
 
 ### Security notes
 

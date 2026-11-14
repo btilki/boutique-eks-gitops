@@ -66,7 +66,7 @@ N/A (read-only).
 
 ## Security notes
 
-Grafana is public HTTPS — rotate admin; prefer SSO if keep-alive (not in pilot).
+Grafana is public HTTPS — rotate admin; prefer SSO if keep-alive (not in reference).
 
 ## Automation opportunities
 

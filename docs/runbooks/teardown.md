@@ -7,11 +7,11 @@ Checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md) Appendix T
 Cost: [`../architecture/10-cost-model.md`](../architecture/10-cost-model.md)  
 Setup index: [`../setup/README.md`](../setup/README.md)
 
-> When to use: you have a live pilot cluster and must stop cost (after tests or early abort). The closed pilot already completed Milestone 4 — there is nothing to tear down today unless you rebuilt. Authoritative numbered steps: [Topic 14](../setup/14-teardown.md).
+> When to use: you have a live reference cluster and must stop cost (after tests or early abort). The closed reference already completed Milestone 4 — there is nothing to tear down today unless you rebuilt. Authoritative numbered steps: [Topic 14](../setup/14-teardown.md).
 
 ## Purpose
 
-Stop all pilot billables: release ALBs via GitOps prune, destroy EKS / VPC / NAT via Terraform, then optionally remove remote state. **Never destroy the state backend while foundation resources still exist.**
+Stop all reference billables: release ALBs via GitOps prune, destroy EKS / VPC / NAT via Terraform, then optionally remove remote state. **Never destroy the state backend while foundation resources still exist.**
 
 ## Order (do not reorder)
 

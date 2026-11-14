@@ -1,6 +1,6 @@
 # Architecture deep dive — boutique-eks-gitops
 
-Production pilot closed. AWS resources from the pilot were destroyed.  
+Production reference closed. AWS resources from this reference were destroyed.  
 These pages describe design and behavior in the repo. They do not provision infrastructure.
 
 If you skipped the summary: [../ARCHITECTURE.md](../ARCHITECTURE.md) (executive summary, diagram, tradeoffs).
@@ -18,7 +18,7 @@ If you skipped the summary: [../ARCHITECTURE.md](../ARCHITECTURE.md) (executive 
 | Walk requirements and constraints | [01-requirements.md](01-requirements.md) |
 
 Delivery contracts: [../promotion.md](../promotion.md) · [../rollback.md](../rollback.md) · [../ci.md](../ci.md)  
-Evidence without a cluster: [../pilot-claims.md](../pilot-claims.md)
+Evidence without a cluster: [../reference-claims.md](../reference-claims.md)
 
 ---
 

@@ -10,7 +10,7 @@
 3. **Prod path** (`gitops/envs/prod/**`) requires `@btilki` via [`CODEOWNERS`](CODEOWNERS). Enable GitLab **code owner approval** on `main` or the file is advisory only.
 4. **Never commit secrets** — no AWS keys, SMTP passwords, `backend.hcl`, or real `*.tfvars`. Prefer placeholders in guides.
 5. **CI must not deploy** — no `kubectl` / `argocd` in routine pipeline jobs (see [`.gitlab-ci.yml`](.gitlab-ci.yml) FORBIDDEN guards).
-6. After live tests, run **Topic 14 teardown** — do not leave the pilot cluster billing.
+6. After live tests, run **Topic 14 teardown** — do not leave the reference cluster billing.
 7. **Terminology:** on first mention in the Setup topic that owns the concept, write **`ABBR (Full form)`** with both the abbreviation and the long form bold (example: **EKS (Elastic Kubernetes Service)**). Later mentions use the abbreviation only. Ownership table: [`docs/setup/README.md`](docs/setup/README.md#terminology-ownership).
 
 ## Local checks before push
@@ -33,7 +33,7 @@ make docs-check
 
 ## Account IDs in Git
 
-Guides use `<ACCOUNT_ID>` placeholders. Env overlays may pin this pilot’s ECR/ACM ARNs so Argo can sync — that is intentional for the pilot AWS account. Redact or templatize before publishing a public fork.
+Guides use `<ACCOUNT_ID>` placeholders. Env overlays may pin this reference’s ECR/ACM ARNs so Argo can sync — that is intentional for the reference AWS account. Redact or templatize before publishing a public fork.
 
 ## Security reports
 

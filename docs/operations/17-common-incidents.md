@@ -8,7 +8,7 @@ Risk level: Medium
 
 ## Purpose
 
-First-response playbooks for the failure modes this stack actually hits during the pilot — tie each to [07](07-incident-response.md) SEV before you mutate prod.
+First-response playbooks for the failure modes this stack actually hits during the reference — tie each to [07](07-incident-response.md) SEV before you mutate prod.
 
 ## When to use / When not to use
 

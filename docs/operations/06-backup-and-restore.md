@@ -8,7 +8,7 @@ Risk level: Medium–High (state restore)
 
 ## Purpose
 
-Define what is backed up for this pilot and how to restore it.
+Define what is backed up for this reference and how to restore it.
 
 ## When to use / When not to use
 

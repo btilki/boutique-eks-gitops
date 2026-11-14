@@ -125,7 +125,7 @@ Know when to harden IaC scanning.
 
 ### Why this step is required
 
-Pilot Terraform intentionally trades some CIS controls for cost (single NAT, etc.). Soft-fail avoids blocking Phase 12 scaffolds.
+Reference Terraform intentionally trades some CIS controls for cost (single NAT, etc.). Soft-fail avoids blocking Phase 12 scaffolds.
 
 ### Commands
 
@@ -181,7 +181,7 @@ GitLab → CI/CD → Pipelines → MR pipeline → gitleaks / checkov / policy_t
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | No pipeline | Both ENABLE_* unset | Set `ENABLE_REPO_GATES=true` for MR gates |
-| Build jobs fail on main | `ENABLE_PILOT_CI` without AWS | Keep pilot CI off until Topic 04 restored |
+| Build jobs fail on main | `ENABLE_PILOT_CI` without AWS | Keep reference CI off until Topic 04 restored |
 | policy_test download fail | GitHub rate limit / pin | Retry; confirm `KYVERNO_CLI_VERSION` release exists |
 
 ### Security notes

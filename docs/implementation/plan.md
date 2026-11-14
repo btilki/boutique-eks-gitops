@@ -5,7 +5,7 @@ Public summary: [ROADMAP.md](../../ROADMAP.md)
 Architecture (authoritative): [docs/ARCHITECTURE.md](../ARCHITECTURE.md) — decisions below are approved  
 Structure (authoritative): Preferred layout in Project Prompt — materialized in Phase 1  
 
-Status: Production pilot closed. Phases 1–11 complete. AWS resources deleted. Phase 12 scaffold is in Git; live enable waits for a rebuild.
+Status: Production reference closed. Phases 1–11 complete. AWS resources deleted. Phase 12 scaffold is in Git; live enable waits for a rebuild.
 
 > Maintainer reference — not a reader entry point. For status and milestones use [ROADMAP.md](../../ROADMAP.md). To understand or rebuild use [README.md](../../README.md) → [docs/README.md](../README.md) → [setup/README.md](../setup/README.md). This file keeps phase inventories, FR cross-refs, and historical planning detail.
 
@@ -16,8 +16,8 @@ Status: Production pilot closed. Phases 1–11 complete. AWS resources deleted. 
 | Field | Value |
 |-------|--------|
 | Project | boutique-eks-gitops |
-| Goal | Production-pilot GitOps control plane for Online Boutique on one EKS cluster; **Git is the only deploy authority**; CI only updates image digests |
-| Current status | Production pilot closed; AWS resources deleted; GitOps and docs remain |
+| Goal | Production-reference GitOps control plane for Online Boutique on one EKS cluster; **Git is the only deploy authority**; CI only updates image digests |
+| Current status | Production reference closed; AWS resources deleted; GitOps and docs remain |
 | Phases | 11 executed (Phase 1–11, including teardown), plus Phase 12 scaffold in [ROADMAP.md](../../ROADMAP.md) |
 | Overall complexity | L (platform breadth); no single XL phase if Phase 2/7/8 stay scoped |
 | Definition of done | All Must FRs validated; PRODUCTION_CHECKLIST green; digest → promote → prod manual sync + canary proven; teardown documented and executable |
@@ -47,7 +47,7 @@ Status: Production pilot closed. Phases 1–11 complete. AWS resources deleted. 
 - Prove deep GitOps on AWS: digest-only releases and Git-driven promotion without CI deploying to the cluster.
 - Deliver a production-quality reference control plane (Terraform + Argo + policy + SRE baseline) reviewable by platform engineers.
 - Operate `dev` / `stage` / `prod` under `biroltilki.art` with documented promotion, rollback, and alerting.
-- Keep cost suitable for a short pilot (single cluster, single NAT, no CloudWatch/PagerDuty) with a mandatory teardown path.
+- Keep cost suitable for a short reference (single cluster, single NAT, no CloudWatch/PagerDuty) with a mandatory teardown path.
 - Encode audit-friendly patterns: Git history, signed images, CODEOWNERS on prod paths.
 
 ---
@@ -106,7 +106,7 @@ Status: Production pilot closed. Phases 1–11 complete. AWS resources deleted. 
 | Constraint | Planning impact |
 |------------|-----------------|
 | AWS only; one EKS cluster | No multi-cloud; envs = namespaces |
-| Cost-sensitive / short test window | Single NAT; On-Demand `m6i.large` ×3; **Phase 11 teardown mandatory** for short pilots |
+| Cost-sensitive / short test window | Single NAT; On-Demand `m6i.large` ×3; **Phase 11 teardown mandatory** for short references |
 | No static AWS keys in Git/CI | OIDC only |
 | Digest-only; never `:latest` | Kyverno + chart contract |
 | CI must not deploy to cluster | Digest MR only |
@@ -201,7 +201,7 @@ Status: Production pilot closed. Phases 1–11 complete. AWS resources deleted. 
 
 ## 7.12 High-level architecture
 
-GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual prod sync**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (email). Frontend canaries run on stage and prod via Argo Rollouts. Short pilots end with **Phase 11 teardown mandatory**.
+GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual prod sync**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (email). Frontend canaries run on stage and prod via Argo Rollouts. Short references end with **Phase 11 teardown mandatory**.
 
 Authoritative detail: `docs/ARCHITECTURE.md` + `docs/architecture/*` (Phase 1).
 
@@ -730,7 +730,7 @@ Setup Guide topics: `docs/setup/13-production-readiness.md`
 
 ### Objectives
 
-- Complete checklist, architecture diagrams (Mermaid), runbooks; full build→prod path proof. Teardown is Phase 11 (**Phase 11 teardown mandatory** for short pilots).
+- Complete checklist, architecture diagrams (Mermaid), runbooks; full build→prod path proof. Teardown is Phase 11 (**Phase 11 teardown mandatory** for short references).
 
 ### Tasks
 
@@ -775,7 +775,7 @@ Setup Guide topics: `docs/setup/14-teardown.md`
 
 ### Objectives
 
-- Fully decommission the pilot so AWS charges stop: remove GitOps-managed workloads/ALBs first, then Terraform-managed foundation, then verify no orphans.
+- Fully decommission the reference so AWS charges stop: remove GitOps-managed workloads/ALBs first, then Terraform-managed foundation, then verify no orphans.
 
 ### Tasks
 
@@ -815,7 +815,7 @@ Setup Guide topics: `docs/setup/14-teardown.md`
 
 ### Approval gate
 
-Project complete for short pilot; or re-apply Phase 2+ if rebuilding.
+Project complete for short reference; or re-apply Phase 2+ if rebuilding.
 
 ---
 

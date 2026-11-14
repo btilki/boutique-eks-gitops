@@ -6,7 +6,7 @@
 
 ## Context
 
-`dev`, `stage`, and `prod` need isolation sufficient for a production pilot, under a cost-sensitive short test window (single NAT, one EKS).
+`dev`, `stage`, and `prod` need isolation sufficient for a production reference, under a cost-sensitive short test window (single NAT, one EKS).
 
 ## Decision
 
@@ -19,6 +19,6 @@ Run one EKS cluster in `eu-central-1`. Environments are namespaces plus separate
 
 ## Consequences
 
-- Positive: Lower cost; simpler Terraform; faster pilot teardown.
+- Positive: Lower cost; simpler Terraform; faster reference teardown.
 - Negative: Shared blast radius (node/control-plane failure affects all envs); not multi-account isolation.
 - Rejected alternative: Three clusters — deferred until single-cluster limits are proven painful.

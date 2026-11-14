@@ -25,7 +25,7 @@ Every platform and app topic depends on live networking, Kubernetes, ECR, and IA
 - **Cost impact: HIGH** — EKS control plane + 3× `m6i.large` + NAT Gateway. Confirm budget; teardown is Topic 14.
 - Read [cost model](../architecture/10-cost-model.md).
 
-**Do not** run `terraform destroy` mid-pilot except in Topic 14 order — it removes the cluster.
+**Do not** run `terraform destroy` mid-reference except in Topic 14 order — it removes the cluster.
 
 Idempotent: re-plan/re-apply is safe for unchanged config; node group updates may roll nodes.
 
@@ -91,7 +91,7 @@ Re-copy example; fix values; do not commit `terraform.tfvars`.
 
 ### Best practices
 
-Tighten `endpoint_public_access_cidrs` to your IP `/32` for the pilot if you have a stable egress IP.
+Tighten `endpoint_public_access_cidrs` to your IP `/32` for the reference if you have a stable egress IP.
 
 ### Security notes
 
@@ -171,7 +171,7 @@ Private subnets + single NAT + VPC endpoints are required before EKS nodes can p
 
 ### Commands
 
-Recommended (first pilot): apply the whole stack in Steps 4.3–4.8 as one apply after reviewing the plan:
+Recommended (first reference): apply the whole stack in Steps 4.3–4.8 as one apply after reviewing the plan:
 
 ```bash
 cd "$(git rev-parse --show-toplevel)/terraform/envs/prod"
@@ -293,7 +293,7 @@ Do not enable unnecessary add-ons outside GitOps later topics.
 
 ### Security notes
 
-Public API with `0.0.0.0/0` is pilot-only — tighten CIDRs when practical.
+Public API with `0.0.0.0/0` is reference-only — tighten CIDRs when practical.
 
 ---
 

@@ -11,6 +11,6 @@ Day-2 index: [`../operations/README.md`](../operations/README.md) (deploy, DR, i
 | [argo-sync.md](argo-sync.md) | App OutOfSync / stuck / prod not updating | 06 |
 | [kyverno.md](kyverno.md) | Pods blocked by policy | 07 |
 | [canary.md](canary.md) | Canary stuck / abort / bad weight | 12 |
-| [teardown.md](teardown.md) | Decommission pilot *(Topic 14)* | 14 |
+| [teardown.md](teardown.md) | Decommission the reference *(Topic 14)* | 14 |
 
 Related: [promotion](../promotion.md) · [rollback](../rollback.md) · [dns-and-tls](../dns-and-tls.md) · [operations](../operations/README.md)

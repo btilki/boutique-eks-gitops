@@ -8,7 +8,7 @@ Risk level: Medium (cost)
 
 ## Purpose
 
-Adjust capacity within the pilot envelope (ASG 2–5 × `m6i.large`; chart replicas).
+Adjust capacity within the reference envelope (ASG 2–5 × `m6i.large`; chart replicas).
 
 ## When to use / When not to use
 
@@ -18,7 +18,7 @@ Do not enable unbounded autoscaling or large instance classes without cost revie
 ## Prerequisites
 
 - [ ] Confirm cost model ([10-cost-model](../architecture/10-cost-model.md))
-- [ ] Prefer teardown over scaling if pilot is finished
+- [ ] Prefer teardown over scaling if reference is finished
 
 ## Procedure
 

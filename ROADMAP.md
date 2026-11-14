@@ -1,8 +1,8 @@
 # Roadmap — boutique-eks-gitops
 
-**Vision:** Closed-pilot GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI publishes an image (default: retag `:bootstrap`), scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
+**Vision:** Closed-reference GitOps on a single AWS EKS cluster where Git is the only deploy authority. GitLab CI publishes an image (default: retag `:bootstrap`), scans, signs, and opens digest-only MRs; Argo CD reconciles. Digests promote `dev → stage → prod` under `biroltilki.art`.
 
-**Status:** M4 PASS — pilot closed; **AWS cloud deleted** (teardown complete 2026-07-19/20)  
+**Status:** M4 PASS — reference closed; **AWS cloud deleted** (teardown complete 2026-07-19/20)  
 **Detailed plan:** [docs/implementation/plan.md](docs/implementation/plan.md)  
 **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/architecture/](docs/architecture/)
 
@@ -62,7 +62,7 @@ FC review prompts run at **M1, M2, M3** (phases 3, 6, 10). **Phase 11 teardown r
 
 ## Current focus
 
-**Pilot closed.** Phases **1–11 ✅** · M3 PASS 2026-07-19 · **M4 PASS** 2026-07-19/20. **No live AWS pilot resources remain** (Appendix T). Rebuild = Topic 01 (zone) → 03 → 04+.
+**Reference closed.** Phases **1–11 ✅** · M3 PASS 2026-07-19 · **M4 PASS** 2026-07-19/20. **No live AWS reference resources remain** (Appendix T). Rebuild = Topic 01 (zone) → 03 → 04+.
 
 **Phase 12 (scaffold-only):** extend GitOps/DevSecOps in-repo for a future rebuild — **no** Terraform apply required to author files.
 

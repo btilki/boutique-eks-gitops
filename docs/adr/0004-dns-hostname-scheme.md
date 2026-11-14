@@ -25,5 +25,5 @@ boutique.biroltilki.art
 ## Consequences
 
 - Positive: One mental model; ACM SANs can cover the set; external-dns ownership clear.
-- Negative: Renames require ACM + Ingress + docs churn — treat as locked for the pilot.
+- Negative: Renames require ACM + Ingress + docs churn — treat as locked for the reference.
 - Follow-up: Topic 05 implements records via external-dns.

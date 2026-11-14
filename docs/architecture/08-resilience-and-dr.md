@@ -1,13 +1,13 @@
 # 08 — Resilience, scalability, and DR
 
-What breaks, how you notice, and what you accept on a single-cluster pilot.
+What breaks, how you notice, and what you accept on a single-cluster reference.
 
 ## Failure scenarios
 
 | Scenario | Impact | Detection | Mitigation | Recovery |
 |----------|--------|-----------|------------|----------|
 | Single AZ / node loss | Pods reschedule; brief errors | Node NotReady; Prom alerts | Multi-AZ node group; replicas≥2 on critical frontend prod | Kubernetes reschedule; verify Rollout |
-| NAT AZ failure | Egress broken (pulls, SMTP, some AWS API) | Controller errors; failed pulls | Accept for pilot; endpoints reduce ECR need | Recreate NAT / failover (manual) |
+| NAT AZ failure | Egress broken (pulls, SMTP, some AWS API) | Controller errors; failed pulls | Accept for reference; endpoints reduce ECR need | Recreate NAT / failover (manual) |
 | GitOps desync | Drift or stuck OutOfSync | Argo health; UI | Auto-sync lower envs; restrict prod | Refresh/sync; fix Git |
 | Bad digest in prod | Broken storefront | Ingress/app alerts email; Grafana | Canary; CODEOWNERS; manual sync | `git revert`; re-sync |
 | Terraform state lock/corrupt | No infra changes | TF errors | DynamoDB lock; versioned S3 | Restore state version; unlock carefully |
@@ -31,7 +31,7 @@ What breaks, how you notice, and what you accept on a single-cluster pilot.
 2. Single NAT throughput/cost → endpoints; later second NAT  
 3. ALB + canary complexity → validate on stage before prod weight steps  
 
-## DR stance (production pilot — cluster no longer running)
+## DR stance (production reference — cluster no longer running)
 
 | Item | Stance |
 |------|--------|
@@ -39,7 +39,7 @@ What breaks, how you notice, and what you accept on a single-cluster pilot.
 | RPO | Git history ≈ desired cluster state; TF state versioning for infra |
 | Multi-region | Out of scope |
 | etcd backup | Rely on EKS; rebuild apps from Git if cluster lost |
-| Stateful data | Redis ephemeral OK for pilot; no customer DB in scope |
+| Stateful data | Redis ephemeral OK for reference; no customer DB in scope |
 | Grafana dashboards | Prefer Git-provisioned dashboards where possible |
 | Rebuild order | Remote state → TF apply → ingress → Argo bootstrap → platform waves → envs → verify DNS/TLS |
 

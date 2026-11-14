@@ -1,6 +1,6 @@
-# Pilot evidence — boutique-eks-gitops
+# Reference evidence — boutique-eks-gitops
 
-Screenshots from the live production pilot (~2026-07-19). The cluster and other AWS billables were destroyed afterward (Milestone 4). There is no live demo today — these images are the file-backed proof that the path ran.
+Screenshots from the live production reference (~2026-07-19). The cluster and other AWS billables were destroyed afterward (Milestone 4). There is no live demo today — these images are the file-backed proof that the path ran.
 
 Assets live under [`assets/images/setup/`](../../assets/images/setup/). Landing-page crop: [project README — Proof](../../README.md#proof).
 
@@ -40,7 +40,7 @@ File: [`10-gitlab-ci-pipeline-passed.png`](../../assets/images/setup/10-gitlab-c
 
 ![Grafana dashboards](../../assets/images/setup/08-grafana-dashboards.png)
 
-`grafana.boutique.biroltilki.art` — stock kube-prometheus-stack dashboard list. Proves Grafana was reachable on the pilot hostname; it does not show Boutique-specific panels, Loki queries, or a firing alert.
+`grafana.boutique.biroltilki.art` — stock kube-prometheus-stack dashboard list. Proves Grafana was reachable on the reference hostname; it does not show Boutique-specific panels, Loki queries, or a firing alert.
 
 File: [`08-grafana-dashboards.png`](../../assets/images/setup/08-grafana-dashboards.png)
 
@@ -62,12 +62,12 @@ These claims are in the docs / checklist but do not have screenshots in this fol
 | Alertmanager email | Observability path end-to-end |
 | Teardown: `terraform destroy` / orphan audit | Milestone 4 proof |
 
-Related file-backed claims (no cluster required): [`../pilot-claims.md`](../pilot-claims.md) · checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md)
+Related file-backed claims (no cluster required): [`../reference-claims.md`](../reference-claims.md) · checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md)
 
 ---
 
 ## Related
 
-- Lessons from the pilot: [`../lessons-learned.md`](../lessons-learned.md)
+- Lessons from this reference: [`../lessons-learned.md`](../lessons-learned.md)
 - Version pins used for this evidence: [`../versions.md`](../versions.md)
 - Rebuild: [`../setup/README.md`](../setup/README.md)

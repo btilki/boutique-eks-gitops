@@ -67,7 +67,7 @@ Rel(platform, ecr, "pull by digest")
 | prod | `prod` | `boutique.biroltilki.art` | **manual prod sync** | Yes (frontend) | `@btilki` |
 | platform | `platform`, `argocd`, monitoring ns | `argocd.` / `grafana.boutique...` | Automated (waves) | N/A | Platform paths reviewed |
 
-One cluster keeps cost and ops manageable for a production pilot. That trades away three-account blast-radius isolation — a documented limitation, not hidden.
+One cluster keeps cost and ops manageable for a production reference. That trades away three-account blast-radius isolation — a documented limitation, not hidden.
 
 ## Platform vs application boundary
 

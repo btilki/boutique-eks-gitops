@@ -2,7 +2,7 @@
 
 ## Purpose
 
-What this pilot costs if you leave it up — and why teardown matters. A typical validation run is ~2 days; AWS for this project has already been torn down after the pilot closed.
+What this reference platform costs if you leave it up — and why teardown matters. A typical validation run is ~2 days; AWS for this project has already been torn down after this reference closed.
 
 ## Estimate bands (`eu-central-1`, list-price style)
 
@@ -18,7 +18,7 @@ What this pilot costs if you leave it up — and why teardown matters. A typical
 | ECR / SM / Route53 / state | ~$5–15 | Storage + API | Lifecycle policies on ECR |
 | Total | ~$350–500 | | Teardown if unused |
 
-### 2-day pilot (48h) with teardown
+### 2-day reference (48h) with teardown
 
 | Band | Est. |
 |------|------|

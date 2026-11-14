@@ -92,7 +92,7 @@ graph TB
 | GitLab CI + Trivy + cosign | Supply chain before Git mutation | FR-07 |
 | CODEOWNERS / promotion docs | Prod governance | FR-08 |
 | Argo Rollouts | Frontend canary stage+prod | FR-09 |
-| Teardown runbook | Stop cost after pilot | FR-11 |
+| Teardown runbook | Stop cost after reference | FR-11 |
 
 ## Explicit non-components (out of scope)
 
@@ -100,6 +100,6 @@ graph TB
 |--------------|-----|
 | Service mesh | Complexity; GitOps depth prioritized |
 | CloudWatch / PagerDuty / OTel | Cost / scope; traces deferred |
-| Multi-cluster / multi-region | Pilot maturity |
+| Multi-cluster / multi-region | Reference maturity |
 | WAF | Optional later; TLS+NP first |
 | Full 10+ Boutique services | Scoped to 7 + Redis |

@@ -269,7 +269,7 @@ Same digests initially on stage/prod overlays; promotion later copies digests de
 
 ### Security notes
 
-Account ID in Git is OK for this pilot; still no secrets.
+Account ID in Git is OK for this reference; still no secrets.
 
 ---
 
