@@ -401,7 +401,7 @@ kubectl -n argocd describe applicationset platform-apps
 kubectl -n argocd describe applicationset workload-apps
 ```
 
-Helm ownership note: first Argo sync may adopt existing Helm releases (Topic 05). If conflict occurs, use `ServerSideApply` (already set) or temporarily `helm uninstall` only after Argo app is ready to recreate — prefer adopt/sync carefully; ask partner if unsure.
+Helm ownership note: first Argo sync may adopt existing Helm releases (Topic 05). If conflict occurs, use `ServerSideApply` (already set) or temporarily `helm uninstall` only after Argo app is ready to recreate — prefer adopt/sync carefully; stop and re-read this note before uninstalling.
 
 ### GUI instructions (if applicable)
 
@@ -586,10 +586,10 @@ Topic 06 is complete when Step 6.7 checklist passes.
 
 | Area | Symptom | Action |
 |------|---------|--------|
-| AppSet | Invalid Spec | `kubectl describe applicationset` — often URL placeholder or goTemplate |
-| Helm adopt | “resource already exists” | Server-side apply / adopt; avoid duplicate Helm+Argo ownership long-term |
-| Repo | SSH vs HTTPS mismatch | Use one scheme everywhere (apps + credential) |
-| Prod | Accidental auto-sync | Disable immediately; document incident |
+| AppSet | Invalid Spec | Run `kubectl describe applicationset` — often a URL placeholder or goTemplate error |
+| Helm adopt | “resource already exists” | Prefer server-side apply / adopt; avoid long-term duplicate Helm and Argo ownership |
+| Repo | SSH vs HTTPS mismatch | Use one scheme everywhere (apps and credential) |
+| Prod | Accidental auto-sync | Disable automated sync immediately; document the incident |
 
 ---
 

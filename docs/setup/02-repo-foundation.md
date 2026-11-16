@@ -471,6 +471,6 @@ Topic 02 is complete when Step 2.7 checklist passes and the foundation MR is mer
 
 ## Next step
 
-[03 — Terraform remote state](03-remote-state.md) (continue with the next topic, then live execution).
+[03 — Terraform remote state](03-remote-state.md)
 
-Do not create S3/DynamoDB until Topic 03 guide is approved and you execute its steps.
+Do not create S3/DynamoDB until you are ready to execute Topic 03.

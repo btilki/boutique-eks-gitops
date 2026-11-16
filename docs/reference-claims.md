@@ -31,7 +31,7 @@ GitLab proposes image digests, Git stores them, and Argo CD reconciles. The refe
 | Workload hardening | `charts/*/templates/deployment.yaml` | No `securityContext`: no `runAsNonRoot`, no dropped capabilities, no read-only root filesystem. Probes are TCP. |
 | Pod Security | `gitops/envs/{dev,stage,prod}/namespace.yaml` | `pod-security.kubernetes.io/enforce: baseline`. |
 | Redis | `charts/redis/` | No password and no volume. Cart data ends when the pod is replaced. |
-| Identifiers in Git | `gitops/envs/prod/values/frontend.yaml` and platform values | Account `868480224481` and ACM certificate `9363fd9a-7ed5-41da-aea5-f37f53a94269` are committed. The certificate and cluster are gone. These are identifiers. The secret path was External Secrets. |
+| Identifiers in Git | `gitops/envs/prod/values/frontend.yaml` and platform values | Account `868480224481` and ACM certificate `9363fd9a-7ed5-41da-aea5-f37f53a94269` are committed so reviewers can match overlays to the closed run. The certificate and cluster are gone. These are identifiers, not credentials. The secret path was External Secrets. Redact or templatize before a public fork if policy requires — see [`CONTRIBUTING.md`](../CONTRIBUTING.md). |
 
 ## Claims that do not match the files
 

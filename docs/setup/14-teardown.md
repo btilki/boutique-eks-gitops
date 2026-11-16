@@ -2,7 +2,7 @@
 
 Audience: Implementer  
 Estimated time: 1–2 hours (EKS destroy often 15–30+ minutes)  
-Prerequisites: [13 — Production-reference checklist](13-production-readiness.md) PASS, or early abort after any billable topic  
+Prerequisites: [13 — Production reference checklist](13-production-readiness.md) PASS, or early abort after any billable topic  
 Creates / owns: [`docs/runbooks/teardown.md`](../runbooks/teardown.md); fills [`PRODUCTION_CHECKLIST`](../PRODUCTION_CHECKLIST.md) Appendix T; ROADMAP Phase 11 ✅  
 Milestone 4 — Clean teardown  
 Related: [cost model](../architecture/10-cost-model.md) · [Setup guide](README.md) · [Runbook](../runbooks/teardown.md)
@@ -510,6 +510,4 @@ If stopping after Topics 04–12 without Milestone 3: **still run Steps 14.1→1
 
 ## Next
 
-authoring complete after this topic’s approval.  
-live execution: live bootstrap starting at [`01-prerequisites.md`](01-prerequisites.md) Step 1.1 (one step per turn).  
-If the cluster was just destroyed after a successful reference, live execution is only needed for a rebuild.
+After teardown, the reference is closed. A rebuild starts at [`01-prerequisites.md`](01-prerequisites.md) Step 1.1.

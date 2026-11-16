@@ -980,7 +980,7 @@ Fix the failing prerequisite; re-run Step 1.12 only.
 
 ### Best practices
 
-Paste validation command output (redact Account ARN if required by policy) to your session partner before Topic 02.
+Keep validation command output in your notes (redact Account ARN if required by policy) before Topic 02.
 
 ### Security notes
 
@@ -990,7 +990,7 @@ Redact secrets and full access keys in chat. Account ID redaction is optional bu
 
 ## Topic validation (end-to-end)
 
-Topic 01 is complete when Step 1.12 checklist is fully checked and you have confirmed results with your session partner.
+Topic 01 is complete when Step 1.12 checklist is fully checked and you have confirmed the results locally.
 
 **Cost check:** No NAT, EKS, or ALB should exist yet from this topic. If you created resources accidentally, stop and clean them up before Topic 02.
 
@@ -1000,7 +1000,7 @@ Topic 01 is complete when Step 1.12 checklist is fully checked and you have conf
 
 | Area | Symptom | Action |
 |------|---------|--------|
-| Versions | Minor skew (e.g. Helm 3.17) | Document deviation; prefer pinning 3.16.x; ask partner before continuing |
+| Versions | Minor skew (e.g. Helm 3.17) | Document deviation; prefer pinning 3.16.x; stop and re-check pins before continuing |
 | AWS | Multiple accounts | Standardize on one `AWS_PROFILE` for the reference |
 | DNS | Zone in different account than EKS | Stop — architecture assumes same account for Route53 + cluster |
 | GitLab | Project missing | Complete Step 1.8 before 1.9–1.10 |
@@ -1012,10 +1012,8 @@ Topic 01 is complete when Step 1.12 checklist is fully checked and you have conf
 
 ## Next step
 
-After you confirm Topic 01 execution (live execution), continue with:
+After Topic 01 validation passes, continue with:
 
 [02 — Repo foundation](02-repo-foundation.md)
 
-Live execution remains one step per turn under `docs/setup/`.
-
-live execution: resume at the next incomplete Topic 01 step (currently 1.1 unless already confirmed).
+If any Step 1.12 checkbox is still open, finish that step before Topic 02.

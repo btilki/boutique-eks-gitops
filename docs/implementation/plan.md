@@ -18,7 +18,7 @@ Status: Production reference closed. Phases 1–11 complete. AWS resources delet
 | Field | Value |
 |-------|--------|
 | Project | boutique-eks-gitops |
-| Goal | Production-reference GitOps control plane for Online Boutique on one EKS cluster; **Git is the only deploy authority**; CI only updates image digests |
+| Goal | Production reference GitOps control plane for Online Boutique on one EKS cluster; **Git is the only deploy authority**; CI only updates image digests |
 | Current status | Production reference closed; AWS resources deleted; GitOps and docs remain |
 | Phases | 11 executed (Phase 1–11, including teardown), plus Phase 12 scaffold in [ROADMAP.md](../../ROADMAP.md) |
 | Overall complexity | L (platform breadth); no single XL phase if Phase 2/7/8 stay scoped |

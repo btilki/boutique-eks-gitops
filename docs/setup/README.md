@@ -2,7 +2,7 @@
 
 Audience: Implementer  
 Authority: This directory is the **single source of truth** for bootstrap. If README, chat, or scripts conflict with `docs/setup/`, this guide wins.  
-[Doc index](../README.md) · [Architecture summary](../ARCHITECTURE.md) · [Roadmap](../../ROADMAP.md) · Maintainer: [OUTLINES](OUTLINES.md) · [REQUIRED-FILES](REQUIRED-FILES.md)
+[Doc index](../README.md) · [Architecture summary](../ARCHITECTURE.md) · [Roadmap](../../ROADMAP.md) · [Claims](../reference-claims.md) · [Evidence](../evidence/README.md)
 
 > **Reference status:** Production reference closed. Milestone 3 (production reference path) and Milestone 4 (clean teardown) are complete.  
 > There is no live AWS stack — no EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from this reference.  
@@ -44,7 +44,7 @@ Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Ski
 | 10 | GitLab CI digests | [10-gitlab-ci-digest.md](10-gitlab-ci-digest.md) | 09 (+ OIDC from 04) | 2–3 h | CI runners + ECR | ✅ |
 | 11 | Promotion | [11-promotion.md](11-promotion.md) | 10 | 1–1.5 h | None beyond envs | ✅ |
 | 12 | Canary rollouts | [12-canary-rollouts.md](12-canary-rollouts.md) | 11 | 1.5–2.5 h | Extra pods briefly | ✅ |
-| 13 | Production-reference checklist | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
+| 13 | Production reference checklist | [13-production-readiness.md](13-production-readiness.md) | 12 | 1–2 h | None | ✅ |
 | 14 | Teardown | [14-teardown.md](14-teardown.md) | 13 (or early abort) | 1–2 h | Stops billables | ✅ |
 
 Dependency rule: complete topics in numeric order through 14. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the reference — still follow ordered destroy.

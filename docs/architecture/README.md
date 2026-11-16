@@ -59,7 +59,7 @@ Evidence without a cluster: [../reference-claims.md](../reference-claims.md)
 ## Related
 
 - [../README.md](../README.md) — documentation index
-- [../implementation/plan.md](../implementation/plan.md) — phase detail (maintainer reference)
+- [../implementation/plan.md](../implementation/plan.md) — maintainer only (historical phase inventory; not a reader path)
 - [../../ROADMAP.md](../../ROADMAP.md) — milestones and phase status
 - [../setup/README.md](../setup/README.md) — rebuild (topics 01–14)
 - [../versions.md](../versions.md) — version pins

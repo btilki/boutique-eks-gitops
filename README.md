@@ -9,7 +9,9 @@ Production reference GitOps platform for Online Boutique on Amazon EKS — Git i
 [![Maturity](https://img.shields.io/badge/maturity-production%20reference-blue.svg)](docs/ARCHITECTURE.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-> **Status:** Production reference closed (July 2026). Digest MR → promote → prod (manual sync and canary) ran end to end; then all AWS billable resources were destroyed. No live cluster. CI is dormant unless GitLab `ENABLE_REFERENCE_CI` or `ENABLE_REPO_GATES` is set ([`docs/ci.md`](docs/ci.md)). To run again, follow [`docs/setup/`](docs/setup/).
+> **Status:** Production reference closed (July 2026). Digest MR → promote → prod (manual sync and canary) ran end to end; then all AWS billable resources were destroyed. No live cluster.
+>
+> CI is dormant unless GitLab `ENABLE_REFERENCE_CI` or `ENABLE_REPO_GATES` is set ([`docs/ci.md`](docs/ci.md)). To run again, follow [`docs/setup/`](docs/setup/).
 
 ---
 

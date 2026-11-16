@@ -1,7 +1,7 @@
 # Version pin matrix — boutique-eks-gitops
 
 Audience: Implementer / CI author  
-Authority: Locked stack from Planning Gate + [implementation plan](implementation/plan.md) §7.11  
+Authority: This matrix is the locked closed-reference stack (align ADRs / setup when changing pins). Historical phase inventory: [implementation plan](implementation/plan.md) §7.11 — maintainer only.  
 Setup owner: Topic 01 (consume) · Topic 02 (align ADRs/README)  
 Last reviewed: 2026-07-25
 

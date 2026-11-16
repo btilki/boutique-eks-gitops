@@ -42,7 +42,7 @@ File-backed claims (no cluster required): [`reference-claims.md`](reference-clai
 | FR-04 | Security baseline | Kyverno digest / ECR; ESO; NetworkPolicy |
 | FR-05 | Observability | Prometheus / Loki / Grafana / Alertmanager → email — no CloudWatch / PagerDuty / OTel |
 | FR-06–09 | Boutique + CI + promote + canary | Seven services; digest MRs; stage + prod canary |
-| FR-10–11 | Checklist + teardown | Production-reference checklist; ordered destroy |
+| FR-10–11 | Checklist + teardown | Production reference checklist; ordered destroy |
 
 Full tables: [01-requirements.md](architecture/01-requirements.md)
 
@@ -166,5 +166,5 @@ Orientation only — steps live in [`setup/`](setup/README.md).
 | Boutique | `charts/`, `gitops/envs/` | 09 |
 | GitLab CI | `.gitlab-ci.yml` | 10 |
 | Promotion / canary | `docs/promotion.md`, `gitops/platform/argo-rollouts/` | 11, 12 |
-| Production-reference checklist | `docs/PRODUCTION_CHECKLIST.md` | 13 |
+| Production reference checklist | `docs/PRODUCTION_CHECKLIST.md` | 13 |
 | Teardown | `docs/runbooks/teardown.md` | 14 |

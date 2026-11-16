@@ -447,7 +447,7 @@ terraform providers
 
 ### Recovery
 
-Fix IAM or `backend.hcl`; re-run `terraform init -backend-config=../../backend.hcl -reconfigure`. Do not delete the bucket if unsure — ask partner first.
+Fix IAM or `backend.hcl`; re-run `terraform init -backend-config=../../backend.hcl -reconfigure`. Do not delete the bucket if unsure — stop and re-check IAM before deleting state.
 
 ### Best practices
 
@@ -517,7 +517,7 @@ Fix the failing step; re-run Step 3.6 only.
 
 ### Best practices
 
-Paste redacted validation output (bucket name OK; omit account if required) to your session partner.
+Keep redacted validation output in your notes (bucket name OK; omit account if required).
 
 ### Security notes
 
@@ -540,7 +540,7 @@ Topic 03 is complete when Step 3.6 checklist passes.
 | Backend | Want to change bucket after state exists | Prefer migrate with `terraform init -migrate-state`; avoid delete |
 | Region | Resources in `us-east-1` by mistake | Recreate in `eu-central-1` before Topic 04 |
 | Team | Second engineer cannot init | Share bucket/table names + IAM; each creates local `backend.hcl` |
-| Chicken/egg | “Should Terraform manage the bucket?” | Out of scope for v1 — CLI bootstrap is intentional |
+| Chicken/egg | “Should Terraform manage the bucket?” | Out of scope for this reference — CLI bootstrap is intentional |
 
 ---
 

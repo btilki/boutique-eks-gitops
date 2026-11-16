@@ -31,7 +31,7 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | Version pins | [`versions.md`](versions.md) |
 | Digest promotion / rollback | [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) |
 | CI contract | [`ci.md`](ci.md) |
-| Production-reference checklist | [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) |
+| Production reference checklist | [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) |
 | Day-2 operations | [`operations/README.md`](operations/README.md) |
 | Symptom runbooks | [`runbooks/README.md`](runbooks/README.md) |
 | Roadmap / milestones | [`../ROADMAP.md`](../ROADMAP.md) |
