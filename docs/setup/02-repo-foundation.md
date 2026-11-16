@@ -1,7 +1,7 @@
 # 02 — Repo foundation
 
-Audience: L2 — Implementer  
-Estimated time: 2–3 hours (authoring already done in Phase B — execution is verify + commit)  
+Audience: Implementer  
+Estimated time: 2–3 hours (authoring already done — execution is verify + commit)  
 Prerequisites: [01 — Prerequisites](01-prerequisites.md) complete  
 Creates: Repository tree, ADRs 0001–0005, root meta files (CODEOWNERS, gitignore, pre-commit, Makefile), SECURITY.md, stub READMEs under `terraform/`, `gitops/`, `charts/`, `tests/`  
 Related ADRs: [0001](../adr/0001-digest-only-gitops.md) · [0002](../adr/0002-single-cluster-namespaces.md) · [0003](../adr/0003-tls-acm-alb.md) · [0004](../adr/0004-dns-hostname-scheme.md) · [0005](../adr/0005-observability-on-cluster.md)
@@ -20,7 +20,7 @@ Terraform modules, GitOps manifests, and CI need an agreed tree and ADRs before 
 
 - Topic 01 Step 1.12 checklist passed.
 - Working tree is a Git repo with `origin` on GitLab (Topic 01 Steps 1.8–1.10).
-- Working tree contains Phase B Topic 02 files (this guide assumes partner materialized them; if a path is missing, stop and restore from Git / partner delivery).
+- Working tree contains Topic 02 files (this guide assumes partner materialized them; if a path is missing, stop and restore from Git / partner delivery).
 - No `terraform apply` in this topic.
 - Prefer verifying existing files over recreating them by hand.
 
@@ -81,12 +81,12 @@ test -d terraform && test -d gitops && test -d charts && test -d docs/adr && ech
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Many MISSING | Phase B files not in working tree | Pull/sync Topic 02 delivery |
+| Many MISSING | topic files not in working tree | Pull/sync Topic 02 delivery |
 | Wrong nested clone | cwd not repo root | `cd` to root with `ROADMAP.md` |
 
 ### Recovery
 
-Restore from Git history or re-copy Phase B artifacts; do not invent a second structure.
+Restore from Git history or re-copy topic artifacts; do not invent a second structure.
 
 ### Best practices
 
@@ -187,7 +187,7 @@ echo "architecture: OK"
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Status still “Draft” only | Stale header | Header should read Accepted / implementation-ready (Phase B update) |
+| Status still “Draft” only | Stale header | Header should read Accepted / implementation-ready (doc update) |
 
 ### Recovery
 
@@ -471,6 +471,6 @@ Topic 02 is complete when Step 2.7 checklist passes and the foundation MR is mer
 
 ## Next step
 
-[03 — Terraform remote state](03-remote-state.md) (Phase B authoring next, then Phase C execution).
+[03 — Terraform remote state](03-remote-state.md) (continue with the next topic, then live execution).
 
 Do not create S3/DynamoDB until Topic 03 guide is approved and you execute its steps.

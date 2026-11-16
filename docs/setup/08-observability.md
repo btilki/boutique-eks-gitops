@@ -1,6 +1,6 @@
 # 08 — Observability
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 2–3 hours  
 Prerequisites: [07 — Security baseline](07-security-baseline.md) complete (ESO Ready)  
 Creates: kube-prometheus-stack (Prometheus, Grafana, Alertmanager), Loki, Grafana Ingress, SMTP via ESO, alerting runbook  
@@ -23,7 +23,7 @@ Production readiness depends on observable failure. M2 requires Grafana over HTT
 - SMTP mailbox and credentials from Topic 01 available.
 - ACM ARN and DNS path from Topic 05 working.
 - Cluster has spare capacity on `m6i.large` ×3 — monitoring has resource caps; watch node memory.
-- Phase B Topic 08 files on `main`.
+- Topic 08 files on `main`.
 
 **Cost:** Extra CPU/memory on nodes; Grafana ALB shared pattern; no CloudWatch fees.
 
@@ -430,7 +430,7 @@ Stabilize monitoring before charts; do not add Boutique load onto OOM nodes.
 
 ### Best practices
 
-Record M2 completion in ROADMAP when executing Phase C.
+Record M2 completion in ROADMAP during live execution.
 
 ### Security notes
 
@@ -459,6 +459,6 @@ Topic 08 / M2 is complete when Step 8.6 checklist passes.
 
 ## Next step
 
-**[09 — Boutique charts](09-boutique-charts.md)** (Phase B next).
+**[09 — Boutique charts](09-boutique-charts.md)** (next).
 
 Bootstrap ECR digests, then expose `dev-boutique.biroltilki.art`. Replace `BoutiqueIngressDown` expression with a real probe when the storefront is live.

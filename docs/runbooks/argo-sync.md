@@ -1,6 +1,6 @@
 # Runbook — Argo CD sync stuck / OutOfSync
 
-Audience: L2 — Operator  
+Audience: Operator  
 Setup: Topic 06 · GitOps: [`../../gitops/README.md`](../../gitops/README.md)
 
 ## Purpose

@@ -27,7 +27,7 @@ GitLab proposes image digests, Git stores them, and Argo CD reconciles. The refe
 | API exposure and secret encryption | `terraform/modules/eks/main.tf` | Public API access is on. The default CIDR is `0.0.0.0/0`. The cluster resource has no `encryption_config`. |
 | IaC scan | `.checkov.yaml` | `soft_fail: true`. The skipped checks include the public API and the single NAT. |
 | Versions | `docs/versions.md` | Pins reviewed 2026-07-25. EKS 1.31 extended support runs into November 2026. Kyverno CLI `1.13.4` is the offline test binary. The cluster chart target is 1.16.x. |
-| CI today | `.gitlab-ci.yml` workflow | No pipeline is created unless `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES` is set. |
+| CI today | `.gitlab-ci.yml` workflow | No pipeline is created unless `ENABLE_REFERENCE_CI` or `ENABLE_REPO_GATES` is set. |
 | Workload hardening | `charts/*/templates/deployment.yaml` | No `securityContext`: no `runAsNonRoot`, no dropped capabilities, no read-only root filesystem. Probes are TCP. |
 | Pod Security | `gitops/envs/{dev,stage,prod}/namespace.yaml` | `pod-security.kubernetes.io/enforce: baseline`. |
 | Redis | `charts/redis/` | No password and no volume. Cart data ends when the pod is replaced. |

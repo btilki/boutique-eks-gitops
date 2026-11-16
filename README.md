@@ -25,7 +25,7 @@ Tag-based deploys and CI `kubectl`/`argocd` pushes make “what is running?” h
 
 ## Result
 
-Milestone 3 (production-reference path) and Milestone 4 (clean teardown) completed. Cost stayed in the short reference cost band (~$35–45 with teardown vs ~$350–500/mo if left running). Screenshots from the live run are below; file-backed claims: [`docs/reference-claims.md`](docs/reference-claims.md).
+Milestone 3 (production-reference path) and Milestone 4 (clean teardown) completed. Cost stayed in the short-run band (~$35–45 with teardown vs ~$350–500/mo if left running). Screenshots from the live run are below; file-backed claims: [`docs/reference-claims.md`](docs/reference-claims.md).
 
 ---
 
@@ -76,9 +76,9 @@ Lessons from this reference: [`docs/lessons-learned.md`](docs/lessons-learned.md
 
 | I want to… | Read |
 |------------|------|
-| Understand the project in ~10 minutes | This page → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) → [ADR-0001](docs/adr/0001-digest-only-gitops.md) |
-| See reference proof | [`docs/evidence/`](docs/evidence/README.md) · [`docs/reference-claims.md`](docs/reference-claims.md) |
-| Review design and delivery | [`docs/architecture/`](docs/architecture/) · [`docs/promotion.md`](docs/promotion.md) · [`docs/rollback.md`](docs/rollback.md) · [`docs/ci.md`](docs/ci.md) |
+| Review this repo in ~10 minutes | This page → [ADR-0001](docs/adr/0001-digest-only-gitops.md) → [`docs/reference-claims.md`](docs/reference-claims.md) → [`docs/evidence/`](docs/evidence/README.md) |
+| Architecture summary | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`](docs/architecture/) |
+| Design and delivery contracts | [`docs/promotion.md`](docs/promotion.md) · [`docs/rollback.md`](docs/rollback.md) · [`docs/ci.md`](docs/ci.md) |
 | Rebuild or operate | [`docs/setup/`](docs/setup/) (topics 01–14) · [`docs/versions.md`](docs/versions.md) · [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) · [`docs/runbooks/`](docs/runbooks/README.md) |
 
 Full index: [`docs/README.md`](docs/README.md)
@@ -112,63 +112,26 @@ Use this map for repository layout, platform components, and where each engineer
 
 ## What the reference demonstrated
 
-- Digest-only releases with promotion `dev → stage → prod` and manual prod sync
-- Argo CD app-of-apps + ApplicationSet; Kyverno, External Secrets, NetworkPolicy
-- GitLab CI: scan (Trivy) → sign (cosign) → digest MR only (no `kubectl` / `argocd` in CI)
-- On-cluster observability (Prometheus, Loki, Grafana, Alertmanager → email) and frontend canary on stage and prod
-- Ordered teardown after validation (see [`ROADMAP.md`](ROADMAP.md))
+July 2026 path (Milestone 3–4): digest-only promote `dev → stage → prod`, Argo app-of-apps, Kyverno / ESO / NetworkPolicy, CI scan → sign → digest MR only, on-cluster observability + timed frontend canary, then ordered teardown. File-backed detail: [`docs/reference-claims.md`](docs/reference-claims.md). Screenshot gaps: [`docs/evidence/`](docs/evidence/README.md).
 
 ---
 
-## Technology stack
+## Stack · layout · clone
 
 | Area | Choices |
 |------|---------|
-| Cloud / region | AWS `eu-central-1` |
-| IaC | Terraform ≥ 1.9 |
-| Kubernetes | EKS 1.31, Helm 3.16.x |
-| GitOps / delivery | Argo CD, Argo Rollouts |
-| Policy / secrets | Kyverno, External Secrets Operator |
-| Ingress / TLS | AWS LB Controller, external-dns, ACM |
-| CI / supply chain | GitLab CI, ECR, Trivy, Sigstore cosign |
-| Observability | kube-prometheus-stack, Loki, Grafana |
+| Cloud | AWS `eu-central-1` · Terraform ≥ 1.9 · EKS 1.31 |
+| Delivery | Argo CD · Rollouts · GitLab CI · ECR · Trivy · cosign |
+| Policy / edge | Kyverno · ESO · NetworkPolicy · ACM + ALB |
+| Observability | Prometheus · Loki · Grafana · Alertmanager (email) |
 
-Pins and rationale: [`docs/versions.md`](docs/versions.md) · [`docs/architecture/README.md`](docs/architecture/README.md)
-
----
-
-## Repository layout
-
-```text
-boutique-eks-gitops/
-├── terraform/        # VPC, EKS, ECR, IAM, remote state
-├── gitops/           # Argo CD desired state (bootstrap, platform, envs)
-├── charts/           # Boutique Helm charts (7 services + Redis)
-├── docs/             # Architecture, setup guide, runbooks, ADRs
-├── tests/            # Policy and lint fixtures
-└── .gitlab-ci.yml    # Digest pipeline (dormant until CI flags are set)
-```
-
----
-
-## Quick clone
+Pins: [`docs/versions.md`](docs/versions.md). Layout: `terraform/` · `gitops/` · `charts/` · `docs/` · `tests/` · `.gitlab-ci.yml`.
 
 ```bash
 git clone https://github.com/btilki/boutique-eks-gitops.git
 cd boutique-eks-gitops
 ```
 
-Do not provision AWS from this file. Bootstrap and destroy live under [`docs/setup/`](docs/setup/).
+Do not provision AWS from this file — use [`docs/setup/`](docs/setup/).
 
----
-
-## Contributing · License · References
-
-- Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md)
-- Security: [`SECURITY.md`](SECURITY.md)
-- Changelog: [`CHANGELOG.md`](CHANGELOG.md)
-- Roadmap: [`ROADMAP.md`](ROADMAP.md)
-
-Licensed under Apache License 2.0 — see [`LICENSE`](LICENSE). Upstream app inspiration: [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo).
-
-Stack references: [Argo CD](https://argo-cd.readthedocs.io/) · [Argo Rollouts](https://argo-rollouts.readthedocs.io/) · [Kyverno](https://kyverno.io/) · [External Secrets](https://external-secrets.io/) · [cosign](https://docs.sigstore.dev/) · [Trivy](https://trivy.dev/) · [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)
+[`CONTRIBUTING.md`](CONTRIBUTING.md) · [`SECURITY.md`](SECURITY.md) · [`CHANGELOG.md`](CHANGELOG.md) · [`ROADMAP.md`](ROADMAP.md) · Apache 2.0 [`LICENSE`](LICENSE) · [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo)

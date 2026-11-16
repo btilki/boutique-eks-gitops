@@ -23,7 +23,7 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-# Keep footprint small for pilot rebuilds
+# Keep footprint small for reference rebuilds
 falcoctl:
   artifact:
     install:

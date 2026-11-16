@@ -1,6 +1,6 @@
 # 03 — Terraform remote state
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 45–60 minutes  
 Prerequisites: [02 — Repo foundation](02-repo-foundation.md) complete  
 Creates: S3 state bucket + DynamoDB lock table in `eu-central-1`; repo files `terraform/backend.hcl.example`, `terraform/envs/prod/backend.tf`, `terraform/envs/prod/versions.tf`; local gitignored `terraform/backend.hcl`  
@@ -21,7 +21,7 @@ Without remote state + locking, concurrent applies and laptop loss corrupt infra
 - Topics 01–02 complete (`make docs-check` passes).
 - AWS credentials for the reference account (`aws sts get-caller-identity` works in `eu-central-1`).
 - IAM permission to create S3 buckets, DynamoDB tables, and use them for state (typically admin for the reference).
-- Phase B files for this topic present in the repo (partner delivery).
+- Files for this topic present in the repo (partner delivery).
 - Cost impact (low): empty S3 bucket + small DynamoDB table — **destroy in Topic 14**.
 - **Do not** create VPC or EKS in this topic.
 
@@ -546,6 +546,6 @@ Topic 03 is complete when Step 3.6 checklist passes.
 
 ## Next step
 
-[04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) (Phase B authoring next).
+[04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) (next).
 
 Do not run foundation `terraform apply` until Topic 04 guide and modules are approved and you execute that topic’s steps.

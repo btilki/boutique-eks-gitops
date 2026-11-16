@@ -17,6 +17,6 @@ controller:
       cpu: 200m
       memory: 256Mi
 
-# Keep cluster footprint small for the pilot (no dashboard Ingress).
+# Keep cluster footprint small for the reference (no dashboard Ingress).
 notifications:
   enabled: false

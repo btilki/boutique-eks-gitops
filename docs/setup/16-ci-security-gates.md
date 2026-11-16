@@ -1,6 +1,6 @@
 # 16 — CI security gates (Checkov, Gitleaks, policy tests)
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1–1.5 hours (scaffold now; live gates when CI is re-enabled)  
 Prerequisites: Topic [10](10-gitlab-ci-digest.md) files present; Topic [15](15-supply-chain-verify-sbom.md) optional but recommended  
 Creates: `.checkov.yaml`, `.gitleaks.toml`, `tests/policy/unit/**`, CI jobs `gitleaks` / `checkov` / `policy_test`; optional `ENABLE_REPO_GATES`  
@@ -25,7 +25,7 @@ Helm lint alone does not catch leaked secrets, risky Terraform defaults, or brok
 
 **Apply when CI runs again:**
 
-- Either `ENABLE_PILOT_CI=true` (full pipeline after rebuild), or  
+- Either `ENABLE_REFERENCE_CI=true` (full pipeline after rebuild), or  
 - `ENABLE_REPO_GATES=true` for MR-only test-stage jobs without AWS/ECR (Topic 16 Step 16.4).
 
 **Idempotent:** Re-running scanners is safe. Checkov ships with `soft_fail: true` until you baseline findings.
@@ -145,7 +145,7 @@ grep soft_fail .checkov.yaml
 
 ## Step 16.4: Enable gates in GitLab (no cluster required for MR gates)
 
-> **Apply when you want CI feedback.** Does not require EKS. Full build/sign still needs Topic 04 AWS + `ENABLE_PILOT_CI`.
+> **Apply when you want CI feedback.** Does not require EKS. Full build/sign still needs Topic 04 AWS + `ENABLE_REFERENCE_CI`.
 
 ### Goal
 
@@ -162,7 +162,7 @@ Run `helm_lint`, `gitleaks`, `checkov`, and `policy_test` on merge requests.
 | Key | Value | Notes |
 |-----|-------|-------|
 | `ENABLE_REPO_GATES` | `true` | MR pipelines only (workflow rule). No AWS needed. |
-| `ENABLE_PILOT_CI` | `true` | After rebuild — full pipeline including build/scan/sign/sbom/gitops |
+| `ENABLE_REFERENCE_CI` | `true` | After rebuild — full pipeline including build/scan/sign/sbom/gitops |
 
 Open an MR that touches any file; confirm test-stage jobs run.
 
@@ -181,12 +181,12 @@ GitLab → CI/CD → Pipelines → MR pipeline → gitleaks / checkov / policy_t
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | No pipeline | Both ENABLE_* unset | Set `ENABLE_REPO_GATES=true` for MR gates |
-| Build jobs fail on main | `ENABLE_PILOT_CI` without AWS | Keep reference CI off until Topic 04 restored |
+| Build jobs fail on main | `ENABLE_REFERENCE_CI` without AWS | Keep reference CI off until Topic 04 restored |
 | policy_test download fail | GitHub rate limit / pin | Retry; confirm `KYVERNO_CLI_VERSION` release exists |
 
 ### Security notes
 
-**`ENABLE_REPO_GATES` must not grant AWS keys.** Build jobs still use OIDC only when `ENABLE_PILOT_CI` is on.
+**`ENABLE_REPO_GATES` must not grant AWS keys.** Build jobs still use OIDC only when `ENABLE_REFERENCE_CI` is on.
 
 ---
 

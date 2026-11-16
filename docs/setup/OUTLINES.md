@@ -1,10 +1,12 @@
-# Setup topic outlines — Phase A
+# Setup topic outlines — planning
+
+**Maintainer inventory — not a reader path.** Skip for hiring review. Prefer the numbered topic guides under `docs/setup/`.  
 
 **Status:** Planning artifact (not executable)  
-**Authority for execution:** Full guides authored in Phase B under `docs/setup/NN-*.md`  
+**Authority for execution:** Full guides under `docs/setup/NN-*.md`  
 **Source inputs:** [ROADMAP.md](../../ROADMAP.md), [plan.md](../implementation/plan.md), [ARCHITECTURE.md](../ARCHITECTURE.md)
 
-Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are stable references for TODO markers in repo files.
+Each outline lists intended steps for authoring. Step IDs (`N.M`) are stable references for TODO markers in repo files.
 
 ---
 
@@ -12,7 +14,7 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 
 **Goal:** Local tooling, GitLab project, linked local Git remote, and external access ready; no AWS billables from this topic.  
 **Depends on:** None  
-**Creates:** Confidence that topics 02+ can proceed; GitLab project + first push when starting from a Phase B working tree; consumes `docs/versions.md` once present.
+**Creates:** Confidence that topics 02+ can proceed; GitLab project + first push when starting from an authored working tree; consumes `docs/versions.md` once present.
 
 | Step | Title | Concern |
 |------|--------|---------|
@@ -382,11 +384,11 @@ Each outline lists intended steps for Phase B authoring. Step IDs (`N.M`) are st
 
 ---
 
-## Outline → Phase B mapping
+## Outline → authoring mapping
 
 | When approved | Author next |
 |---------------|-------------|
-| Phase A | Topic **01** guide + its `SETUP_REQUIRED` files |
+| planning | Topic **01** guide + its `SETUP_REQUIRED` files |
 | After each topic B approval | Next numeric topic |
-| After topic 14 B | Start Phase C at `01` step `1.1` |
+| After topic 14 B | Start live execution at `01` step `1.1` |
 | Phase 12 | Topic **15–19** scaffolds without rebuilding AWS |

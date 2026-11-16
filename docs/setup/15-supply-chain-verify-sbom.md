@@ -1,6 +1,6 @@
 # 15 — Supply chain close-loop (verify + SBOM)
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1–2 hours (scaffold now; live apply after rebuild)  
 Prerequisites: [07 — Security baseline](07-security-baseline.md) + [10 — GitLab CI digests](10-gitlab-ci-digest.md) on a rebuilt cluster; or scaffold-only on this repo with no live AWS  
 Creates: Kyverno `verifyImages` policies (Audit); CI `sbom` stage; [ADR-0007](../adr/0007-admission-verify-and-sbom.md); unsigned-digest test example  
@@ -22,7 +22,7 @@ Signing without admission verify lets unsigned digests run if they pass digest/E
 **Scaffold-only (current repo state — no cluster):**
 
 - Confirm files listed under [Creates](#topic-goal) exist on the branch.
-- Do **not** set `ENABLE_PILOT_CI=true` until Topics 03–04 AWS exist again.
+- Do **not** set `ENABLE_REFERENCE_CI=true` until Topics 03–04 AWS exist again.
 
 **Apply after cluster rebuild (after Topic 04 → 07 → 09 → 10):**
 
@@ -173,7 +173,7 @@ kubectl get clusterpolicy verify-image-signatures \
   -o jsonpath='{.spec.validationFailureAction}{"\n"}'
 
 # Re-enable CI only with AWS restored (see docs/ci.md)
-# GitLab → Settings → CI/CD → Variables: ENABLE_PILOT_CI=true
+# GitLab → Settings → CI/CD → Variables: ENABLE_REFERENCE_CI=true
 # Push/merge to default branch → confirm stages: … → sign → sbom → gitops
 ```
 

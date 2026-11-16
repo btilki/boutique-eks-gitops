@@ -1,6 +1,6 @@
 # 04 — Network, EKS, ECR, IAM
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 2–4 hours (EKS create often 15–25 minutes)  
 Prerequisites: [03 — Terraform remote state](03-remote-state.md) complete  
 Creates: VPC (1× NAT), EKS 1.31 + node group, 7 ECR repos, ACM cert, GitLab OIDC CI role, IRSA roles for LB controller / external-dns / ESO; modules under `terraform/modules/*` and `terraform/envs/prod/*`  
@@ -678,6 +678,6 @@ Topic 04 is complete when Step 4.10 checklist passes.
 
 ## Next step
 
-[05 — Ingress, DNS, TLS](05-ingress-dns-tls.md) (Phase B next).
+[05 — Ingress, DNS, TLS](05-ingress-dns-tls.md) (next).
 
 Use IRSA ARNs and `acm_certificate_arn` from outputs when authoring/installing controllers.

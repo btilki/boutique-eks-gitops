@@ -1,13 +1,15 @@
 # Implementation Plan — boutique-eks-gitops
 
-Audience: Implementer during build  
+**Maintainer inventory — not a reader path.**  
+Do not start here for hiring review or day-2 ops. Use [ROADMAP.md](../../ROADMAP.md) for status, [ARCHITECTURE.md](../ARCHITECTURE.md) for design, and [setup/README.md](../setup/README.md) to rebuild.
+
+Audience: Maintainer (historical planning)  
 Public summary: [ROADMAP.md](../../ROADMAP.md)  
-Architecture (authoritative): [docs/ARCHITECTURE.md](../ARCHITECTURE.md) — decisions below are approved  
-Structure (authoritative): Preferred layout in Project Prompt — materialized in Phase 1  
+Architecture (authoritative): [ARCHITECTURE.md](../ARCHITECTURE.md)
 
 Status: Production reference closed. Phases 1–11 complete. AWS resources deleted. Phase 12 scaffold is in Git; live enable waits for a rebuild.
 
-> Maintainer reference — not a reader entry point. For status and milestones use [ROADMAP.md](../../ROADMAP.md). To understand or rebuild use [README.md](../../README.md) → [docs/README.md](../README.md) → [setup/README.md](../setup/README.md). This file keeps phase inventories, FR cross-refs, and historical planning detail.
+> This file keeps phase inventories, FR cross-refs, and historical planning detail from the build. Prefer the numbered setup guides and ADRs when explaining the system.
 
 ---
 
@@ -313,7 +315,7 @@ boutique-eks-gitops/
 
 Complexity: S  
 Estimated effort: 1 session (~2–3 h)  
-Prerequisites: Plan approved; Setup Guide Phase A/B for topics 01–02  
+Prerequisites: Plan approved; Setup Guide for topics 01–02  
 Milestone: toward M1  
 Setup Guide topics: `docs/setup/01-prerequisites.md`, `docs/setup/02-repo-foundation.md`
 
@@ -1110,7 +1112,7 @@ No blocking open questions remain for architecture/plan.
 
 ## Next after plan approval
 
-1. `pi-setup-guide` Phase A — topic catalog (from this cross-reference; includes `14-teardown`)
-2. Setup Phase B — author guide + repo files per topic together
-3. `fc-implementation` Bootstrap for Setup Phase C execution
+1. `pi-setup-guide` catalog — topic catalog (from this cross-reference; includes `14-teardown`)
+2. Setup — author guide + repo files per topic together
+3. `fc-implementation` Bootstrap for Setup live execution
 4. FC reviews at M1 (Phase 3), M2 (Phase 6), M3 (Phase 10); M4 teardown validation after Phase 11

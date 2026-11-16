@@ -1,6 +1,6 @@
 # 10 — GitLab CI digests
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 2–3 hours  
 Prerequisites: [09 — Boutique charts](09-boutique-charts.md) complete; Terraform GitLab OIDC role from Topic 04  
 Creates: [`.gitlab-ci.yml`](../../.gitlab-ci.yml), [`docs/ci.md`](../ci.md), [`docs/adr/0006-cosign-signing-mode.md`](../adr/0006-cosign-signing-mode.md)  
@@ -23,7 +23,7 @@ This is FR-07 / ADR-0001 in action: CI may change Git desired state (digests) bu
 - Topic 04 `gitlab_ci_role_arn` output available.
 - Topic 09 charts + ECR repos populated.
 - GitLab Maintainer access; CI/CD variables permission.
-- Phase B Topic 10 files present on the default branch.
+- Topic 10 files present on the default branch.
 
 **Idempotent:** Re-running pipelines creates new tags/`ci-<sha>` images and new MRs.
 
@@ -536,6 +536,6 @@ Topic 10 is complete when Step 10.8 checklist passes.
 
 ## Next step
 
-**[11 — Promotion](11-promotion.md)** (Phase B next).
+**[11 — Promotion](11-promotion.md)** (next).
 
 Human MRs copy digests `dev → stage → prod` with CODEOWNERS on prod.

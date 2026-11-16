@@ -1,6 +1,6 @@
 # 18 — Canary AnalysisTemplates (metric / smoke gates)
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1–1.5 hours (scaffold now; enable after Topic 12 on rebuild)  
 Prerequisites: [12 — Canary rollouts](12-canary-rollouts.md) + [08 — Observability](08-observability.md) for Prometheus background analysis  
 Creates: ClusterAnalysisTemplates under `gitops/platform/argo-rollouts/analysis/`; chart `canary.analysis` support; stage/prod example overlays; [ADR-0009](../adr/0009-canary-analysis-templates.md)  

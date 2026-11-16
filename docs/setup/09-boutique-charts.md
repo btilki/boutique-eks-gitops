@@ -1,6 +1,6 @@
 # 09 — Boutique charts
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 3–4 hours  
 Prerequisites: [08 — Observability](08-observability.md) complete (M2)  
 Creates: Helm charts under `charts/*`; env digest overlays; Argo boutique ApplicationSet; bootstrap ECR digests; `dev-boutique` HTTPS  
@@ -21,7 +21,7 @@ CI only patches digests; it cannot invent first images. Charts must expose `imag
 - Topics 06–08 healthy; ACM ARN available.
 - ECR repos exist (Topic 04) including `redis` (added to Terraform list — re-apply `module.ecr` if missing).
 - Docker (or `nerdctl`/`podman`) available to pull upstream Boutique images and push to ECR.
-- Phase B Topic 09 files on `main`.
+- Topic 09 files on `main`.
 
 **Cost:** ECR storage + ALB for `dev-boutique` Ingress.
 
@@ -309,11 +309,11 @@ grep -q 'autoSync: false' gitops/apps/workload-apps/boutique-applicationset.yaml
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Missing values | Incomplete Phase B | Restore Topic 09 files |
+| Missing values | Incomplete topic files | Restore Topic 09 files |
 
 ### Recovery
 
-Re-copy overlays from Phase B delivery; re-run digest substitution.
+Re-copy overlays from the topic delivery; re-run digest substitution.
 
 ### Best practices
 
@@ -476,6 +476,6 @@ Topic 09 is complete when Step 9.6 checklist passes.
 
 ## Next step
 
-**[10 — GitLab CI digests](10-gitlab-ci-digest.md)** (Phase B next).
+**[10 — GitLab CI digests](10-gitlab-ci-digest.md)** (next).
 
 CI will rebuild/sign and open MRs that change only `image.digest` under `gitops/envs/dev/values/`.

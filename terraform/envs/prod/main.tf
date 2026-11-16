@@ -119,7 +119,7 @@ module "irsa_external_dns" {
 }
 
 data "aws_iam_policy_document" "aws_lb_controller" {
-  # Condensed controller permissions — sufficient for ALB Ingress pilot.
+  # Condensed controller permissions — sufficient for ALB Ingress on this reference.
   # TODO(setup:5.1): diff against latest AWS sample policy if IAM Access Denied appears.
   statement {
     effect = "Allow"

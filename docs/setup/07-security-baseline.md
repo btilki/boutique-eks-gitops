@@ -1,6 +1,6 @@
 # 07 — Security baseline
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1.5–2 hours  
 Prerequisites: [06 — Argo CD bootstrap](06-argocd-bootstrap.md) complete  
 Creates: Kyverno + ClusterPolicies; External Secrets Operator + ClusterSecretStore; NetworkPolicies for `dev`/`stage`/`prod`; sample ExternalSecret + deny-test fixture  
@@ -22,7 +22,7 @@ Without Kyverno, `:latest` and non-ECR images can reach the cluster. Without ESO
 - Argo `platform-apps` ApplicationSet healthy; `<GITLAB_REPO_URL>` already substituted in AppSets.
 - Terraform IRSA output `irsa_external_secrets_role_arn` available.
 - Ability to create a short-lived secret in AWS Secrets Manager for the ESO smoke test.
-- Phase B Topic 07 files present on `main` (push before sync).
+- Topic 07 files present on `main` (push before sync).
 
 Idempotent: re-syncing Argo apps is safe. Negative kubectl tests are expected to fail admission.
 
@@ -502,6 +502,6 @@ Topic 07 is complete when Step 7.7 checklist passes.
 
 ## Next step
 
-[08 — Observability](08-observability.md) (Phase B next).
+[08 — Observability](08-observability.md) (next).
 
 Use ESO for Alertmanager SMTP; keep Prometheus/Loki/Grafana in non-app namespaces so Kyverno digest rules do not block chart images.

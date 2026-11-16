@@ -510,6 +510,6 @@ If stopping after Topics 04–12 without Milestone 3: **still run Steps 14.1→1
 
 ## Next
 
-Phase B complete after this topic’s approval.  
-Phase C: live bootstrap starting at [`01-prerequisites.md`](01-prerequisites.md) Step 1.1 (one step per turn).  
-If the cluster was just destroyed after a successful reference, Phase C is only needed for a rebuild.
+authoring complete after this topic’s approval.  
+live execution: live bootstrap starting at [`01-prerequisites.md`](01-prerequisites.md) Step 1.1 (one step per turn).  
+If the cluster was just destroyed after a successful reference, live execution is only needed for a rebuild.

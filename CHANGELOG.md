@@ -38,4 +38,4 @@ Production reference closed: **M3 PASS** (2026-07-19) · **M4 PASS** (2026-07-19
 
 ### Changed
 
-- Post-teardown: CI dormant unless `ENABLE_PILOT_CI` / `ENABLE_REPO_GATES` set in GitLab.
+- Post-teardown: CI dormant unless `ENABLE_REFERENCE_CI` / `ENABLE_REPO_GATES` set in GitLab.

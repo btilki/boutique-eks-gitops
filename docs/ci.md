@@ -1,6 +1,6 @@
 # CI/CD contract — boutique-eks-gitops
 
-Audience: L2 implementer or reviewer · Topic 10 · Topic 15 · Topic 16 · ADR [0001](adr/0001-digest-only-gitops.md), [0006](adr/0006-cosign-signing-mode.md), [0007](adr/0007-admission-verify-and-sbom.md) · Pipeline [`.gitlab-ci.yml`](../.gitlab-ci.yml)
+Audience: Implementer or reviewer · Topic 10 · Topic 15 · Topic 16 · ADR [0001](adr/0001-digest-only-gitops.md), [0006](adr/0006-cosign-signing-mode.md), [0007](adr/0007-admission-verify-and-sbom.md) · Pipeline [`.gitlab-ci.yml`](../.gitlab-ci.yml)
 
 ## After teardown
 
@@ -9,12 +9,12 @@ Pipelines are dormant. After M4 / AWS destroy, CI must not auto-run: build/scan/
 To run CI again after a rebuild:
 
 1. Restore Topic 03–04 AWS (ECR + GitLab OIDC role)
-2. Set GitLab CI/CD variable `ENABLE_PILOT_CI=true`
+2. Set GitLab CI/CD variable `ENABLE_REFERENCE_CI=true` (replaces the older `ENABLE_PILOT_CI` name)
 3. Confirm `AWS_ROLE_ARN` is set
 
 Repo gates without AWS (Topic 16): set `ENABLE_REPO_GATES=true` to create MR pipelines for `helm_lint` / `gitleaks` / `checkov` / `policy_test` only (no build/sign).
 
-Without `ENABLE_PILOT_CI=true` and without `ENABLE_REPO_GATES=true`, workflow rules use `when: never` — no pipeline is created (no red Failed badge).
+Without `ENABLE_REFERENCE_CI=true` and without `ENABLE_REPO_GATES=true`, workflow rules use `when: never` — no pipeline is created (no red Failed badge).
 
 ## What a red digest MR meant
 
@@ -27,7 +27,7 @@ What the files show:
 - `build`, `scan`, `sign`, `sbom`, and `gitops` rules match the default branch, so an MR pipeline does not re-run those jobs.
 - The 2026-07-19 checklist does not name the failed job on those digest MRs. The image path was taken from the default-branch pipeline and the merged digest diff.
 
-After teardown, commits on `main` failed when a pipeline still tried to reach ECR and the GitLab OIDC role. Workflow rules now create no pipeline unless `ENABLE_PILOT_CI` or `ENABLE_REPO_GATES` is set.
+After teardown, commits on `main` failed when a pipeline still tried to reach ECR and the GitLab OIDC role. Workflow rules now create no pipeline unless `ENABLE_REFERENCE_CI` or `ENABLE_REPO_GATES` is set.
 
 ## What the default build proves
 
@@ -68,7 +68,7 @@ test → build → scan → sign → sbom → gitops
 
 | Variable | Purpose |
 |----------|---------|
-| `ENABLE_PILOT_CI` | Must be `true` to run full reference pipeline including build/sign (off by default after teardown) |
+| `ENABLE_REFERENCE_CI` | Must be `true` to run full reference pipeline including build/sign (off by default after teardown) |
 | `ENABLE_REPO_GATES` | Optional: `true` to run MR test-stage gates without AWS (Topic 16) |
 | `AWS_ROLE_ARN` | GitLab OIDC IAM role from Terraform `gitlab_ci_role_arn` |
 | `AWS_DEFAULT_REGION` | `eu-central-1` |

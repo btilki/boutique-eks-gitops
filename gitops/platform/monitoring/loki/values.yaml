@@ -1,9 +1,9 @@
 # Grafana Loki — Topic 08
 # Pin: Helm chart grafana/loki 6.24.0 (Loki 3.x) — verify with helm show chart
-# SingleBinary mode for pilot cost/simplicity on 3× m6i.large
+# SingleBinary mode for reference cost/simplicity on 3× m6i.large
 #
 # Storage: emptyDir (no PVC). Cluster has no EBS CSI; legacy gp2 provisioner
-# does not work on EKS 1.31. Pilot accepts log loss on pod restart (guide 8.2).
+# does not work on EKS 1.31. Reference accepts log loss on pod restart (guide 8.2).
 
 deploymentMode: SingleBinary
 

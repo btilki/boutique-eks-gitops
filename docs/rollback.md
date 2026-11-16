@@ -1,6 +1,6 @@
 # Rollback — Git revert of digest changes
 
-Audience: L2 implementer or on-call · Topic 11 · ADR [0001](adr/0001-digest-only-gitops.md) · Related: [promotion.md](promotion.md), [runbooks/alerting.md](runbooks/alerting.md)
+Audience: Implementer or on-call · Topic 11 · ADR [0001](adr/0001-digest-only-gitops.md) · Related: [promotion.md](promotion.md), [runbooks/alerting.md](runbooks/alerting.md)
 
 ## Principle
 

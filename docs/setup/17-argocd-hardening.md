@@ -1,6 +1,6 @@
 # 17 — Argo CD hardening (AppProjects, SSO, notifications)
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1.5–2 hours (scaffold now; live apply after Topic 06 on rebuild)  
 Prerequisites: [06 — Argo CD bootstrap](06-argocd-bootstrap.md) complete on a rebuilt cluster (or scaffold-only in this repo)  
 Creates: AppProjects under `gitops/bootstrap/argocd/hardening/projects/`; SSO/notifications/RBAC **examples**; ApplicationSets wired to named projects; [ADR-0008](../adr/0008-argocd-appprojects-sso.md)  

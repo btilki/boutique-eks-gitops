@@ -1,11 +1,11 @@
 # Production checklist — boutique-eks-gitops
 
-Audience: L2 — Implementer / FC reviewer  
+Audience: Implementer / FC reviewer  
 Setup: Topic 13 · Milestone: M3 — Production path proven  
 Authority: Must FRs from [`docs/architecture/01-requirements.md`](architecture/01-requirements.md)  
 Related: [Setup 13](setup/13-production-readiness.md) · [promotion](promotion.md) · [rollback](rollback.md) · [runbooks](runbooks/)
 
-Filled 2026-07-19 during Phase C Topic 13.1 evidence walk.
+Filled 2026-07-19 during Topic 13.1 evidence walk.
 
 Sign-off
 

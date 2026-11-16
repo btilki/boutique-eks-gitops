@@ -1,6 +1,6 @@
 # Runbook — Alerting (Alertmanager → email)
 
-Audience: L2 — Operator  
+Audience: Operator  
 Setup: Topic 08 · ADR: [0005 on-cluster observability](../adr/0005-observability-on-cluster.md)
 
 ## Purpose

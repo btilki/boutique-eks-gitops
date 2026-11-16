@@ -1,6 +1,6 @@
 # 12 — Canary rollouts
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1.5–2.5 hours  
 Prerequisites: [11 — Promotion](11-promotion.md) complete (stage/prod digests promotable)  
 Creates: [`gitops/platform/argo-rollouts/`](../../gitops/platform/argo-rollouts/), frontend `Rollout` + ALB services, stage/prod canary values  
@@ -21,7 +21,7 @@ FR-09 requires canary on stage **and** prod. Without Rollouts + ALB weights, dig
 
 - Topics 09–11 complete: Boutique charts synced; promotion/CODEOWNERS working; **prod manual sync discipline** in place.
 - AWS LB Controller healthy (Topic 05); Ingress `target-type: ip` already set on frontend.
-- Phase B Topic 12 files on `main` (this guide + repo files).
+- Topic 12 files on `main` (this guide + repo files).
 - Optional: install `kubectl-argo-rollouts` plugin for status/abort UX.
 
 **Cost:** Brief extra canary pods during weight steps; controller footprint is small.
@@ -479,4 +479,4 @@ Confirm no `:latest` and digests still enforced under canary pods.
 
 ## Next topic
 
-**[13 — Production readiness](13-production-readiness.md)** (Phase B next).
+**[13 — Production readiness](13-production-readiness.md)** (next).

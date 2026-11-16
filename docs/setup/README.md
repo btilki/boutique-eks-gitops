@@ -51,7 +51,7 @@ Dependency rule: complete topics in numeric order through 14. Topic 10 additiona
 
 This is the closed reference path. Live execution through Topic 13 is complete; Topic 14 tore the stack down.
 
-Planning artifacts (Phase A):
+Maintainer planning artifacts:
 
 - [OUTLINES.md](OUTLINES.md) — step sketches for topics 01–14
 - [REQUIRED-FILES.md](REQUIRED-FILES.md) — file inventory per topic
@@ -134,7 +134,7 @@ DNS / TLS hostnames: [dns-and-tls.md](../dns-and-tls.md) · [ADR-0004](../adr/00
 
 ### Troubleshooting
 
-- Per-topic Common problems / Recovery / Topic troubleshooting sections (Phase B).
+- Per-topic Common problems / Recovery / Topic troubleshooting sections.
 - Runbooks under [`docs/runbooks/`](../runbooks/) (Topics 08 + 13; teardown in 14).
 - Architecture context: [`docs/ARCHITECTURE.md`](../ARCHITECTURE.md).
 

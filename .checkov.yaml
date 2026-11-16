@@ -10,13 +10,13 @@ directory:
 soft_fail: true
 download-external-modules: false
 
-# Pilot-known trade-offs (single cluster / cost). Revisit before Enforce-style CI.
+# Reference-known trade-offs (single cluster / cost). Revisit before Enforce-style CI.
 skip-check:
   # Single NAT Gateway for cost (architecture cost model)
   - CKV_AWS_130
-  # EKS public endpoint often enabled for pilot kubectl (tighten later)
+  # EKS public endpoint often enabled for short-run kubectl access (tighten later)
   - CKV_AWS_39
   - CKV_AWS_38
-  # Default SG / encryption noise on short pilots — review on rebuild
+  # Default SG / encryption noise on short-lived runs — review on rebuild
   - CKV_AWS_23
   - CKV2_AWS_5

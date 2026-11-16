@@ -10,9 +10,10 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 
 | I want to… | Read |
 |------------|------|
-| Understand the project quickly | [`ARCHITECTURE.md`](ARCHITECTURE.md) · [ADR-0001](adr/0001-digest-only-gitops.md) |
-| See reference proof / lessons | [`evidence/`](evidence/README.md) · [`lessons-learned.md`](lessons-learned.md) · [`reference-claims.md`](reference-claims.md) |
-| Review design and delivery | [`architecture/`](architecture/README.md) · [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) · [`ci.md`](ci.md) |
+| Review this repo in ~10 minutes | [ADR-0001](adr/0001-digest-only-gitops.md) · [`reference-claims.md`](reference-claims.md) · [`evidence/`](evidence/README.md) |
+| Architecture summary | [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`architecture/`](architecture/README.md) |
+| Lessons | [`lessons-learned.md`](lessons-learned.md) |
+| Design and delivery contracts | [`promotion.md`](promotion.md) · [`rollback.md`](rollback.md) · [`ci.md`](ci.md) |
 | Rebuild or operate | [`setup/`](setup/README.md) (01–14) · [`versions.md`](versions.md) · [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) · [`runbooks/`](runbooks/README.md) |
 
 ---
@@ -33,7 +34,7 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | Production-reference checklist | [`PRODUCTION_CHECKLIST.md`](PRODUCTION_CHECKLIST.md) |
 | Day-2 operations | [`operations/README.md`](operations/README.md) |
 | Symptom runbooks | [`runbooks/README.md`](runbooks/README.md) |
-| Implementation / phases | [`implementation/plan.md`](implementation/plan.md) · [`../ROADMAP.md`](../ROADMAP.md) |
+| Roadmap / milestones | [`../ROADMAP.md`](../ROADMAP.md) |
 | DNS & TLS | [`dns-and-tls.md`](dns-and-tls.md) |
 | Cost model | [`architecture/10-cost-model.md`](architecture/10-cost-model.md) |
 
@@ -48,4 +49,10 @@ If this file disagrees with [`setup/`](setup/README.md) on bootstrap steps, the 
 | [`../SECURITY.md`](../SECURITY.md) | Security reporting |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Notable changes |
 
-Authoring inventories (not a reader path): [`setup/OUTLINES.md`](setup/OUTLINES.md) · [`setup/REQUIRED-FILES.md`](setup/REQUIRED-FILES.md)
+### Maintainer only (not a reader path)
+
+Historical planning inventories — skip for hiring review:
+
+- [`setup/OUTLINES.md`](setup/OUTLINES.md)
+- [`setup/REQUIRED-FILES.md`](setup/REQUIRED-FILES.md)
+- [`implementation/plan.md`](implementation/plan.md)

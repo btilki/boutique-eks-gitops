@@ -1,6 +1,6 @@
 # 13 — Production readiness
 
-Audience: L2 — Implementer / FC reviewer  
+Audience: Implementer / FC reviewer  
 Estimated time: 1–2 hours  
 Prerequisites: [12 — Canary rollouts](12-canary-rollouts.md) complete (stage + prod canary proven or ready)  
 Creates / owns: [`docs/PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md), runbooks set under [`docs/runbooks/`](../runbooks/), ROADMAP status update at sign-off  
@@ -18,9 +18,9 @@ FR-10 requires operability artifacts and a demonstrated path. Short references m
 
 ## Before you begin
 
-- Topics 01–12 live work complete (or you are filling evidence as you finish Phase C).
+- Topics 01–12 live work complete (or you are filling evidence as you finish live execution).
 - Access to GitLab MRs, Argo UI/CLI, cluster `kubectl`, and inbox used for Alertmanager.
-- Phase B Topic 13 files on `main` (this guide + checklist + runbooks).
+- Topic 13 files on `main` (this guide + checklist + runbooks).
 
 **Cost:** No new always-on resources. Cluster still burns ~$15–20/day until Topic 14.
 
@@ -147,7 +147,7 @@ wc -l docs/runbooks/ingress.md docs/runbooks/argo-sync.md \
 
 ### Recovery
 
-Restore files from Topic 13 Phase B delivery.
+Restore files from Topic 13 topic delivery.
 
 ### Best practices
 
@@ -266,7 +266,7 @@ FC review at M3: confirm checklist evidence, then approve teardown start.
 ### Validation
 
 ```bash
-# After you edit ROADMAP (live step — not done in Phase B alone):
+# After you edit ROADMAP (live step — not done by authoring alone):
 # grep -c '| ✅ |' ROADMAP.md   # expect phases 1–10 updated
 test -f docs/PRODUCTION_CHECKLIST.md
 ```
@@ -310,8 +310,8 @@ Teardown reduces attack surface and bill — treat as security hygiene.
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Doc-only PASS | No live cluster | Complete Phase C first |
-| Missing teardown.md | Topic 14 not authored/executed | Phase B Topic 14 then execute |
+| Doc-only PASS | No live cluster | Complete live cluster work first |
+| Missing teardown.md | Topic 14 not authored/executed | Topic 14 then execute |
 | Checklist drift vs versions | Pin change | Update `docs/versions.md` + re-verify |
 
 ---

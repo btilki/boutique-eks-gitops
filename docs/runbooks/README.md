@@ -1,6 +1,6 @@
 # Runbooks — boutique-eks-gitops
 
-Audience: L2 — Operator  
+Audience: Operator  
 Setup: Topics 08, 13, 14 · Checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md)  
 Day-2 index: [`../operations/README.md`](../operations/README.md) (deploy, DR, incidents, health)
 

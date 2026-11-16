@@ -8,14 +8,14 @@
 #
 # Post-teardown (M4): pipelines are DORMANT by default. AWS/ECR/OIDC are gone;
 # auto-runs on main would fail and look like a broken project. Re-enable only
-# when rebuilding: set CI/CD variable ENABLE_PILOT_CI=true (and restore AWS).
+# when rebuilding: set CI/CD variable ENABLE_REFERENCE_CI=true (and restore AWS).
 # Optional (no AWS): ENABLE_REPO_GATES=true runs MR pipelines for test-stage jobs only.
 
 workflow:
   rules:
-    - if: $ENABLE_PILOT_CI == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $ENABLE_PILOT_CI == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $ENABLE_PILOT_CI == "true" && $CI_COMMIT_BRANCH =~ /^ci\/.*/
+    - if: $ENABLE_REFERENCE_CI == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $ENABLE_REFERENCE_CI == "true" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $ENABLE_REFERENCE_CI == "true" && $CI_COMMIT_BRANCH =~ /^ci\/.*/
     # Topic 16: security/lint gates without ECR — MR only (build/scan/sign still skipped)
     - if: $ENABLE_REPO_GATES == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
     - when: never

@@ -1,6 +1,6 @@
 # 11 — Promotion
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1–1.5 hours  
 Prerequisites: [10 — GitLab CI digests](10-gitlab-ci-digest.md) complete (dev digests flowing)  
 Creates: [`docs/promotion.md`](../promotion.md), [`docs/rollback.md`](../rollback.md); GitLab CODEOWNERS enforcement on prod paths  
@@ -21,7 +21,7 @@ Without governed promotion, digests can skip stage or reach prod without `@btilk
 - Dev Boutique healthy on current digests (Topic 09–10).
 - You can create MRs; `@btilki` can approve (or you are `@btilki`).
 - Argo UI/CLI access for manual prod sync.
-- Phase B Topic 11 docs present on `main`.
+- Topic 11 docs present on `main`.
 
 **Idempotent:** Re-reading docs is safe. Promote MRs are normal Git operations.
 
@@ -64,7 +64,7 @@ grep -q 'gitops/envs/prod' docs/promotion.md && echo "promotion doc: OK"
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Doc missing | Phase B not merged | Restore Topic 11 files |
+| Doc missing | Topic files not merged | Restore Topic 11 files |
 
 ### Recovery
 
@@ -409,6 +409,6 @@ Topic 11 is complete when Step 11.6 checklist passes.
 
 ## Next step
 
-**[12 — Canary rollouts](12-canary-rollouts.md)** (Phase B next).
+**[12 — Canary rollouts](12-canary-rollouts.md)** (next).
 
 Progressive delivery for frontend on **stage and prod** after digests promote cleanly.

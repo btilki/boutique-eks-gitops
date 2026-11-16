@@ -25,7 +25,7 @@ OIDC, DNS, and email failures surface late (Topics 04, 05, 08, 10) and waste pai
 - Have credentials ready for: AWS (admin or equivalent for later VPC/EKS/IAM), GitLab (ability to create a project in your group/namespace, or Maintainer/Owner on an existing one), and access to the Route53 zone `biroltilki.art`.
 - Do not run `terraform apply`, create EKS, or spend on NAT/ALB in this topic.
 - Keep secrets out of the repo: no AWS keys, GitLab tokens, or SMTP passwords committed.
-- If you only have a local working tree (Phase B files, no `.git/` and no GitLab project yet), that is expected: Steps 1.8 and 1.10 create them.
+- If you only have a local working tree (authoring files, no `.git/` and no GitLab project yet), that is expected: Steps 1.8 and 1.10 create them.
 
 Idempotent: re-running verification commands is safe. Skip create/init substeps when the project or `.git/` already exists.
 
@@ -61,7 +61,7 @@ cd boutique-eks-gitops
 
 Replace `<GITLAB_REPO_HTTPS_OR_SSH_URL>` with your project clone URL. Do not invent a public URL.
 
-Path B — no remote and/or no local Git yet (common after Phase B authoring): stay in the working tree that already contains `docs/setup/` and `docs/versions.md`. Create the GitLab project in Step 1.8; run `git init` and first push in Step 1.10. Do not invent a clone URL here.
+Path B — no remote and/or no local Git yet (common after authoring): stay in the working tree that already contains `docs/setup/` and `docs/versions.md`. Create the GitLab project in Step 1.8; run `git init` and first push in Step 1.10. Do not invent a clone URL here.
 
 ### GUI instructions (if applicable)
 
@@ -90,7 +90,7 @@ test -f ROADMAP.md && test -f docs/ARCHITECTURE.md && echo "repo spine: OK"
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `versions: OK` missing | Topic 01 files not present | Ensure Phase B Topic 01 was merged/copied into your working tree |
+| `versions: OK` missing | Topic 01 files not present | Ensure Topic 01 was merged/copied into your working tree |
 | Wrong directory | Nested clone path | `cd` to directory that contains `docs/setup/` |
 
 ### Recovery
@@ -514,7 +514,7 @@ Note the hosted zone ID (right-hand `/hostedzone/Z…` form) in private notes fo
 | Navigation | Services → **Route 53** → **Hosted zones** → select `biroltilki.art` |
 | Permissions | `route53:ListHostedZones`, eventually change records (or IRSA for external-dns later) |
 | Verification | Zone name shows `biroltilki.art.`; type Public (expected for this reference) |
-| Screenshot (optional) | Capture Route53 hosted zone in AWS Console if useful; no committed screenshot required for Phase B |
+| Screenshot (optional) | Capture Route53 hosted zone in AWS Console if useful; no committed screenshot required for authoring |
 
 | Field | Expected | Why |
 |-------|----------|-----|
@@ -597,7 +597,7 @@ Create project (skip if it already exists):
 | Project name | `boutique-eks-gitops` |
 | Project URL / namespace | Your group or personal namespace (record privately) |
 | Visibility | **Private** (recommended) |
-| Initialize with README | **Unchecked** (local Phase B tree is the source of truth) |
+| Initialize with README | **Unchecked** (local authoring tree is the source of truth) |
 | Default branch | `main` (set under Settings → Repository if the UI offers it) |
 | Permissions | Ability to create projects in that namespace |
 | Verification | Project overview opens; **Clone** shows HTTPS and SSH URLs |
@@ -729,7 +729,7 @@ Topic 02 commands assume a real Git root (`git rev-parse --show-toplevel`). Argo
 
 ### Commands
 
-Run from the directory that contains `ROADMAP.md` and `docs/setup/` (Phase B tree).
+Run from the directory that contains `ROADMAP.md` and `docs/setup/` (authoring tree).
 
 A — already a clone with `origin` set: verify and skip init:
 
@@ -739,7 +739,7 @@ git remote -v
 git status
 ```
 
-B — no `.git/` yet (typical after Phase B authoring on disk):
+B — no `.git/` yet (typical after authoring on disk):
 
 ```bash
 cd /path/to/boutique-eks-gitops   # directory with ROADMAP.md
@@ -752,7 +752,7 @@ git add -A
 git status   # confirm no secrets (.env, credentials, backend.hcl, *.tfvars secrets)
 
 git commit -m "$(cat <<'EOF'
-Initial control-plane tree from Phase B setup guides.
+Initial control-plane tree from authoring setup guides.
 
 EOF
 )"
@@ -1012,10 +1012,10 @@ Topic 01 is complete when Step 1.12 checklist is fully checked and you have conf
 
 ## Next step
 
-After you confirm Topic 01 execution (Phase C), continue with:
+After you confirm Topic 01 execution (live execution), continue with:
 
 [02 — Repo foundation](02-repo-foundation.md)
 
 Live execution remains one step per turn under `docs/setup/`.
 
-Phase C: resume at the next incomplete Topic 01 step (currently 1.1 unless already confirmed).
+live execution: resume at the next incomplete Topic 01 step (currently 1.1 unless already confirmed).

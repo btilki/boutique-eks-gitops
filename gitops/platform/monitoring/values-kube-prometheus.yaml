@@ -77,7 +77,7 @@ prometheus:
       limits:
         cpu: "1"
         memory: 2Gi
-    # Pilot: no PVC (cost). TODO(setup:8.1): add volumeClaimTemplate if needed.
+    # Reference: no PVC (cost). TODO(setup:8.1): add volumeClaimTemplate if needed.
 
 grafana:
   enabled: true

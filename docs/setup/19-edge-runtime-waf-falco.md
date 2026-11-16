@@ -1,6 +1,6 @@
 # 19 — Edge WAF + runtime Falco (stubs)
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1–2 hours (scaffold now; enable selectively after rebuild)  
 Prerequisites: Topic [04](04-network-eks-ecr-iam.md) for WAF Terraform; Topics [05](05-ingress-dns-tls.md)+[06](06-argocd-bootstrap.md) for Ingress/AppProject; Topic [08](08-observability.md) helpful for Falco log visibility  
 Creates: `terraform/modules/waf` + `enable_waf` flag; Falco values + ApplicationSet example; Ingress WAF annotation example; [ADR-0010](../adr/0010-edge-waf-and-falco.md)  

@@ -1,6 +1,6 @@
 # 06 — Argo CD bootstrap
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1.5–2 hours  
 Prerequisites: [05 — Ingress, DNS, TLS](05-ingress-dns-tls.md) complete (M1 HTTPS path working)  
 Creates: Argo CD in `argocd` namespace; UI at `argocd.boutique.biroltilki.art`; root app-of-apps; platform + workload ApplicationSets; env namespace scaffolding under `gitops/envs/*`  
@@ -22,7 +22,7 @@ Topics 07–14 assume Argo reconciles desired state from this repository. Withou
 - Topic 05 controllers healthy; ACM ARN available.
 - This repository is pushed to GitLab on branch `main` (or update `targetRevision` consistently).
 - You have a GitLab Project Access Token or Deploy Token with `read_repository` (and `write` only if you choose HTTPS write — read is enough for Argo pull).
-- Phase B files for Topic 06 present.
+- Files for Topic 06 present.
 
 Idempotent: Helm upgrade and re-applying Applications are safe. **Do not** enable automated sync on prod.
 
@@ -595,6 +595,6 @@ Topic 06 is complete when Step 6.7 checklist passes.
 
 ## Next step
 
-[07 — Security baseline](07-security-baseline.md) (Phase B next).
+[07 — Security baseline](07-security-baseline.md) (next).
 
 Add Kyverno, External Secrets, and NetworkPolicies under `gitops/platform/` and extend `platform-apps` ApplicationSet (wave 20).

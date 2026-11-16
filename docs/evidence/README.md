@@ -48,19 +48,19 @@ File: [`08-grafana-dashboards.png`](../../assets/images/setup/08-grafana-dashboa
 
 ## Not shown yet
 
-These claims are in the docs / checklist but do not have screenshots in this folder. Add them on a rebuild (or if you still have private captures):
+These claims are in the docs / checklist but do not have screenshots in this folder. Capture on a rebuild (or drop private captures here). **Highest priority next captures:** digest MR diff, Kyverno deny, canary progress.
 
-| Gap | Why it matters |
-|-----|----------------|
-| Digest MR diff (`image.digest` only) | Proves CI never wrote deploy commands — only Git |
-| Full pipeline Jobs tab (incl. SBOM / policy jobs if enabled) | Completes the stage-card crop |
-| Kyverno deny (`:latest` or non-ECR image) | Admission proof |
-| Argo Rollouts canary progress (stage/prod) | Progressive delivery proof |
-| Prod OutOfSync → manual Sync | Manual prod sync story |
-| cosign verify / SBOM attestation / ECR scan | Supply-chain depth |
-| AWS console: EKS + nodes across AZs | Multi-AZ foundation |
-| Alertmanager email | Observability path end-to-end |
-| Teardown: `terraform destroy` / orphan audit | Milestone 4 proof |
+| Gap | Why it matters | Priority |
+|-----|----------------|----------|
+| Digest MR diff (`image.digest` only) | Proves CI never wrote deploy commands — only Git | High |
+| Kyverno deny (`:latest` or non-ECR image) | Admission proof | High |
+| Argo Rollouts canary progress (stage/prod) | Progressive delivery proof | High |
+| Full pipeline Jobs tab (incl. SBOM / policy jobs if enabled) | Completes the stage-card crop | Medium |
+| Prod OutOfSync → manual Sync | Manual prod sync story | Medium |
+| cosign verify / SBOM attestation / ECR scan | Supply-chain depth | Medium |
+| AWS console: EKS + nodes across AZs | Multi-AZ foundation | Medium |
+| Alertmanager email | Observability path end-to-end | Medium |
+| Teardown: `terraform destroy` / orphan audit | Milestone 4 proof | Medium |
 
 Related file-backed claims (no cluster required): [`../reference-claims.md`](../reference-claims.md) · checklist: [`../PRODUCTION_CHECKLIST.md`](../PRODUCTION_CHECKLIST.md)
 

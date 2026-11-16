@@ -1,6 +1,6 @@
 # 05 — Ingress, DNS, TLS
 
-Audience: L2 — Implementer  
+Audience: Implementer  
 Estimated time: 1.5–2.5 hours  
 Prerequisites: [04 — Network, EKS, ECR, IAM](04-network-eks-ecr-iam.md) complete (nodes Ready, ACM ISSUED, IRSA ARNs available)  
 Creates: Helm-installed AWS LB Controller, external-dns, cert-manager; GitOps values under `gitops/platform/{aws-load-balancer-controller,external-dns,cert-manager}/`; [`docs/dns-and-tls.md`](../dns-and-tls.md); temporary [`examples/smoke-ingress.yaml`](../../examples/smoke-ingress.yaml)  
@@ -22,7 +22,7 @@ Without a working Ingress → ALB → ACM → Route53 path, Argo, Grafana, and B
 - `kubectl get nodes` shows Ready.
 - `terraform -chdir=terraform/envs/prod output -raw acm_certificate_arn` and IRSA role outputs work.
 - Helm 3.16.x available (Topic 01).
-- Phase B files for Topic 05 present in the repo.
+- Files for Topic 05 present in the repo.
 - ALB hours accrue while the smoke Ingress exists — **delete smoke when done**; controllers add low incremental cost on existing nodes.
 
 Idempotent: `helm upgrade --install` and re-applying the smoke Ingress are safe to re-run.
@@ -593,6 +593,6 @@ Topic 05 / M1 is complete when Step 5.8 checklist passes.
 
 ## Next step
 
-[06 — Argo CD bootstrap](06-argocd-bootstrap.md) (Phase B next).
+[06 — Argo CD bootstrap](06-argocd-bootstrap.md) (next).
 
 Argo UI will use `argocd.boutique.biroltilki.art` on this same ACM+ALB path.

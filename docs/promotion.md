@@ -1,6 +1,6 @@
 # Promotion — digest copy across environments
 
-Audience: L2 implementer or release owner · Topic 11 · ADR [0001 digest-only GitOps](adr/0001-digest-only-gitops.md) · Related: [rollback.md](rollback.md), [ci.md](ci.md), [CODEOWNERS](../CODEOWNERS)
+Audience: Implementer or release owner · Topic 11 · ADR [0001 digest-only GitOps](adr/0001-digest-only-gitops.md) · Related: [rollback.md](rollback.md), [ci.md](ci.md), [CODEOWNERS](../CODEOWNERS)
 
 ## Goal
 

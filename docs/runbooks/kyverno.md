@@ -1,6 +1,6 @@
 # Runbook — Kyverno policy block
 
-Audience: L2 — Operator  
+Audience: Operator  
 Setup: Topic 07 · Policies: [`../../gitops/platform/kyverno/policies/`](../../gitops/platform/kyverno/policies/)
 
 ## Purpose

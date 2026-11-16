@@ -1,6 +1,6 @@
 # Version pin matrix — boutique-eks-gitops
 
-Audience: L2 — Implementer / CI author  
+Audience: Implementer / CI author  
 Authority: Locked stack from Planning Gate + [implementation plan](implementation/plan.md) §7.11  
 Setup owner: Topic 01 (consume) · Topic 02 (align ADRs/README)  
 Last reviewed: 2026-07-25
@@ -64,7 +64,7 @@ EKS 1.31 extended support runs into November 2026; after that, pick a supported 
 
 ## Cluster add-ons & platform (chart / app pins)
 
-Exact chart versions are confirmed when each platform topic is authored. Treat the following as target pins; Phase B topics 05–12 must write the concrete `chartVersion` / image tags into GitOps values.
+Exact chart versions are confirmed when each platform topic is authored. Treat the following as target pins; Topics 05–12 must write the concrete `chartVersion` / image tags into GitOps values.
 
 | Component | Target pin | First setup topic |
 |-----------|------------|-------------------|
