@@ -20,7 +20,7 @@ Terraform modules, GitOps manifests, and CI need an agreed tree and ADRs before 
 
 - Topic 01 Step 1.12 checklist passed.
 - Working tree is a Git repo with `origin` on GitLab (Topic 01 Steps 1.8–1.10).
-- Working tree contains Topic 02 files (this guide assumes partner materialized them; if a path is missing, stop and restore from Git / partner delivery).
+- Working tree contains Topic 02 files (if a path is missing, stop and restore from Git / the topic files already in the repo).
 - No `terraform apply` in this topic.
 - Prefer verifying existing files over recreating them by hand.
 

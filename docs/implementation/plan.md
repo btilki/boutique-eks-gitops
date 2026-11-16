@@ -203,7 +203,7 @@ Status: Production reference closed. Phases 1–11 complete. AWS resources delet
 
 ## 7.12 High-level architecture
 
-GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual prod sync**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (email). Frontend canaries run on stage and prod via Argo Rollouts. Short references end with **Phase 11 teardown mandatory**.
+GitLab CI publishes images to ECR (default: retag `:bootstrap`) and signs them, then opens MRs that change only `image.digest` under `gitops/envs/*`. Argo CD (app-of-apps + ApplicationSet) reconciles platform sync-waves first, then workloads: auto for `dev`/`stage`, **manual prod sync**. Public HTTPS uses ACM on ALB; cert-manager is installed for platform readiness. Security uses Kyverno, ESO, and NetworkPolicy. Observability is Prometheus + Loki + Grafana + Alertmanager (email). Frontend canaries run on stage and prod via Argo Rollouts. Short-lived reference deployments end with **Phase 11 teardown mandatory**.
 
 Authoritative detail: `docs/ARCHITECTURE.md` + `docs/architecture/*` (Phase 1).
 

@@ -4,7 +4,7 @@ Audience: Implementer
 Authority: This directory is the **single source of truth** for bootstrap. If README, chat, or scripts conflict with `docs/setup/`, this guide wins.  
 [Doc index](../README.md) · [Architecture summary](../ARCHITECTURE.md) · [Roadmap](../../ROADMAP.md) · Maintainer: [OUTLINES](OUTLINES.md) · [REQUIRED-FILES](REQUIRED-FILES.md)
 
-> **Reference status:** Production reference closed. Milestone 3 (production-reference path) and Milestone 4 (clean teardown) are complete.  
+> **Reference status:** Production reference closed. Milestone 3 (production reference path) and Milestone 4 (clean teardown) are complete.  
 > There is no live AWS stack — no EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from this reference.  
 > This guide is for step-by-step rebuild and validation. Follow topics 01 → 14 in order unless you abort early (still use Topic 14 teardown order). Milestone definitions: [ROADMAP — Milestones](../../ROADMAP.md#milestones).  
 > Do not assume a cluster already exists because the repo is complete in Git.
@@ -51,7 +51,7 @@ Dependency rule: complete topics in numeric order through 14. Topic 10 additiona
 
 This is the closed reference path. Live execution through Topic 13 is complete; Topic 14 tore the stack down.
 
-Maintainer planning artifacts:
+Maintainer only (not a reader path) — skip for hiring review:
 
 - [OUTLINES.md](OUTLINES.md) — step sketches for topics 01–14
 - [REQUIRED-FILES.md](REQUIRED-FILES.md) — file inventory per topic

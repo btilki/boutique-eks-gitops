@@ -1,6 +1,6 @@
 # Architecture — boutique-eks-gitops
 
-**Status:** Accepted. Milestone 3 (production-reference path) and Milestone 4 (clean teardown) are complete.  
+**Status:** Accepted. Milestone 3 (production reference path) and Milestone 4 (clean teardown) are complete.  
 Production reference closed. The AWS stack was deleted — no live EKS, VPC, NAT, ALB, ECR, Terraform backend, Secrets Manager, ACM, or Route53 zone from this reference.  
 Maturity: production reference — single AWS account, single EKS cluster — decommissioned  
 Region: `eu-central-1` (when provisioned)

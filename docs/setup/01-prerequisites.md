@@ -6,7 +6,7 @@ Prerequisites: None
 Creates: Verified local toolchain; GitLab project (created if missing); local Git repo linked to that remote; confirmed AWS / Route53 / SMTP access (no new AWS billables from this topic). Repo file: [`docs/versions.md`](../versions.md)  
 Related ADRs: None yet (authored in Topic 02)
 
-> No live cluster from the closed reference. AWS resources were destroyed after Milestone 4 (clean teardown). This topic checks your machine and accounts only — it does not create EKS or other billable AWS resources. Full setup index: [setup README](README.md).
+> There is no live cluster; the reference was torn down. AWS resources were destroyed after Milestone 4 (clean teardown). This topic checks your machine and accounts only — it does not create EKS or other billable AWS resources. Full setup index: [setup README](README.md).
 
 ---
 

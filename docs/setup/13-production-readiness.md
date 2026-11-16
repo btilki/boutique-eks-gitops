@@ -14,7 +14,7 @@ Prove the full production path with evidence: checklist green, runbooks usable, 
 
 ## Why this topic is required
 
-FR-10 requires operability artifacts and a demonstrated path. Short references must not claim “done” without evidence, and **must not leave billables running** after tests (FR-11 / Topic 14).
+FR-10 requires operability artifacts and a demonstrated path. Short-lived reference deployments must not claim “done” without evidence, and **must not leave billables running** after tests (FR-11 / Topic 14).
 
 ## Before you begin
 

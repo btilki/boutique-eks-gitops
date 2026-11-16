@@ -21,7 +21,7 @@ Without remote state + locking, concurrent applies and laptop loss corrupt infra
 - Topics 01–02 complete (`make docs-check` passes).
 - AWS credentials for the reference account (`aws sts get-caller-identity` works in `eu-central-1`).
 - IAM permission to create S3 buckets, DynamoDB tables, and use them for state (typically admin for the reference).
-- Files for this topic present in the repo (partner delivery).
+- Topic files are already present in the repo.
 - Cost impact (low): empty S3 bucket + small DynamoDB table — **destroy in Topic 14**.
 - **Do not** create VPC or EKS in this topic.
 
