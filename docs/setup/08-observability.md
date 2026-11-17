@@ -430,7 +430,7 @@ Stabilize monitoring before charts; do not add Boutique load onto OOM nodes.
 
 ### Best practices
 
-Record M2 completion in ROADMAP during live execution.
+Record M2 completion in ROADMAP when Topic 08 validation passes.
 
 ### Security notes
 

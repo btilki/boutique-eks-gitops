@@ -390,5 +390,5 @@ Each outline lists intended steps for authoring. Step IDs (`N.M`) are stable ref
 |---------------|-------------|
 | planning | Topic **01** guide + its `SETUP_REQUIRED` files |
 | After each topic B approval | Next numeric topic |
-| After topic 14 B | Start live execution at `01` step `1.1` |
+| After topic 14 B | Start rebuild at Topic 01 Step 1.1 |
 | Phase 12 | Topic **15–19** scaffolds without rebuilding AWS |

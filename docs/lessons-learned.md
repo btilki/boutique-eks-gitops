@@ -7,7 +7,7 @@ Concrete takeaways from the closed production reference (Milestone 3 path + Mile
 ## What worked
 
 - **Digest-only + CI never deploys** stayed enforceable end to end: pipeline opens MRs; Argo reconciles; prod stays manual sync. ADR-0001 and the file-backed claims stay readable without a live cluster.
-- **Teardown as a first-class milestone** kept cost in the short reference cost band. Leaving EKS + NAT + ALBs running is the expensive failure mode; Topic 14 / Appendix T treat destroy as mandatory after tests.
+- **Teardown as a first-class milestone** kept cost in the short-run band (~$35–45 with teardown). Leaving EKS + NAT + ALBs running is the expensive failure mode; Topic 14 / Appendix T treat destroy as mandatory after tests.
 - **Honest scope** (one account, one region, namespaces not isolation) made tradeoffs discussable instead of hidden.
 
 ## What broke or surprised us
@@ -22,6 +22,20 @@ Concrete takeaways from the closed production reference (Milestone 3 path + Mile
 - Solo `CODEOWNERS` without GitLab “Code owner approval” is documentation, not dual control.
 - Stock Grafana mixins ≠ application SLOs; email-only Alertmanager ≠ on-call.
 - Phase 12 items (admission verify, blocking CI gates, WAF/Falco, …) are **scaffolds** until deliberately enabled on a rebuilt cluster.
+
+## Presenting without a live cluster
+
+Share the repo as a closed reference. Lead with README → [ADR-0001](adr/0001-digest-only-gitops.md) → [`reference-claims.md`](reference-claims.md) → [`evidence/README.md`](evidence/README.md). State limits in the same breath as wins:
+
+- **CI never deploys** — point at `.gitlab-ci.yml` FORBIDDEN guards and digest MR scope (`gitops/envs/dev` only).
+- **Admission** — Enforce is tag/digest/ECR; signature/SBOM is Audit ([ADR-0007](adr/0007-admission-verify-and-sbom.md)).
+- **Default publish** — `ecr-bootstrap` retag; from-source build is opt-in `BOUTIQUE_BUILD_MODE=git`.
+- **Canary** — timed ALB weights; `canary.analysis.enabled: false` in prod values.
+- **Proof gaps** — Kyverno deny, digest MR diff, and canary UI are file-backed and checklist-backed, not pictured yet; see evidence “Not shown yet.”
+
+Do not claim live demos, green CI on default pushes (dormant until `ENABLE_REFERENCE_CI` / `ENABLE_REPO_GATES`), or Enforce on cosign verify unless you have changed Git and re-run the path.
+
+---
 
 ## Related
 

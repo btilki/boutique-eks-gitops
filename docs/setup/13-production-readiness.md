@@ -18,7 +18,7 @@ FR-10 requires operability artifacts and a demonstrated path. Short-lived refere
 
 ## Before you begin
 
-- Topics 01–12 live work complete (or you are filling evidence as you finish live execution).
+- Topics 01–12 complete on the cluster (or you are filling evidence as you finish Topics 01–12).
 - Access to GitLab MRs, Argo UI/CLI, cluster `kubectl`, and inbox used for Alertmanager.
 - Topic 13 files on `main` (this guide + checklist + runbooks).
 
@@ -299,7 +299,7 @@ Teardown reduces attack surface and bill — treat as security hygiene.
 | Checklist A–E complete | `docs/PRODUCTION_CHECKLIST.md` |
 | Runbooks min set | ingress, argo-sync, kyverno, canary (+ alerting) |
 | Production path recorded | Section E |
-| ROADMAP 1–10 ✅ | After live sign-off |
+| ROADMAP 1–10 ✅ | After checklist sign-off |
 | Teardown started | Topic 14 / Appendix T in progress |
 
 **Cost check:** Cluster still on — **Topic 14 next, same session if possible.**
@@ -310,7 +310,7 @@ Teardown reduces attack surface and bill — treat as security hygiene.
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Doc-only PASS | No live cluster | Complete live cluster work first |
+| Doc-only PASS | No live cluster | Complete Topics 01–12 on the cluster first |
 | Missing teardown.md | Topic 14 not authored/executed | Topic 14 then execute |
 | Checklist drift vs versions | Pin change | Update `docs/versions.md` + re-verify |
 

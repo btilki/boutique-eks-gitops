@@ -49,7 +49,7 @@ Status legend: ⬜ Not started · 🔄 In progress · ✅ Complete · ⏭️ Ski
 
 Dependency rule: complete topics in numeric order through 14. Topic 10 additionally requires GitLab OIDC IAM from topic 04. Topic 14 may run early if you abort the reference — still follow ordered destroy.
 
-This is the closed reference path. Live execution through Topic 13 is complete; Topic 14 tore the stack down.
+This is the closed reference path. Topics 01–13 were executed on the reference run; Topic 14 tore the stack down.
 
 Maintainer only (not a reader path) — skip for hiring review:
 

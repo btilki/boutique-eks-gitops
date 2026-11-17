@@ -50,6 +50,8 @@ File: [`08-grafana-dashboards.png`](../../assets/images/setup/08-grafana-dashboa
 
 These claims are in the docs / checklist but do not have screenshots in this folder. Capture on a rebuild (or drop private captures here). **Highest priority next captures:** digest MR diff, Kyverno deny, canary progress.
 
+Until those images exist, treat [`../reference-claims.md`](../reference-claims.md) as the file-backed proof for admission, canary, and digest MR behavior — do not imply screenshot coverage where this table lists a gap.
+
 | Gap | Why it matters | Priority |
 |-----|----------------|----------|
 | Digest MR diff (`image.digest` only) | Proves CI never wrote deploy commands — only Git | High |

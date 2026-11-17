@@ -1114,5 +1114,5 @@ No blocking open questions remain for architecture/plan.
 
 1. `pi-setup-guide` catalog — topic catalog (from this cross-reference; includes `14-teardown`)
 2. Setup — author guide + repo files per topic together
-3. `fc-implementation` Bootstrap for Setup live execution
+3. `fc-implementation` Bootstrap for Setup rebuild
 4. FC reviews at M1 (Phase 3), M2 (Phase 6), M3 (Phase 10); M4 teardown validation after Phase 11

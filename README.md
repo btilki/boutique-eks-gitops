@@ -79,6 +79,7 @@ Lessons from this reference: [`docs/lessons-learned.md`](docs/lessons-learned.md
 | I want to… | Read |
 |------------|------|
 | Review this repo in ~10 minutes | This page → [ADR-0001](docs/adr/0001-digest-only-gitops.md) → [`docs/reference-claims.md`](docs/reference-claims.md) → [`docs/evidence/`](docs/evidence/README.md) |
+| Explain the closed reference without a cluster | [`docs/lessons-learned.md`](docs/lessons-learned.md#presenting-without-a-live-cluster) |
 | Architecture summary | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/architecture/`](docs/architecture/) |
 | Design and delivery contracts | [`docs/promotion.md`](docs/promotion.md) · [`docs/rollback.md`](docs/rollback.md) · [`docs/ci.md`](docs/ci.md) |
 | Rebuild or operate | [`docs/setup/`](docs/setup/) (topics 01–14) · [`docs/versions.md`](docs/versions.md) · [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) · [`docs/runbooks/`](docs/runbooks/README.md) |
